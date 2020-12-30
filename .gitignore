@@ -1,0 +1,5 @@
+*.sfc
+*.smc
+*.pyc
+venv
+.idea

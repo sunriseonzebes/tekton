@@ -1,0 +1,168 @@
+"""Tekton Compressor
+
+This module allows the user to convert a TektonTileGrid into compressed level data that the Super Metroid level loader
+can understand.
+
+Classes:
+    RepeaterBlock: An object representing a series of repeating tiles in level data
+
+Functions:
+    compress_level_data: converts a TektonTileGrid into compressed level data.
+"""
+
+from .tekton_tile import TektonTile
+
+
+class RepeaterShorthandBlock:
+    """An object representing a single tile repeated a specific number of times in the level data.
+
+    Super Metroid employs a number of "shorthand" statements to compress level data. One of the shorthands is to
+    specify a tile number and it's BTS data, followed by the number of times that tile is to be repeated. This
+    shorthand requires only a few bytes to represent dozens or even hundreds of tiles, and is ideal for rooms with
+    large fields of the same repeated tile. This object contains all the information about the tile and the number of
+    times it is repeated, and can output the compressed bytes that can be concatenated into a larger set of level data.
+
+    RepeaterBlocks are considered fungible, and are compared by value rather than by reference. Two RepeaterBlocks are
+    equivalent if they specify identical TektonTiles and have the same number of repetitions.
+
+    Attributes:
+        num_reps (int): The number of times the specific tile is repeated. Super Metroid will "wrap" these tiles onto
+            the next row if they exceed beyond the width of the room.
+        tile (TektonTile): The specific tile to be repeated.
+        compressed_data (bytes): The string of bytes representing these repeated tiles in the compressed level data.
+
+    """
+
+    def __init__(self):
+        self.num_reps = 0
+        self.tile = TektonTile()
+
+    def __repr__(self):
+        """Returns a textual representation of the RepeaterBlock.
+
+        Returns:
+            str : A textual representation of the RepeaterBlock's attributes.
+
+        """
+
+        template_string = "Repeater Block:\nRepetitions: {num_reps}\n Tile: {tile_repr}"
+        return template_string.format(num_reps = self.num_reps,
+                                      tile_repr = self.tile)
+
+    def __eq__(self, other):
+        """Determines whether two repeater blocks specify identical TektonTiles and number of repetitions.
+
+        RepeaterBlocks are designed to be fungible. Two RepeaterBlocks are equivalent if they specify identical
+        TektonTiles and if they have the same number of repetitions.
+
+        Args:
+            other: Another RepeaterBlock object for comparing to this one.
+
+        Returns:
+            bool : True if both Repeater blocks have identical TektonTiles and number of repetitions. Otherwise False.
+
+        """
+
+        if not isinstance(other, RepeaterShorthandBlock):
+            return False
+        return self.num_reps == other.num_reps and \
+               self.tile == other.tile
+
+    @property
+    def compressed_data(self):
+        """str: The string of bytes representing the repeated tiles in the compressed level data."""
+        repeater_header = int.from_bytes(b'\xe8\x01', byteorder="big")
+        repeater_header += (
+                                       self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
+        return_string = repeater_header.to_bytes(2, byteorder="big")
+        return_string += self.tile.tile_byte
+        return_string += self.tile.bts_tile_mirror_byte
+        return return_string
+
+
+def _find_blocks_for_compression(level_data):
+    """Converts a TektonTileGrid into a group of objects that represent pieces of the level.
+
+    Super Metroid employs a number of "shorthand" statements in its compressed level data. These shorthands can
+    represent many tiles with only a few bytes of data, and were used to reduce the size of the level data so it would
+    fit on the cartridge. This function assigns groups of tiles to "ShorthandBlock" objects, each representing part of
+    the level data in a single shorthand statement. When more than one shorthand statement could be used to represent
+    part of a level, this function chooses the shorthand statement requiring the fewest bytes of compressed level data.
+
+    Args:
+        level_data (TektonTileGrid): The level data to be converted into ShorthandBlocks
+
+    Returns:
+        list : A list of ShorthandBlocks containing pieces of level data
+
+    """
+
+    block_list = []
+    counter = 1
+    max_tiles = level_data.width * level_data.height
+
+    last_tile_change = 0
+    first_tile_in_block = level_data[0][0]
+
+    while counter < max_tiles:
+        current_tile = level_data[counter % level_data.width][counter // level_data.height]
+        if current_tile != first_tile_in_block:
+            new_block = RepeaterShorthandBlock()
+            new_block.tile = first_tile_in_block.copy()
+            new_block.num_reps = counter - last_tile_change
+            block_list.append(new_block)
+            last_tile_change = counter
+            first_tile_in_block = current_tile
+        counter += 1
+
+    # Write the last block
+    new_block = RepeaterShorthandBlock()
+    new_block.tile = first_tile_in_block.copy()
+    new_block.num_reps = counter - last_tile_change
+    block_list.append(new_block)
+
+    return block_list
+
+
+def _generate_compressed_level_data_header():
+    """Generates a three-byte header that must come at the beginning of the compressed level data.
+
+    Returns:
+        bytes : The header for this level's compressed data
+    """
+
+    level_header_string = b'\x01\x00\x02'
+    return level_header_string
+
+
+def compress_level_data(tiles, min_string_length=0):
+    """Converts a TektonTileGrid into compressed level data that Super Metroid can utilize.
+
+    Args:
+        tiles (TektonTileGrid): The level data to compress.
+        min_string_length (int): The minimum length, in bytes, that the returned value should be. If the compressed
+            level data is less than this size, this function pads the data with \xff bytes until it reaches this length.
+
+    Returns:
+        bytes: The string of compressed data representing the level.
+
+    """
+
+    compressed_level_data = b''
+    level_header = _generate_compressed_level_data_header()
+
+    compressed_level_data = level_header
+    compressed_blocks = _find_blocks_for_compression(tiles)
+    for block in compressed_blocks:
+        compressed_level_data += block.compressed_data
+
+    level_end_string = b'\xe4\xff\x00'
+
+    compressed_level_data += level_end_string
+
+    # Add FF padding to grow level data to maximum size
+    while len(compressed_level_data) < min_string_length:
+        compressed_level_data += b'\xff'
+
+    return compressed_level_data
+
