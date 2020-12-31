@@ -11,34 +11,61 @@ Functions:
 from enum import Enum
 
 class DoorBitFlag(Enum):
-    DOOR_SAME_AREA = 0x00,
-    DOOR_AREA_CHANGE = 0x40,
-    ELEVATOR_SAME_AREA = 0x80,
+    DOOR_SAME_AREA = 0x00
+    DOOR_AREA_CHANGE = 0x40
+    ELEVATOR_SAME_AREA = 0x80
     ELEVATOR_AREA_CHANGE = 0xc0
 
 class DoorExitDirection(Enum):
-    RIGHT_NO_DOOR_CLOSE = 0x00,
-    LEFT_NO_DOOR_CLOSE = 0x01,
-    DOWN_NO_DOOR_CLOSE = 0x02,
-    UP_NO_DOOR_CLOSE = 0x03,
-    RIGHT = 0x04,
-    LEFT = 0x05,
-    DOWN = 0x06,
+    RIGHT_NO_DOOR_CLOSE = 0x00
+    LEFT_NO_DOOR_CLOSE = 0x01
+    DOWN_NO_DOOR_CLOSE = 0x02
+    UP_NO_DOOR_CLOSE = 0x03
+    RIGHT = 0x04
+    LEFT = 0x05
+    DOWN = 0x06
     UP = 0x07
 
 
-def lorom_to_pc(lorom_value_int):
-    if not isinstance(lorom_value_int, int):
-        raise TypeError(
-            "LoROM value must be of type int. "
-            "You can specify this number using int hex notation, e.g. 0xc3bcd2"
-        )
-    if lorom_value_int < 0 or lorom_value_int > 0xffffff:
+def lorom_to_pc(lorom_string, *, byteorder):
+    """Converts SNES LoROM addresses into normal PC hex addresses.
+
+    SNES addresses are often specified in LoROM values, however python requires a normal integer offset (a "pc address")
+    to find objects in a bytes stream. Super Metroid specifies som addresses in LoROM (such as the level data address
+    in a room header,) this address would need to be converted into a pc address to use it as an offset in a bytes
+    string containing the ROM data.
+
+    The most significant byte of a LoROM address is called the "bank." Certain LoROM addresses are invalid, for example
+    the address $80:9999 would be outside the range of allowable addresses for bank $80, which stops at $80:7fff .
+    In the event of an invalid address, Super Metroid apparently ignores any bits larger than the maximum size of the
+    bank. In this case, the most significant bit in 9999 would be ignored, causing the address to resolve to $80:1999, a
+    valid address. There are a number of invalid addresses in room headers which seem to expect this capability. This
+    function will do the same when it encounters an invalid address.
+
+    Args:
+        lorom_string (bytes): Bytes string containing the LoROM address.
+        byteorder (str): Byte order (endianess) of lorom_string. Must be "little" or "big".
+
+    Returns:
+        int : PC address of lorom_string
+
+    """
+
+    if byteorder not in ["little", "big"]:
+        return ValueError("byteorder must be one of \"little\", \"big\"")
+    if not isinstance(lorom_string, bytes):
+        raise TypeError("LoROM value must be of type bytes.")
+    lorom_value_int = int.from_bytes(lorom_string, byteorder=byteorder)
+    if lorom_value_int < 0x800000 or lorom_value_int > 0xffffff:
         raise ValueError(
-            "LoROM value must be a positive number less than or equal to 0xffffff"
+            "LoROM value must be a positive number between 0x800000 and 0xffffff"
         )
-    lorom_bank = lorom_value_int // 0x010000
-    lorom_address = lorom_value_int % 0x010000
+    lorom_bank = lorom_value_int // 0x010000  # Bank number is the largest byte of the lorom value
+    lorom_address = lorom_value_int % 0x008000  # 0100 0000 0000 0000 address is the smallest 15 bits of the lorom value
+    # If the bank number is odd, the largest bit of the address should be a 1
+    if lorom_bank % 2 == 1:
+        lorom_address += 0x8000  # 1000 0000 0000 0000
+
     pc_value = (((lorom_bank - 0x80) // 2) * 0x010000) + lorom_address
     return pc_value
 

@@ -9,7 +9,8 @@ Functions:
 """
 
 from .tekton_room import TektonRoom
-from .tekton_system import lorom_to_pc
+from .tekton_system import lorom_to_pc, DoorBitFlag, DoorExitDirection
+from .tekton_door import TektonDoor
 
 def import_room_from_rom(rom_contents, room_header_address):
     """Reads a room's header from ROM contents and returns a TektonRoom object populated with that room's attributes.
@@ -37,9 +38,70 @@ def import_room_from_rom(rom_contents, room_header_address):
 
     # Level data addresses are stored in LoROM and are little endian
     level_lorom_address = rom_contents[pointers["standard"]+2:pointers["standard"]+5]
-    new_room.level_data_address = lorom_to_pc(int.from_bytes(level_lorom_address, byteorder="little"))
+    new_room.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
 
     return new_room
+
+def import_door(rom_contents, door_info_address):
+    """Reads door data from ROM contents and returns a TektonDoor object populated with the door's attributes.
+
+    This function will attempt to parse the 12 bytes beginning at door_info_address.
+
+    Args:
+        rom_contents (bytes): A bytes string of the rom contents containing the door data.
+        door_info_address (int): The PC address in rom_contents where the door data begins
+
+    Returns:
+        TektonDoor : Object representing all the attributes of the specified door.
+
+    """
+
+    if not isinstance(door_info_address, int):
+        raise TypeError("door_info_address must be a positive integer. "
+        "If you want to specify a hex value you can use hex notation, e.g. 0x18ac6")
+    if door_info_address < 0:
+        raise ValueError("door_info_address must be a positive integer.")
+
+    new_door = TektonDoor()
+    new_door.data_address = door_info_address
+
+    target_room_id_address = rom_contents[door_info_address:door_info_address+2]
+    target_room_id_address += b'\x8f'  # Super Metroid assumes all target rooms will have headers in bank $8F.
+
+    new_door.target_room_id = lorom_to_pc(target_room_id_address, byteorder="little")
+
+    new_door.bit_flag = DoorBitFlag(
+        int.from_bytes(rom_contents[door_info_address+2:door_info_address+3], byteorder="little")
+    )
+    new_door.exit_direction = DoorExitDirection(
+        int.from_bytes(rom_contents[door_info_address+3:door_info_address+4], byteorder="little")
+    )
+    new_door.target_door_cap_col = int.from_bytes(
+        rom_contents[door_info_address+4:door_info_address+5],
+        byteorder="little"
+    )
+    new_door.target_door_cap_row = int.from_bytes(
+        rom_contents[door_info_address+5:door_info_address+6],
+        byteorder="little"
+    )
+    new_door.target_room_screen_h = int.from_bytes(
+        rom_contents[door_info_address+6:door_info_address+7],
+        byteorder="little"
+    )
+    new_door.target_room_screen_v = int.from_bytes(
+        rom_contents[door_info_address+7:door_info_address+8],
+        byteorder="little"
+    )
+    new_door.distance_to_spawn = int.from_bytes(
+        rom_contents[door_info_address+8:door_info_address+10],
+        byteorder="little"
+    )
+    new_door.asm_pointer = int.from_bytes(
+        rom_contents[door_info_address+10:door_info_address+12],
+        byteorder="little"
+    )
+    return new_door
+
 
 def _get_data_addresses(rom_contents, room_header_address):
     """Reads a room's header from ROM contents and returns the PC address of certain pieces of data in the header.
@@ -80,6 +142,28 @@ def _get_data_addresses(rom_contents, room_header_address):
         addresses["doors"] += 26  # For every event room state, add 26 bytes to door list address.
 
     return addresses
+
+def _get_door_data_addresses(rom_contents, room_header_address):
+    door_list_address = _get_data_addresses(rom_contents, room_header_address)["doors"]
+    door_addresses = []
+
+    for offset in range(0, 16, 2):
+        start_pos = door_list_address + offset
+        end_pos = door_list_address + offset + 2
+        current_door_bytes = rom_contents[start_pos:end_pos]
+        if current_door_bytes == b'\x00\x00':
+            break
+        current_door_bytes += b'\x83' # Super Metroid assumes all door data lives in bank $83.
+        try:
+            pc_door_data_address = lorom_to_pc(current_door_bytes, byteorder="little")
+        except ValueError:
+            break
+        except Exception as e:
+            raise e
+        door_addresses.append(pc_door_data_address)
+
+    return door_addresses
+
 
 
 
