@@ -2,6 +2,7 @@ from context import tekton, original_rom_path
 from tekton import tekton_project, tekton_system, tekton_room_dict, tekton_room
 import hashlib
 import json
+import yaml
 import modified_test_roms
 import os
 import unittest
@@ -37,7 +38,7 @@ class TestTektonProject(unittest.TestCase):
         test_data = self._get_room_import_test_data()
 
         for test_item in test_data:
-            room_header = int(test_item["header"], 16)
+            room_header = test_item["header"]
             self.assertTrue(isinstance(test_project.rooms[room_header], tekton_room.TektonRoom),
                             msg="Room {} was not created on import!".format(hex(room_header)))
             self._test_room_properties(test_project.rooms[room_header], test_item)
@@ -57,7 +58,7 @@ class TestTektonProject(unittest.TestCase):
         test_data = self._get_room_import_test_data(test_data_dir)
 
         for test_item in test_data:
-            room_header = int(test_item["header"], 16)
+            room_header = test_item["header"]
             self.assertTrue(isinstance(test_project.rooms[room_header], tekton_room.TektonRoom),
                             msg="Room {} was not created on import!".format(hex(room_header)))
             self._test_room_properties(test_project.rooms[room_header], test_item)
@@ -72,24 +73,24 @@ class TestTektonProject(unittest.TestCase):
         test_data = []
         for filename in os.listdir(test_data_dir):
             with open(os.path.join(test_data_dir, filename)) as f:
-                test_data.append(json.load(f))
+                test_data.append(yaml.load(f))
 
         return test_data
 
     def _test_room_properties(self, test_room, expected_values):
-        self.assertEqual(int(expected_values["header"], 16),
+        self.assertEqual(expected_values["header"],
                          test_room.header,
-                         "Room {} did not import correct header.".format(expected_values["header"]))
+                         "Room {} did not import correct header.".format(hex(expected_values["header"])))
         if "name" in expected_values.keys():
             self.assertEqual(expected_values["name"],
                              test_room.name,
-                             "Room {} did not import correct name.".format(expected_values["header"]))
+                             "Room {} did not import correct name.".format(hex(expected_values["header"])))
         self.assertEqual(expected_values["width"],
                          test_room.width_screens,
-                         "Room {} did not import correct width.".format(expected_values["header"]))
+                         "Room {} did not import correct width.".format(hex(expected_values["header"])))
         self.assertEqual(expected_values["height"],
                          test_room.height_screens,
-                         "Room {} did not import correct height.".format(expected_values["header"]))
-        self.assertEqual(int(expected_values["level_data_address"], 16),
+                         "Room {} did not import correct height.".format(hex(expected_values["header"])))
+        self.assertEqual(expected_values["level_data_address"],
                          test_room.level_data_address,
-                         "Room {} did not import correct level data address.".format(expected_values["header"]))
+                         "Room {} did not import correct level data address.".format(hex(expected_values["header"])))
