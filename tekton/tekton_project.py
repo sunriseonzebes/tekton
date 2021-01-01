@@ -9,8 +9,8 @@ Classes:
 
 """
 
-import json
 import os
+import yaml
 
 from .tekton_room_importer import import_room_from_rom
 from .tekton_room_dict import TektonRoomDict
@@ -75,19 +75,19 @@ class TektonProject:
         """
         default_header_address_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                 "data",
-                                                "default_room_imports.json")
+                                                "default_room_imports.yaml")
 
         if header_address_file is None:
             header_address_file = default_header_address_file
 
         with open(header_address_file) as f:
-            room_headers = json.load(f)
+            room_headers = yaml.full_load(f)
 
         rom_contents = self.get_source_rom_contents()
 
         for room_data in room_headers:
 
-            new_room = import_room_from_rom(rom_contents, int(room_data["header"], 16))
+            new_room = import_room_from_rom(rom_contents, room_data["header"])
             new_room.name = room_data["name"]
             self.rooms.add_room(new_room)
 

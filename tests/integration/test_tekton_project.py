@@ -1,7 +1,5 @@
 from context import tekton, original_rom_path
 from tekton import tekton_project, tekton_system, tekton_room_dict, tekton_room
-import hashlib
-import json
 import yaml
 import modified_test_roms
 import os
@@ -46,11 +44,11 @@ class TestTektonProject(unittest.TestCase):
         # Custom Rooms
         test_project = tekton_project.TektonProject()
         test_project.source_rom_path = original_rom_path
-        test_json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+        test_yaml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       "fixtures",
                                       "room_imports",
-                                      "custom_room_header_import.json")
-        test_project.import_rooms(test_json_path)
+                                      "custom_room_header_import.yaml")
+        test_project.import_rooms(test_yaml_path)
         test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       "fixtures",
                                       "room_imports",
@@ -73,7 +71,7 @@ class TestTektonProject(unittest.TestCase):
         test_data = []
         for filename in os.listdir(test_data_dir):
             with open(os.path.join(test_data_dir, filename)) as f:
-                test_data.append(yaml.load(f))
+                test_data.append(yaml.full_load(f))
 
         return test_data
 
