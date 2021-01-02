@@ -1,4 +1,4 @@
-from context import tekton
+from testing_common import tekton
 from tekton import tekton_tile
 import unittest
 

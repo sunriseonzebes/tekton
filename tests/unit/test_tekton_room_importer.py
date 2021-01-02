@@ -1,4 +1,4 @@
-from context import tekton, original_rom_path
+from testing_common import tekton, original_rom_path
 from tekton import tekton_room_importer, tekton_room, tekton_system, tekton_door
 import unittest
 
@@ -36,7 +36,6 @@ class TestTektonRoomImporter(unittest.TestCase):
         ]
 
         for test_item in test_data:
-            print(hex(test_item["header"]))
             test_room = tekton_room_importer.import_room_from_rom(rom_contents, test_item["header"])
             self.assertTrue(isinstance(test_room, tekton_room.TektonRoom))
             self.assertEqual(test_item["header"],

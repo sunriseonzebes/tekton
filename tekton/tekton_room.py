@@ -71,7 +71,7 @@ class TektonRoom:
 
 
     def compressed_level_data(self):
-        """Returns compressed level data which the Super Metroid ROM can understdand.
+        """Returns compressed level data which the Super Metroid ROM can understand.
 
         Returns:
             bytes : The string of compressed level data representing the room's tiles.

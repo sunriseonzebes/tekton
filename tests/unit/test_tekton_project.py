@@ -1,4 +1,4 @@
-from context import tekton, original_rom_path
+from testing_common import tekton, original_rom_path
 from tekton import tekton_project, tekton_room_dict
 import hashlib
 import os
