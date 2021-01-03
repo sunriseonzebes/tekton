@@ -60,8 +60,13 @@ class TestTektonRoom(unittest.TestCase):
         test_room = tekton_room.TektonRoom()
         test_room.level_data_length = 155
 
-        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fixtures', 'sample_compression_data',
-                               'generic_blank_room_padded.bin'), "rb") as f:
+        test_data_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                      'fixtures',
+                                      'unit',
+                                      'sample_compression_data',
+                                      'generic_blank_room_padded.bin'
+                                      )
+        with open(test_data_file, "rb") as f:
             expected_result = f.read()
         actual_result = test_room.compressed_level_data()
 

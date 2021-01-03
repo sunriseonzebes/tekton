@@ -71,6 +71,7 @@ class TestTektonDoor(unittest.TestCase):
     def test_door_data_bytes(self):
         test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                      "fixtures",
+                                     "unit",
                                      "test_tekton_door",
                                      "test_door_data_bytes",
                                      "valid_doors"
