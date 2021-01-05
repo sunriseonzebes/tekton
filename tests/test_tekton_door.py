@@ -68,7 +68,7 @@ class TestTektonDoor(unittest.TestCase):
         with self.assertRaises(ValueError):
             test_door.exit_direction = 0x99
 
-    def test_door_data_bytes(self):
+    def test_door_data(self):
         test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                      "fixtures",
                                      "unit",
