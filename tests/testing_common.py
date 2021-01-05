@@ -20,3 +20,10 @@ def load_test_data_file(test_data_file):
         test_file_contents = yaml.full_load(f)
 
     return test_file_contents
+
+
+def int_list_to_bytes(int_list):
+    bytes_value = b''
+    for el in int_list:
+        bytes_value += el.to_bytes(1, byteorder="big")
+    return bytes_value

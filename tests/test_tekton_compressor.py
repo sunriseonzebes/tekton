@@ -1,7 +1,5 @@
-from testing_common import tekton
-from tekton import tekton_compressor
-from tekton import tekton_tile
-from tekton import tekton_room
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes
+from tekton import tekton_compressor, tekton_tile, tekton_room
 import os
 import unittest
 
@@ -68,34 +66,13 @@ class TestRepeaterShorthandBlock(unittest.TestCase):
         self.assertTrue(isinstance(test_block.tile, tekton_tile.TektonTile))
 
     def test_eq(self):
-        test_data = [
-            {
-                "left":
-                    {
-                        "tile": {"tileno": 0, "bts": 0, "h_mirror": False, "v_mirror": False},
-                        "num_reps": 15
-                    },
-                "right":
-                    {
-                        "tile": {"tileno": 0, "bts": 0, "h_mirror": False, "v_mirror": False},
-                        "num_reps": 15
-                    },
-                "expected_equal": True
-            },
-            {
-                "left":
-                    {
-                        "tile": {"tileno": 17, "bts": 0, "h_mirror": False, "v_mirror": False},
-                        "num_reps": 24
-                    },
-                "right":
-                    {
-                        "tile": {"tileno": 0, "bts": 0, "h_mirror": False, "v_mirror": False},
-                        "num_reps": 24
-                    },
-                "expected_equal": False
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_repeater_shorthand_block',
+                                     'test_eq'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             test_block_left = tekton_compressor.RepeaterShorthandBlock()
@@ -128,20 +105,13 @@ class TestRepeaterShorthandBlock(unittest.TestCase):
         self.assertEqual(test_result, expected_result)
 
     def test_compressed_data(self):
-        test_data = [
-            {"tileno": 16, "bts": 8, "h_mirror": False, "v_mirror": False, "num_reps": 14,
-             "expected_result": b'\xe8\x1b\x10\x81'},
-            {"tileno": 10, "bts": 8, "h_mirror": False, "v_mirror": True, "num_reps": 155,
-             "expected_result": b'\xe9\x35\x0a\x89'},
-            {"tileno": 35, "bts": 7, "h_mirror": True, "v_mirror": False, "num_reps": 209,
-             "expected_result": b'\xe9\xa1\x23\x75'},
-            {"tileno": 4, "bts": 2, "h_mirror": True, "v_mirror": True, "num_reps": 1,
-             "expected_result": b'\xe8\x01\x04\x2d'},
-            {"tileno": 21, "bts": 9, "h_mirror": True, "v_mirror": False, "num_reps": 256,
-             "expected_result": b'\xe9\xff\x15\x95'},
-            {"tileno": 0, "bts": 12, "h_mirror": False, "v_mirror": True, "num_reps": 257,
-             "expected_result": b'\xea\x01\x00\xc9'}
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_repeater_shorthand_block',
+                                     'test_compressed_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             test_block = tekton_compressor.RepeaterShorthandBlock()
@@ -152,6 +122,5 @@ class TestRepeaterShorthandBlock(unittest.TestCase):
             test_block.num_reps = test_item["num_reps"]
 
             test_result = test_block.compressed_data
-            expected_result = test_item["expected_result"]
-
+            expected_result = int_list_to_bytes(test_item["expected_result"])
             self.assertEqual(test_result, expected_result, "Error when compressing repeater block {}".format(test_item))

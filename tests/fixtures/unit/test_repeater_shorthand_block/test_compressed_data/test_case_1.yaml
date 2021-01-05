@@ -1,0 +1,10 @@
+tileno: 16
+bts: 8
+h_mirror: !!bool 'false'
+v_mirror: !!bool 'false'
+num_reps: 14
+expected_result:
+  - 0xe8
+  - 0x1b
+  - 0x10
+  - 0x81

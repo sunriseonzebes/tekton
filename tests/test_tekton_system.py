@@ -1,36 +1,22 @@
-from testing_common import tekton
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes
 from tekton import tekton_system
+import os
 import unittest
 
 
 class TestTektonSystem(unittest.TestCase):
     def test_lorom_to_pc(self):
-
-        test_data = [
-            {
-                "expected_result": 0x21bcd2,
-                "lorom_value": b'\xc3\xbc\xd2',
-                "byteorder": "big"
-            },
-            {
-                "expected_result": 0x21bcd2,
-                "lorom_value": b'\xd2\xbc\xc3',
-                "byteorder": "little"
-            },
-            {
-                "expected_result": 0x231f4b,
-                "lorom_value": b'\xc6\x9f\x4b',
-                "byteorder": "big"
-            },
-            {
-                "expected_result": 0x231f4b,
-                "lorom_value": b'\xc6\x1f\x4b',
-                "byteorder": "big"
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_system',
+                                     'test_lorom_to_pc'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
-            actual_result = tekton_system.lorom_to_pc(test_item["lorom_value"], byteorder=test_item["byteorder"])
+            test_lorom_value = int_list_to_bytes(test_item["lorom_value"])
+            actual_result = tekton_system.lorom_to_pc(test_lorom_value, byteorder=test_item["byteorder"])
             self.assertEqual(test_item["expected_result"], actual_result, "LoROM to PC returned incorrect value!")
 
         with self.assertRaises(TypeError):

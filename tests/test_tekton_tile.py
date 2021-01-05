@@ -1,5 +1,6 @@
-from testing_common import tekton
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes
 from tekton import tekton_tile
+import os
 import unittest
 
 class TestTektonTile(unittest.TestCase):
@@ -20,52 +21,26 @@ class TestTektonTile(unittest.TestCase):
         self.assertEqual(test_result, expected_result, "Tekton Tile repr function incorrect!")
 
     def test_eq(self):
-        test_data = [
-            {
-                "left":
-                     {"tileno": 0, "bts": 0, "h_mirror": False, "v_mirror": False},
-                "right":
-                    {"tileno": 0, "bts": 0, "h_mirror": False, "v_mirror": False}
-            },
-            {
-                "left":
-                    {"tileno": 15, "bts": 3, "h_mirror": True, "v_mirror": False},
-                "right":
-                    {"tileno": 15, "bts": 3, "h_mirror": True, "v_mirror": False}
-            },
-            {
-                "left":
-                    {"tileno": 31, "bts": 8, "h_mirror": False, "v_mirror": True},
-                "right":
-                    {"tileno": 31, "bts": 8, "h_mirror": False, "v_mirror": True}
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_tile',
+                                     'test_eq'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             test_tile_left, test_tile_right = self._populate_bin_op_operands(test_item)
             self.assertEqual(test_tile_left, test_tile_right)
 
     def test_ne(self):
-        test_data = [
-            {
-                "left":
-                    {"tileno": 10, "bts": 0, "h_mirror": False, "v_mirror": False},
-                "right":
-                    {"tileno": 0, "bts": 0, "h_mirror": False, "v_mirror": False}
-            },
-            {
-                "left":
-                    {"tileno": 6, "bts": 4, "h_mirror": False, "v_mirror": True},
-                "right":
-                    {"tileno": 6, "bts": 5, "h_mirror": False, "v_mirror": True}
-            },
-            {
-                "left":
-                    {"tileno": 11, "bts": 8, "h_mirror": False, "v_mirror": True},
-                "right":
-                    {"tileno": 11, "bts": 8, "h_mirror": True, "v_mirror": True}
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_tile',
+                                     'test_ne'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             test_tile_left, test_tile_right = self._populate_bin_op_operands(test_item)
@@ -75,20 +50,20 @@ class TestTektonTile(unittest.TestCase):
         self.assertNotEqual(test_tile, "Test string")
 
     def test_bts_byte(self):
-        test_data = [
-            {"bts": 8, "h": False, "v": False, "result": (0b10000001).to_bytes(1, byteorder="big")},
-            {"bts": 2, "h": False, "v": False, "result": (0b00100001).to_bytes(1, byteorder="big")},
-            {"bts": 8, "h": True, "v": False, "result": (0b10000101).to_bytes(1, byteorder="big")},
-            {"bts": 4, "h": False, "v": True, "result": (0b01001001).to_bytes(1, byteorder="big")},
-            {"bts": 5, "h": True, "v": True, "result": (0b01011101).to_bytes(1, byteorder="big")}
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_tile',
+                                     'test_bts_byte'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_case in test_data:
             test_tile = tekton_tile.TektonTile()
             test_tile.bts = test_case["bts"]
             test_tile.h_mirror = test_case["h"]
             test_tile.v_mirror = test_case["v"]
-            expected_result = test_case["result"]
+            expected_result = int_list_to_bytes(test_case["expected_result"])
             self.assertEqual(test_tile.bts_tile_mirror_byte, expected_result, "Test Tile BTS Byte did not match expected result.")
 
     def test_tileno_byte(self):

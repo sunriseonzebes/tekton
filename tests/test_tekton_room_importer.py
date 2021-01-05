@@ -1,5 +1,6 @@
-from testing_common import tekton, original_rom_path
+from testing_common import tekton, original_rom_path, load_test_data_dir
 from tekton import tekton_room_importer, tekton_room, tekton_system, tekton_door
+import os
 import unittest
 
 
@@ -7,33 +8,13 @@ class TestTektonRoomImporter(unittest.TestCase):
     def test_import_room_from_rom(self):
         with open(original_rom_path, "rb") as f:
             rom_contents = f.read()
-
-        test_data = [
-            {
-                "header": 0x795d4,  # Crateria Tube
-                "width": 1,
-                "height": 1,
-                "level_data_address": 0x21bcd2
-            },
-            {
-                "header": 0x799bd,  # Green Pirates Shaft
-                "width": 1,
-                "height": 7,
-                "level_data_address": 0x21ee60
-            },
-            {
-                "header": 0x7a322,  # Red Tower Elevator Room
-                "width": 3,
-                "height": 8,
-                "level_data_address": 0x231f4b
-            },
-            {
-                "header": 0x792fd,  # Parlor and Alcatraz
-                "width": 5,
-                "height": 5,
-                "level_data_address": 0x215bc4
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room_importer',
+                                     'test_import_room_from_rom'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             test_room = tekton_room_importer.import_room_from_rom(rom_contents, test_item["header"])
@@ -59,23 +40,13 @@ class TestTektonRoomImporter(unittest.TestCase):
     def test_get_pointer_addresses(self):
         with open(original_rom_path, "rb") as f:
             rom_contents = f.read()
-
-        test_data = [
-            {
-                "doors": 0x795fb,
-                "events_pointers": [],
-                "events_room_states": [],
-                "header": 0x795d4,  # Crateria Tube
-                "standard": 0x795df
-            },
-            {
-                "doors": 0x79362,
-                "events_pointers": [0x79308, 0x7930d],
-                "events_room_states": [0x7932e, 0x79348],
-                "header": 0x792fd,  # Parlor and Alcatraz
-                "standard": 0x79312
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room_importer',
+                                     'test_get_pointer_addresses'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for expected_result in test_data:
             actual_result = tekton_room_importer._get_data_addresses(rom_contents, expected_result["header"])
@@ -86,14 +57,13 @@ class TestTektonRoomImporter(unittest.TestCase):
     def test_get_door_data_addresses(self):
         with open(original_rom_path, "rb") as f:
             rom_contents = f.read()
-
-        test_data = [
-            {
-                "room_header_address": 0x795d4,  # Crateria Tube
-                "door_addresses": [0x18ac6, 0x18ad2],
-                "num_doors": 2
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room_importer',
+                                     'test_get_door_data_addresses'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             actual_result = tekton_room_importer._get_door_data_addresses(rom_contents,
@@ -107,57 +77,21 @@ class TestTektonRoomImporter(unittest.TestCase):
     def test_import_door(self):
         with open(original_rom_path, "rb") as f:
             rom_contents = f.read()
-
-        test_data = [
-            {
-                "door_address": 0x18ac6,  # Door 00 in Crateria Tube (795d4)
-                "expected_results": {
-                    "room_id": 0x791f8,
-                    "bit_flag": tekton_system.DoorBitFlag.DOOR_SAME_AREA,
-                    "direction": tekton_system.DoorExitDirection.LEFT,
-                    "door_cap_x": 0x8e,
-                    "door_cap_y": 0x46,
-                    "screen_x": 0x08,
-                    "screen_y": 0x04,
-                    "distance_to_spawn": 0x8000,
-                    "asm_pointer": 0x0000
-                }
-            },
-            {
-                "door_address": 0x189be,  # Door 00 in Crateria Save Room (793d5)
-                "expected_results": {
-                    "room_id": 0x792fd,
-                    "bit_flag": tekton_system.DoorBitFlag.DOOR_SAME_AREA,
-                    "direction": tekton_system.DoorExitDirection.RIGHT,
-                    "door_cap_x": 0x11,
-                    "door_cap_y": 0x26,
-                    "screen_x": 0x01,
-                    "screen_y": 0x02,
-                    "distance_to_spawn": 0x8000,
-                    "asm_pointer": 0xb981
-                }
-            },
-            {
-                "door_address": 0x1911a,  # Door 01 in Below Spazer (7a408)
-                "expected_results": {
-                    "room_id": 0x7cf54,
-                    "bit_flag": tekton_system.DoorBitFlag.DOOR_AREA_CHANGE,
-                    "direction": tekton_system.DoorExitDirection.RIGHT,
-                    "door_cap_x": 0x01,
-                    "door_cap_y": 0x06,
-                    "screen_x": 0x00,
-                    "screen_y": 0x00,
-                    "distance_to_spawn": 0x8000,
-                    "asm_pointer": 0x0000
-                }
-            }
-        ]
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room_importer',
+                                     'test_import_door'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
             test_door = tekton_room_importer.import_door(rom_contents, test_item["door_address"])
             self.assertTrue(isinstance(test_door, tekton_door.TektonDoor), msg="TektonDoor object not instantiated!")
             self.assertEqual(test_item["door_address"], test_door.data_address, "Door has incorrect data address!")
             expected_results = test_item["expected_results"]
+            expected_results["bit_flag"] = tekton_system.DoorBitFlag[expected_results["bit_flag"]]
+            expected_results["direction"] = tekton_system.DoorExitDirection[expected_results["direction"]]
             self.assertEqual(expected_results["room_id"], test_door.target_room_id, "Door has wrong target room id!")
             self.assertEqual(expected_results["bit_flag"], test_door.bit_flag, "Door has wrong bit flag!")
             self.assertEqual(expected_results["direction"], test_door.exit_direction, "Door has wrong exit direction!")

@@ -1,0 +1,6 @@
+expected_result: 0x21bcd2
+lorom_value:
+  - 0xd2
+  - 0xbc
+  - 0xc3
+byteorder: "little"

@@ -1,0 +1,10 @@
+left:
+  tileno: 0
+  bts: 0
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'false'
+right:
+  tileno: 0
+  bts: 0
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'false'

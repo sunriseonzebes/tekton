@@ -1,0 +1,5 @@
+bts: 4
+h: !!bool 'false'
+v: !!bool 'true'
+expected_result:
+  - 0b01001001

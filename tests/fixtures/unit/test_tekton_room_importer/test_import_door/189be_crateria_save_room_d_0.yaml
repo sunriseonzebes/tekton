@@ -1,0 +1,11 @@
+door_address: 0x189be
+expected_results:
+  room_id: 0x792fd
+  bit_flag: "DOOR_SAME_AREA"
+  direction: "RIGHT"
+  door_cap_x: 0x11
+  door_cap_y: 0x26
+  screen_x: 0x01
+  screen_y: 0x02
+  distance_to_spawn: 0x8000
+  asm_pointer: 0xb981
