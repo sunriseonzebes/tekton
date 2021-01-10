@@ -15,6 +15,10 @@ class DoorBitFlag(Enum):
     DOOR_AREA_CHANGE = 0x40
     ELEVATOR_SAME_AREA = 0x80
     ELEVATOR_AREA_CHANGE = 0xc0
+    # TODO: Rename these when I figure out what they're for
+    ELEVATOR_AREA_CHANGE_2 = 0Xd0
+    ELEVATOR_AREA_CHANGE_3 = 0Xe0
+    ELEVATOR_AREA_CHANGE_4 = 0Xf0
 
 class DoorExitDirection(Enum):
     RIGHT_NO_DOOR_CLOSE = 0x00

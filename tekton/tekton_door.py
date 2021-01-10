@@ -1,7 +1,25 @@
 from .tekton_system import DoorBitFlag, DoorExitDirection
 
 
-class TektonDoor:
+class TektonDoor:  # TODO: Probably make a superclass of Door and Launchpad
+    """An object representing a single door in Super Metroid, with many modifiable attributes.
+
+    Attributes:
+        data_address (int): The PC address where the door data for this door can be found in the ROM.
+        target_room_id (int): The PC address of the room header for the room that this door leads to.
+        target_door_cap_col (int): X coord, in tiles, in the target room of where this door's cap should be drawn after
+            Samus passes through this door.
+        target_door_cap_col (int): Y coord, in tiles, in the target room of where this door's cap should be drawn after
+            Samus passes through this door.
+        target_room_screen_h (int): Screen number X coord (starts at 0) in the target room where Samus should appear
+            after passing through this door.
+        target_room_screen_v (int): Screen number Y coord (starts at 0) in the target room where Samus should appear
+            after passing through this door.
+        distance_to_spawn (int): How far from the door Samus should appear after passing through it.
+        asm_pointer (int): PC address of special instructions to execute after Samus passes through this door.
+
+    """
+
     def __init__(self):
         self.data_address = 0x00
         self.target_room_id = 0x00
@@ -100,3 +118,31 @@ class TektonDoor:
         door_string += self.asm_pointer.to_bytes(2, byteorder="little")
 
         return door_string
+
+
+class TektonElevatorLaunchpad:
+    """Implements a special kind of door which occupies a door slot, but serves as a platform where Samus can stand to
+    activate an elevator. Has no configurable attributes.
+
+    Atrtibutes:
+        data_address (int): The PC address where the door data for this door can be found in the ROM.
+        door_data (bytes): The meaning of the door data is not currently understood, so the bytes are copied exactly.
+
+    """
+
+    def __init__(self):
+        self.data_address = 0x00
+        self._door_data = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
+    @property
+    def door_data(self):
+        """bytes: Twelve-byte sequence of raw door data from the ROM."""
+        return self._door_data
+
+    @door_data.setter
+    def door_data(self, new_value):
+        if not isinstance(new_value, bytes):
+            raise TypeError("Elevator Launchpad door data must be of type bytes!")
+        if len(new_value) != 12:
+            raise ValueError("Elevator Launchpad door data must be twelve bytes long!")
+        self._door_data = new_value

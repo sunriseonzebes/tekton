@@ -100,3 +100,30 @@ class TestTektonDoor(unittest.TestCase):
                              )
                              )
 
+class TestTektonElevatorLaunchpad(unittest.TestCase):
+    def test_init(self):
+        test_lp = tekton_door.TektonElevatorLaunchpad()
+        self.assertTrue(isinstance(test_lp, tekton_door.TektonElevatorLaunchpad))
+        self.assertEqual(0x00, test_lp.data_address, "Launchpad did not initialize with the correct data address!")
+        self.assertEqual(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+                         test_lp._door_data,
+                         "Launchpad did not initialize with the correct door data!")
+
+    def test_door_data(self):
+        test_lp = tekton_door.TektonElevatorLaunchpad()
+        test_bytes_value = b'\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb'
+        test_lp.door_data = test_bytes_value
+        self.assertEqual(test_bytes_value,
+                         test_lp._door_data,
+                         "Elevator Launchpad did not had door data set correctly!")
+
+        with self.assertRaises(TypeError):
+            test_lp.door_data = 0x5699ab
+        with self.assertRaises(TypeError):
+            test_lp.door_data = "test string"
+        with self.assertRaises(ValueError):
+            test_lp.door_data = b''
+        with self.assertRaises(ValueError):
+            test_lp.door_data = b'\x00\xff'
+        with self.assertRaises(ValueError):
+            test_lp.door_data = b'\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff'

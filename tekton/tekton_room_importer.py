@@ -10,7 +10,7 @@ Functions:
 
 from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc, DoorBitFlag, DoorExitDirection
-from .tekton_door import TektonDoor
+from .tekton_door import TektonDoor, TektonElevatorLaunchpad
 
 def import_room_from_rom(rom_contents, room_header_address):
     """Reads a room's header from ROM contents and returns a TektonRoom object populated with that room's attributes.
@@ -40,7 +40,15 @@ def import_room_from_rom(rom_contents, room_header_address):
     level_lorom_address = rom_contents[pointers["standard"]+2:pointers["standard"]+5]
     new_room.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
 
+    for door_data_address in _get_door_data_addresses(rom_contents, room_header_address):
+        try:
+            new_room.doors.append(import_door(rom_contents, door_data_address))
+        except Exception as e:
+            print(hex(room_header_address), e)
+            pass
+
     return new_room
+
 
 def import_door(rom_contents, door_info_address):
     """Reads door data from ROM contents and returns a TektonDoor object populated with the door's attributes.
@@ -52,7 +60,7 @@ def import_door(rom_contents, door_info_address):
         door_info_address (int): The PC address in rom_contents where the door data begins
 
     Returns:
-        TektonDoor : Object representing all the attributes of the specified door.
+        Mixed : TektonDoor or TektonElevatorLaunchpad object representing all the attributes of the specified door.
 
     """
 
@@ -62,45 +70,12 @@ def import_door(rom_contents, door_info_address):
     if door_info_address < 0:
         raise ValueError("door_info_address must be a positive integer.")
 
-    new_door = TektonDoor()
-    new_door.data_address = door_info_address
+    door_target_room_id_bytes = rom_contents[door_info_address:door_info_address + 2]
 
-    target_room_id_address = rom_contents[door_info_address:door_info_address+2]
-    target_room_id_address += b'\x8f'  # Super Metroid assumes all target rooms will have headers in bank $8F.
+    if door_target_room_id_bytes == b'\x00\x00':  # Special "doors" with no targets are used for elevators to rest on
+        return _import_elevator_launchpad(rom_contents, door_info_address)
 
-    new_door.target_room_id = lorom_to_pc(target_room_id_address, byteorder="little")
-
-    new_door.bit_flag = DoorBitFlag(
-        int.from_bytes(rom_contents[door_info_address+2:door_info_address+3], byteorder="little")
-    )
-    new_door.exit_direction = DoorExitDirection(
-        int.from_bytes(rom_contents[door_info_address+3:door_info_address+4], byteorder="little")
-    )
-    new_door.target_door_cap_col = int.from_bytes(
-        rom_contents[door_info_address+4:door_info_address+5],
-        byteorder="little"
-    )
-    new_door.target_door_cap_row = int.from_bytes(
-        rom_contents[door_info_address+5:door_info_address+6],
-        byteorder="little"
-    )
-    new_door.target_room_screen_h = int.from_bytes(
-        rom_contents[door_info_address+6:door_info_address+7],
-        byteorder="little"
-    )
-    new_door.target_room_screen_v = int.from_bytes(
-        rom_contents[door_info_address+7:door_info_address+8],
-        byteorder="little"
-    )
-    new_door.distance_to_spawn = int.from_bytes(
-        rom_contents[door_info_address+8:door_info_address+10],
-        byteorder="little"
-    )
-    new_door.asm_pointer = int.from_bytes(
-        rom_contents[door_info_address+10:door_info_address+12],
-        byteorder="little"
-    )
-    return new_door
+    return _import_simple_door(rom_contents, door_info_address)
 
 
 def _get_data_addresses(rom_contents, room_header_address):
@@ -165,6 +140,53 @@ def _get_door_data_addresses(rom_contents, room_header_address):
     return door_addresses
 
 
+def _get_door_target_room_id(rom_contents, door_info_address):
+    target_room_id_address = rom_contents[door_info_address:door_info_address + 2]
+    target_room_id_address += b'\x8f'  # Super Metroid assumes all target rooms will have headers in bank $8F.
+    return lorom_to_pc(target_room_id_address, byteorder="little")
 
 
+def _import_simple_door(rom_contents, door_info_address):
+    new_door = TektonDoor()
+    new_door.data_address = door_info_address
 
+    door_target_room_id = _get_door_target_room_id(rom_contents, door_info_address)
+    new_door.target_room_id = door_target_room_id
+
+    new_door.bit_flag = DoorBitFlag(
+        int.from_bytes(rom_contents[door_info_address+2:door_info_address+3], byteorder="little")
+    )
+    new_door.exit_direction = DoorExitDirection(
+        int.from_bytes(rom_contents[door_info_address+3:door_info_address+4], byteorder="little")
+    )
+    new_door.target_door_cap_col = int.from_bytes(
+        rom_contents[door_info_address+4:door_info_address+5],
+        byteorder="little"
+    )
+    new_door.target_door_cap_row = int.from_bytes(
+        rom_contents[door_info_address+5:door_info_address+6],
+        byteorder="little"
+    )
+    new_door.target_room_screen_h = int.from_bytes(
+        rom_contents[door_info_address+6:door_info_address+7],
+        byteorder="little"
+    )
+    new_door.target_room_screen_v = int.from_bytes(
+        rom_contents[door_info_address+7:door_info_address+8],
+        byteorder="little"
+    )
+    new_door.distance_to_spawn = int.from_bytes(
+        rom_contents[door_info_address+8:door_info_address+10],
+        byteorder="little"
+    )
+    new_door.asm_pointer = int.from_bytes(
+        rom_contents[door_info_address+10:door_info_address+12],
+        byteorder="little"
+    )
+    return new_door
+
+def _import_elevator_launchpad(rom_contents, door_info_address):
+    new_launchpad = TektonElevatorLaunchpad()
+    new_launchpad.data_address = door_info_address
+    new_launchpad.door_data = rom_contents[door_info_address:door_info_address + 12]
+    return new_launchpad

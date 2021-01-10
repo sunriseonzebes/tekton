@@ -1,5 +1,6 @@
 door_address: 0x1911a
 expected_results:
+  type: "tekton.tekton_door.TektonDoor"
   room_id: 0x7cf54
   bit_flag: "DOOR_AREA_CHANGE"
   direction: "RIGHT"

@@ -1,5 +1,6 @@
 door_address: 0x18ac6
 expected_results:
+  type: "tekton.tekton_door.TektonDoor"
   room_id: 0x791f8
   bit_flag: "DOOR_SAME_AREA"
   direction: "LEFT"

@@ -1,0 +1,16 @@
+door_address: 0x188fc
+expected_results:
+  type: "tekton.tekton_door.TektonElevatorLaunchpad"
+  door_data:
+    - 0x00
+    - 0x00
+    - 0xf8
+    - 0x91
+    - 0x00
+    - 0x03
+    - 0x00
+    - 0x00
+    - 0x04
+    - 0x00
+    - 0x00
+    - 0x80
