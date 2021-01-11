@@ -8,28 +8,6 @@ Functions:
 
 """
 
-from enum import Enum
-
-class DoorBitFlag(Enum):
-    DOOR_SAME_AREA = 0x00
-    DOOR_AREA_CHANGE = 0x40
-    ELEVATOR_SAME_AREA = 0x80
-    ELEVATOR_AREA_CHANGE = 0xc0
-    # TODO: Rename these when I figure out what they're for
-    ELEVATOR_AREA_CHANGE_2 = 0Xd0
-    ELEVATOR_AREA_CHANGE_3 = 0Xe0
-    ELEVATOR_AREA_CHANGE_4 = 0Xf0
-
-class DoorExitDirection(Enum):
-    RIGHT_NO_DOOR_CLOSE = 0x00
-    LEFT_NO_DOOR_CLOSE = 0x01
-    DOWN_NO_DOOR_CLOSE = 0x02
-    UP_NO_DOOR_CLOSE = 0x03
-    RIGHT = 0x04
-    LEFT = 0x05
-    DOWN = 0x06
-    UP = 0x07
-
 
 def lorom_to_pc(lorom_string, *, byteorder):
     """Converts SNES LoROM addresses into normal PC hex addresses.

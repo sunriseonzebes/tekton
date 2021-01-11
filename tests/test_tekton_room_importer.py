@@ -1,3 +1,4 @@
+import tekton.tekton_door
 from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
 from tekton import tekton_room_importer, tekton_room, tekton_system, tekton_door
 from pydoc import locate
@@ -115,8 +116,8 @@ class TestTektonRoomImporter(unittest.TestCase):
                             ))
             self.assertEqual(test_item["door_address"], test_door.data_address, "Door has incorrect data address!")
             if isinstance(test_door, tekton_door.TektonDoor):
-                expected_results["bit_flag"] = tekton_system.DoorBitFlag[expected_results["bit_flag"]]
-                expected_results["direction"] = tekton_system.DoorExitDirection[expected_results["direction"]]
+                expected_results["bit_flag"] = tekton_door.DoorBitFlag[expected_results["bit_flag"]]
+                expected_results["direction"] = tekton_door.DoorExitDirection[expected_results["direction"]]
                 self.assertEqual(expected_results["room_id"], test_door.target_room_id, "Door has wrong target room id!")
                 self.assertEqual(expected_results["bit_flag"], test_door.bit_flag, "Door has wrong bit flag!")
                 self.assertEqual(expected_results["direction"], test_door.exit_direction, "Door has wrong exit direction!")

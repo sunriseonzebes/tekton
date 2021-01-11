@@ -12,10 +12,10 @@ class TestTektonDoor(unittest.TestCase):
         self.assertEqual(test_door.data_address, 0x00, "Door data address did not initialize correctly!")
         self.assertEqual(test_door.target_room_id, 0x00, "Door Target Room ID address did not initialize correctly!")
         self.assertEqual(test_door.bit_flag,
-                         tekton_system.DoorBitFlag.DOOR_SAME_AREA,
+                         tekton_door.DoorBitFlag.DOOR_SAME_AREA,
                          "Door bit flag did not initialize correctly!")
         self.assertEqual(test_door.exit_direction,
-                         tekton_system.DoorExitDirection.RIGHT_NO_DOOR_CLOSE,
+                         tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE,
                          "Door exit direction did not initialize correctly!")
         self.assertEqual(test_door.target_door_cap_col,
                          0x00,
@@ -35,12 +35,12 @@ class TestTektonDoor(unittest.TestCase):
     def test_bit_flag_property(self):
         test_door = tekton_door.TektonDoor()
 
-        test_door.bit_flag = tekton_system.DoorBitFlag.DOOR_SAME_AREA
-        expected_value = tekton_system.DoorBitFlag.DOOR_SAME_AREA
+        test_door.bit_flag = tekton_door.DoorBitFlag.DOOR_SAME_AREA
+        expected_value = tekton_door.DoorBitFlag.DOOR_SAME_AREA
         self.assertEqual(expected_value, test_door.bit_flag, "Door bit flag was set incorrectly!")
 
         test_door.bit_flag = 0x00
-        expected_value = tekton_system.DoorBitFlag.DOOR_SAME_AREA
+        expected_value = tekton_door.DoorBitFlag.DOOR_SAME_AREA
         self.assertEqual(expected_value, test_door.bit_flag, "Door bit flag was set incorrectly!")
 
         with self.assertRaises(TypeError):
@@ -53,12 +53,12 @@ class TestTektonDoor(unittest.TestCase):
     def test_exit_direction_property(self):
         test_door = tekton_door.TektonDoor()
 
-        test_door.exit_direction = tekton_system.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
-        expected_value = tekton_system.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
+        test_door.exit_direction = tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
+        expected_value = tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
         self.assertEqual(expected_value, test_door.exit_direction)
 
         test_door.exit_direction = 0x00
-        expected_value = tekton_system.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
+        expected_value = tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
         self.assertEqual(expected_value, test_door.exit_direction)
 
         with self.assertRaises(TypeError):

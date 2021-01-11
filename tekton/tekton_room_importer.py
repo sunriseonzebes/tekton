@@ -9,8 +9,9 @@ Functions:
 """
 
 from .tekton_room import TektonRoom
-from .tekton_system import lorom_to_pc, DoorBitFlag, DoorExitDirection
-from .tekton_door import TektonDoor, TektonElevatorLaunchpad
+from .tekton_system import lorom_to_pc
+from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorExitDirection
+
 
 def import_room_from_rom(rom_contents, room_header_address):
     """Reads a room's header from ROM contents and returns a TektonRoom object populated with that room's attributes.
