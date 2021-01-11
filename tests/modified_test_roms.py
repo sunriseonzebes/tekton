@@ -1,34 +1,36 @@
-from testing_common import tekton
-from tekton import tekton_project, tekton_system
-import json
-import os
-
-deltas_list = {
-    "blank_room_79d5a": [
-        {
-            "address": 0x21bcd2,
-            "bytes": b'\x01\x00\x02\xe9\xff\x00\x01\xe4\xff\x00',
-            "pad": 155
-        }
-    ]
-}
+from testing_common import tekton, original_rom_path
+from tekton import tekton_system
 
 
-def get_modified_rom_contents(delta_name):
-    original_rom_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fixtures', 'original_rom.sfc')
-    test_project = tekton_project.TektonProject()
-    test_project.source_rom_path = original_rom_path
-    modified_rom_contents = test_project.get_source_rom_contents()
+class ROMDelta:
+    def __init__(self, new_address, new_bytes, new_pad=0, new_pad_byte=b'\xff'):
+        if not isinstance(new_address, int):
+            raise TypeError("Address must be int! You can use hex notation, e.g. 0x795d4")
+        if not isinstance(new_bytes, bytes):
+            raise TypeError("Bytes must be of type bytes!")
+        if not isinstance(new_pad, int):
+            raise TypeError("Pad must be of type int!")
+        if not isinstance(new_pad_byte, bytes):
+            raise TypeError("Pad byte must be of type bytes!")
+        if not len(new_pad_byte) == 1:
+            raise ValueError("Pad byte must be a single byte!")
 
-    deltas = deltas_list[delta_name]
+        self.address = new_address
+        self.bytes = new_bytes
+        self.pad = new_pad
+        self.pad_byte = new_pad_byte
+
+
+def get_modified_rom_contents(deltas):
+    with open(original_rom_path, "rb") as f:
+        modified_rom_contents = f.read()
 
     # Apply deltas one at a time
     for delta in deltas:
-        insert_string = delta["bytes"]
-        if "pad" in delta.keys():
-            while len(insert_string) < delta["pad"]:
-                insert_string += b'\xff'
+        insert_string = delta.bytes
+        while len(insert_string) < delta.pad:
+            insert_string += delta.pad_byte
         modified_rom_contents = tekton_system.overwrite_bytes_at_index(modified_rom_contents, insert_string,
-                                                                       delta["address"])
+                                                                       delta.address)
 
     return modified_rom_contents

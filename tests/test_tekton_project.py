@@ -1,5 +1,5 @@
-from testing_common import tekton, original_rom_path
-from tekton import tekton_project, tekton_room_dict, tekton_room
+from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
+from tekton import tekton_project, tekton_room_dict, tekton_room, tekton_door
 import hashlib
 import modified_test_roms
 import os
@@ -39,25 +39,59 @@ class TestTektonProjectUnit(unittest.TestCase):
 
 class TestTektonProjectIntegration(unittest.TestCase):
     def test_write_modified_rom(self):
-        # Init Test Project
-        test_proj = tekton_project.TektonProject()
-        test_proj.source_rom_path = original_rom_path
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'integration',
+                                     'test_tekton_project',
+                                     'test_write_modified_contents'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
-        # Create a new Room 79D5A and add it to the project
-        test_new_79d5a = tekton_room.TektonRoom(1, 1)
-        test_new_79d5a.level_data_address = 0x21bcd2
-        test_new_79d5a.level_data_length = 155
-        test_proj.rooms.add_room(test_new_79d5a)
+        for test_item in test_data:
+            test_proj = tekton_project.TektonProject()
+            test_proj.source_rom_path = original_rom_path
 
-        # Collect results
-        expected_result = modified_test_roms.get_modified_rom_contents("blank_room_79d5a")
-        actual_result = test_proj.get_modified_rom_contents()
+            for test_room_data in test_item["rooms"]:
+                new_room = tekton_room.TektonRoom(test_room_data["width"], test_room_data["height"])
+                new_room.header = test_room_data["header"]
+                new_room.level_data_address = test_room_data["level_data_address"]
+                if "level_data_length" in test_room_data.keys():
+                    new_room.level_data_length = test_room_data["level_data_length"]
+                if "doors" in test_room_data.keys():
+                    for test_door_data in test_room_data["doors"]:
+                        new_door = tekton_door.TektonDoor()
+                        new_door.data_address = test_door_data["data_address"]
+                        new_door.target_room_id = test_door_data["target_room_id"]
+                        new_door.bit_flag = test_door_data["bit_flag"]
+                        new_door.exit_direction = test_door_data["exit_direction"]
+                        new_door.target_door_cap_col = test_door_data["target_door_cap_col"]
+                        new_door.target_door_cap_row = test_door_data["target_door_cap_row"]
+                        new_door.target_room_screen_h = test_door_data["target_room_screen_h"]
+                        new_door.target_room_screen_v = test_door_data["target_room_screen_v"]
+                        new_door.distance_to_spawn = test_door_data["distance_to_spawn"]
+                        new_door.asm_pointer = test_door_data["asm_pointer"]
+                        new_room.doors.append(new_door)
+                test_proj.rooms.add_room(new_room)
 
-        output_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "fixtures", "modified_rom.sfc")
-        with open(output_path, "wb") as out_file:
-            out_file.write(actual_result)
+            deltas = []
+            for delta in test_item["deltas"]:
+                new_delta = modified_test_roms.ROMDelta(delta["address"],
+                                                        int_list_to_bytes(delta["bytes"]))
+                if "pad" in delta.keys():
+                    new_delta.pad = delta["pad"]
+                if "pad_byte" in delta.keys():
+                    new_delta.pad = int_list_to_bytes(delta["pad_byte"])
+                deltas.append(new_delta)
 
-        self.assertEqual(expected_result, actual_result, "Output ROM did not match expected result!")
+            # Collect results
+            expected_result = modified_test_roms.get_modified_rom_contents(deltas)
+            actual_result = test_proj.get_modified_rom_contents()
+
+            output_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "fixtures", "modified_rom.sfc")
+            with open(output_path, "wb") as out_file:
+                out_file.write(actual_result)
+
+            self.assertEqual(expected_result, actual_result, "Output ROM did not match expected result!")
 
     def test_import_rooms(self):
         # Default Rooms
