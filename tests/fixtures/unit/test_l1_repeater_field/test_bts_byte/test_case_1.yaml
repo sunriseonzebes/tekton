@@ -1,0 +1,5 @@
+bts_type: 8
+h: !!bool 'false'
+v: !!bool 'false'
+expected_result:
+  - 0b10000001

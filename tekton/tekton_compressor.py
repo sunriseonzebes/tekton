@@ -13,7 +13,7 @@ Functions:
 from .tekton_tile import TektonTile
 
 
-class RepeaterShorthandBlock:
+class L1RepeaterField:
     """An object representing a single tile repeated a specific number of times in the level data.
 
     Super Metroid employs a number of "shorthand" statements to compress level data. One of the shorthands is to
@@ -35,7 +35,10 @@ class RepeaterShorthandBlock:
 
     def __init__(self):
         self.num_reps = 0
-        self.tile = TektonTile()
+        self.bts_type = 0x00
+        self.tileno = 0x00
+        self.h_mirror = False
+        self.v_mirror = False
 
     def __repr__(self):
         """Returns a textual representation of the RepeaterBlock.
@@ -46,8 +49,8 @@ class RepeaterShorthandBlock:
         """
 
         template_string = "Repeater Block:\nRepetitions: {num_reps}\n Tile: {tile_repr}"
-        return template_string.format(num_reps = self.num_reps,
-                                      tile_repr = self.tile)
+        return template_string.format(num_reps=self.num_reps,
+                                      tile_repr=self.tile)
 
     def __eq__(self, other):
         """Determines whether two repeater blocks specify identical TektonTiles and number of repetitions.
@@ -63,20 +66,39 @@ class RepeaterShorthandBlock:
 
         """
 
-        if not isinstance(other, RepeaterShorthandBlock):
+        if not isinstance(other, L1RepeaterField):
             return False
         return self.num_reps == other.num_reps and \
-               self.tile == other.tile
+               self.tileno == other.tileno and \
+               self.bts_type == other.bts_type and \
+               self.h_mirror == other.h_mirror and \
+               self.v_mirror == other.v_mirror
+
+    @property
+    def bts_tile_mirror_byte(self):
+        """bytes: One byte representing tile mirror and bts data, understandable by Super Metroid's level loader."""
+        byte_value = 0b00000001
+        if self.h_mirror:
+            byte_value += 0b100
+        if self.v_mirror:
+            byte_value += 0b1000
+        byte_value += (self.bts_type * 0b10000)
+        return byte_value.to_bytes(1, byteorder="big")
+
+    @property
+    def tile_byte(self):
+        """bytes: One byte representing the tile number of this tile."""
+        return self.tileno.to_bytes(1, byteorder="big")
 
     @property
     def compressed_data(self):
         """str: The string of bytes representing the repeated tiles in the compressed level data."""
         repeater_header = int.from_bytes(b'\xe8\x01', byteorder="big")
         repeater_header += (
-                                       self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
+                                   self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
         return_string = repeater_header.to_bytes(2, byteorder="big")
-        return_string += self.tile.tile_byte
-        return_string += self.tile.bts_tile_mirror_byte
+        return_string += self.tile_byte
+        return_string += self.bts_tile_mirror_byte
         return return_string
 
 
@@ -97,31 +119,34 @@ def _find_blocks_for_compression(level_data):
 
     """
 
-    block_list = []
+    field_list = []
     counter = 1
     max_tiles = level_data.width * level_data.height
 
     last_tile_change = 0
-    first_tile_in_block = level_data[0][0]
+    first_tile_in_field = level_data[0][0]
 
     while counter < max_tiles:
         current_tile = level_data[counter % level_data.width][counter // level_data.height]
-        if current_tile != first_tile_in_block:
-            new_block = RepeaterShorthandBlock()
-            new_block.tile = first_tile_in_block.copy()
-            new_block.num_reps = counter - last_tile_change
-            block_list.append(new_block)
+        if current_tile != first_tile_in_field:
+            new_field = L1RepeaterField()
+            new_field.tileno = first_tile_in_field.tileno
+            new_field.bts_type = first_tile_in_field.bts
+            new_field.h_mirror = first_tile_in_field.h_mirror
+            new_field.v_mirror = first_tile_in_field.v_mirror
+            new_field.num_reps = counter - last_tile_change
+            field_list.append(new_field)
             last_tile_change = counter
-            first_tile_in_block = current_tile
+            first_tile_in_field = current_tile
         counter += 1
 
     # Write the last block
-    new_block = RepeaterShorthandBlock()
-    new_block.tile = first_tile_in_block.copy()
-    new_block.num_reps = counter - last_tile_change
-    block_list.append(new_block)
+    new_field = L1RepeaterField()
+    new_field.tile = first_tile_in_field.copy()
+    new_field.num_reps = counter - last_tile_change
+    field_list.append(new_field)
 
-    return block_list
+    return field_list
 
 
 def _generate_compressed_level_data_header():
@@ -165,4 +190,3 @@ def compress_level_data(tiles, min_string_length=0):
         compressed_level_data += b'\xff'
 
     return compressed_level_data
-
