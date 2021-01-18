@@ -131,7 +131,7 @@ def _find_blocks_for_compression(level_data):
         if current_tile != first_tile_in_field:
             new_field = L1RepeaterField()
             new_field.tileno = first_tile_in_field.tileno
-            new_field.bts_type = first_tile_in_field.bts
+            new_field.bts_type = first_tile_in_field.bts_type
             new_field.h_mirror = first_tile_in_field.h_mirror
             new_field.v_mirror = first_tile_in_field.v_mirror
             new_field.num_reps = counter - last_tile_change

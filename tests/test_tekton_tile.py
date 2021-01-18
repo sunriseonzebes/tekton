@@ -7,7 +7,7 @@ class TestTektonTile(unittest.TestCase):
     def test_init(self):
         test_tile = tekton_tile.TektonTile()
         self.assertNotEqual(test_tile, None, "Test Tile is None!")
-        self.assertEqual(test_tile.bts, 0x00, "Test Tile BTS is not 0x00.")
+        self.assertEqual(test_tile.bts_type, 0x00, "Test Tile BTS is not 0x00.")
         self.assertEqual(test_tile.tileno, 0x00, "Test Tile Tile number is not 0x00.")
         self.assertFalse(test_tile.h_mirror, "Test Tile Horizontal Mirror is not False.")
         self.assertFalse(test_tile.v_mirror, "Test Tile Vertical Mirror is not False.")
@@ -59,11 +59,11 @@ class TestTektonTile(unittest.TestCase):
         test_tile_left = tekton_tile.TektonTile()
         test_tile_right = tekton_tile.TektonTile()
         test_tile_left.tileno = test_item["left"]["tileno"]
-        test_tile_left.bts = test_item["left"]["bts"]
+        test_tile_left.bts_type = test_item["left"]["bts"]
         test_tile_left.h_mirror = test_item["left"]["h_mirror"]
         test_tile_left.v_mirror = test_item["left"]["v_mirror"]
         test_tile_right.tileno = test_item["right"]["tileno"]
-        test_tile_right.bts = test_item["right"]["bts"]
+        test_tile_right.bts_type = test_item["right"]["bts"]
         test_tile_right.h_mirror = test_item["right"]["h_mirror"]
         test_tile_right.v_mirror = test_item["right"]["v_mirror"]
 

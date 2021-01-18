@@ -10,7 +10,7 @@ class TestTektonCompressor(unittest.TestCase):
 
         for i in range(14):
             test_room.tiles[i][0].tileno = 10
-            test_room.tiles[i][0].bts = 8
+            test_room.tiles[i][0].bts_type = 8
 
         first_field = tekton_compressor.L1RepeaterField()
         first_field.num_reps = 14

@@ -16,7 +16,7 @@ class TektonTile:
     use the copy() function to create unique TektonTile objects for each tile you need.
 
     Attributes:
-        bts (int): The BTS number of the tile.
+        bts_type (int): The BTS number of the tile.
         tileno (int): The number of the tile in the tileset graphics (i.e., what the tile looks like)
         h_mirror (bool): Whether the tile art should be mirrored horizontally
         v_mirror (bool): Whether the tile art should be mirrored vertically.
@@ -24,7 +24,7 @@ class TektonTile:
     """
 
     def __init__(self):
-        self.bts = 0x00
+        self.bts_type = 0x00
         self.tileno = 0x00
         self.h_mirror = False
         self.v_mirror = False
@@ -43,7 +43,7 @@ class TektonTile:
                           "Tile Horizontal Mirror: {h_mirror}\n" \
                           "Tile Vertical Mirror: {v_mirror}"
         return template_string.format(tileno=self.tileno,
-                                      bts=self.bts,
+                                      bts=self.bts_type,
                                       h_mirror=self.h_mirror,
                                       v_mirror=self.v_mirror)
 
@@ -61,9 +61,9 @@ class TektonTile:
         if not isinstance(other, TektonTile):
             return False
         return self.tileno == other.tileno and \
-                self.bts == other.bts and \
-                self.h_mirror == other.h_mirror and \
-                self.v_mirror == other.v_mirror
+               self.bts_type == other.bts_type and \
+               self.h_mirror == other.h_mirror and \
+               self.v_mirror == other.v_mirror
 
     def __ne__(self, other):
         """Returns False if the values of two TektonTiles are equivalent, otherwise True.
@@ -90,7 +90,7 @@ class TektonTile:
         """
         copied = TektonTile()
         copied.tileno = self.tileno
-        copied.bts = self.bts
+        copied.bts_type = self.bts_type
         copied.h_mirror = self.h_mirror
         copied.v_mirror = self.v_mirror
         return copied
