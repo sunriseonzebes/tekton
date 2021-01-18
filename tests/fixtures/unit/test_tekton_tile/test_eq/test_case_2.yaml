@@ -1,10 +1,12 @@
 left:
   tileno: 15
-  bts: 3
+  bts_type: 3
+  bts_num: 0x99
   h_mirror: !!bool 'true'
   v_mirror: !!bool 'false'
 right:
   tileno: 15
-  bts: 3
+  bts_type: 3
+  bts_num: 0x99
   h_mirror: !!bool 'true'
   v_mirror: !!bool 'false'
