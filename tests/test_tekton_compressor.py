@@ -119,6 +119,25 @@ class TestL1RepeaterField(unittest.TestCase):
         with self.assertRaises(TypeError):
             test_field != "A string"
 
+    def test_field_header_and_reps_bytes(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_l1_repeater_field',
+                                     'test_field_header_and_reps_bytes'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            test_field = tekton_compressor.L1RepeaterField()
+            test_field.num_reps = test_item["num_reps"]
+            expected_result = int_list_to_bytes(test_item["expected_result"])
+            actual_result = test_field.field_header_and_reps_bytes
+            self.assertEqual(expected_result,
+                             actual_result,
+                             "L1RepeaterField did not return correct field_header_and_reps bytes!")
+
+
     def test_bts_byte(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',

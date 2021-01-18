@@ -100,6 +100,12 @@ class L1RepeaterField:
         return not (self == other)
 
     @property
+    def field_header_and_reps_bytes(self):
+        field_header = int.from_bytes(b'\xe8\x01', byteorder="big")
+        field_header += (self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
+        return field_header.to_bytes(2, byteorder="big")
+
+    @property
     def bts_tile_mirror_byte(self):
         """bytes: One byte representing tile mirror and bts data, understandable by Super Metroid's level loader."""
         byte_value = 0b00000001
@@ -118,10 +124,7 @@ class L1RepeaterField:
     @property
     def compressed_data(self):
         """str: The string of bytes representing the repeated tiles in the compressed level data."""
-        repeater_header = int.from_bytes(b'\xe8\x01', byteorder="big")
-        repeater_header += (
-                                   self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
-        return_string = repeater_header.to_bytes(2, byteorder="big")
+        return_string = self.field_header_and_reps_bytes
         return_string += self.tile_byte
         return_string += self.bts_tile_mirror_byte
         return return_string

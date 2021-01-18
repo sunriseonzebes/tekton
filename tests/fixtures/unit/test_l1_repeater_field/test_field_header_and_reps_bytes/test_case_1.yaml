@@ -1,0 +1,4 @@
+num_reps: 133
+expected_result:
+  - 0xe9
+  - 0x09
