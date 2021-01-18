@@ -1,0 +1,6 @@
+num_reps: 48
+bts_num: 0x01
+expected_result:
+  - 0xe4
+  - 0x2f
+  - 0x01

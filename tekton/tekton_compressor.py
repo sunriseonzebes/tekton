@@ -43,38 +43,61 @@ class L1RepeaterField:
         self.v_mirror = False
 
     def __repr__(self):
-        """Returns a textual representation of the RepeaterBlock.
+        """Returns a textual representation of the L1RepeaterField.
 
         Returns:
-            str : A textual representation of the RepeaterBlock's attributes.
+            str : A textual representation of the L1RepeaterField's attributes.
 
         """
 
-        template_string = "Repeater Block:\nRepetitions: {num_reps}\n Tile: {tile_repr}"
+        template_string = "Layer 1 Repeater Field:\n Repetitions: {num_reps}\n BTS Type: {bts_type}\n Tile Number: {tileno}, \n H Mirror: {h_mirror}\n V Mirror: {v_mirror}"
         return template_string.format(num_reps=self.num_reps,
-                                      tile_repr=self.tile)
+                                      bts_type=self.bts_type,
+                                      tileno=self.tileno,
+                                      h_mirror=self.h_mirror,
+                                      v_mirror=self.v_mirror)
 
     def __eq__(self, other):
-        """Determines whether two repeater blocks specify identical TektonTiles and number of repetitions.
+        """Determines whether two L1RepeaterFields specify identical tiles attributes and number of repetitions.
 
-        RepeaterBlocks are designed to be fungible. Two RepeaterBlocks are equivalent if they specify identical
-        TektonTiles and if they have the same number of repetitions.
+        L1RepeaterFields are designed to be fungible. Two L1RepeaterFields are equivalent if they specify identical
+        tile attributes and if they have the same number of repetitions.
 
         Args:
-            other: Another RepeaterBlock object for comparing to this one.
+            other (L1RepeaterField): Another L1RepeaterField object for comparing to this one.
 
         Returns:
-            bool : True if both Repeater blocks have identical TektonTiles and number of repetitions. Otherwise False.
+            bool : True if both L1RepeaterFields have identical tile attributes and number of repetitions. Otherwise
+                False.
 
         """
 
         if not isinstance(other, L1RepeaterField):
-            return False
+            raise TypeError("Must compare two L1RepeaterField objects!")
         return self.num_reps == other.num_reps and \
                self.tileno == other.tileno and \
                self.bts_type == other.bts_type and \
                self.h_mirror == other.h_mirror and \
                self.v_mirror == other.v_mirror
+
+    def __ne__(self, other):
+        """Returns True if two L1RepeaterFields do NOT specify identical attributes and repetitions, otherwise False.
+
+        L1RepeaterFields are designed to be fungible. Two L1RepeaterFields are equivalent if they specify identical
+        tile attributes and if they have the same number of repetitions.
+
+        Args:
+            other (L1RepeaterField): Another L1RepeaterField object for comparing to this one.
+
+        Returns:
+            bool : False if both L1RepeaterFields have identical tile attributes and number of repetitions. Otherwise
+                True.
+
+        """
+
+        if not isinstance(other, L1RepeaterField):
+            raise TypeError("Must compare two L1RepeaterField objects!")
+        return not (self == other)
 
     @property
     def bts_tile_mirror_byte(self):
@@ -102,6 +125,96 @@ class L1RepeaterField:
         return_string += self.tile_byte
         return_string += self.bts_tile_mirror_byte
         return return_string
+
+
+# TODO: Superclass the RepeaterField objects? or all Field objects?
+class BTSNumRepeaterField:
+    """An object representing the bts number of a single tile repeated a specific number of times in the level data.
+
+    Super Metroid employs a number of "shorthand" statements to compress level data. One of the shorthands is to
+    specify a bts number and the number of times that tile is to be repeated (horizontally from left to right, wrapping
+    around to the next row of tiles if necessary.) This shorthand requires only a few bytes to represent many tiles' BTS
+    number. This object contains the bts number and number of times it is repeated, and can output the compressed bytes
+    that can be concatenated into a larger set of level data.
+
+    BTSNumRepeaterFields are considered fungible, and are compared by value rather than by reference. Two
+    BTSNumRepeaterFields are equivalent if they specify identical bts numbers and have the same number of repetitions.
+
+    Attributes:
+        num_reps (int): The number of times the specific tile is repeated. Super Metroid will "wrap" these tiles onto
+            the next row if they exceed beyond the width of the room.
+        bts_num (int): BTS number to be repeated.
+
+    """
+
+    def __init__(self):
+        self.num_reps = 0
+        self.bts_num = 0
+
+    def __repr__(self):
+        """Returns a textual representation of the BTSNumRepeaterField.
+
+        Returns:
+            str : A textual representation of the BTSNumRepeaterField's attributes.
+
+        """
+
+        template_string = "BTS Number Repeater Field:\n Repetitions: {num_reps}\n BTS Number: {bts_num}"
+        return template_string.format(num_reps=self.num_reps,
+                                      bts_num=self.bts_num)
+
+    def __eq__(self, other):
+        """Determines whether two BTSNumRepeaterFields specify identical tiles attributes and number of repetitions.
+
+        BTSNumRepeaterFields are designed to be fungible. Two BTSNumRepeaterFields are equivalent if they specify
+        identical bts numbers and the same number of repetitions.
+
+        Args:
+            other (BTSNumRepeaterField): Another BTSNumRepeaterField object for comparing to this one.
+
+        Returns:
+            bool : True if both BTSNumRepeaterFields have identical tile attributes and number of repetitions. Otherwise
+                False.
+
+        """
+
+        if not isinstance(other, BTSNumRepeaterField):
+            raise TypeError("Must compare two BTSNumRepeaterField objects!")
+        return self.num_reps == other.num_reps and \
+               self.bts_num == other.bts_num
+
+    def __ne__(self, other):
+        """Returns True if two BTSNumRepeaterFields specify identical bts nubmers and number of repetitions, else False.
+
+        BTSNumRepeaterFields are designed to be fungible. Two BTSNumRepeaterFields are equivalent if they specify
+        identical bts numbers and the same number of repetitions.
+
+        Args:
+            other (BTSNumRepeaterField): Another BTSNumRepeaterField object for comparing to this one.
+
+        Returns:
+            bool : False if both BTSNumRepeaterFields have identical bts numbers and number of repetitions. Otherwise
+                True.
+
+        """
+
+        if not isinstance(other, BTSNumRepeaterField):
+            raise TypeError("Must compare two BTSNumRepeaterField objects!")
+        return not (self == other)
+
+    @property
+    def bts_number_byte(self):
+        """bytes: One byte representing the bts number of this tile."""
+        return self.bts_num.to_bytes(1, byteorder="big")
+
+    @property
+    def compressed_data(self):
+        """str: The string of bytes representing the repeated bts number in the compressed level data."""
+        return_string = b'\xe4'
+        return_string += (self.num_reps - 1).to_bytes(1, byteorder="big")
+        return_string += self.bts_number_byte
+        return return_string
+
 
 
 def _find_blocks_for_compression(level_data):
