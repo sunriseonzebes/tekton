@@ -56,29 +56,19 @@ class TestTektonCompressor(unittest.TestCase):
         self.assertEqual(expected_result, test_result)
 
     def test_compress_level_data(self):
-        test_room = tekton_room.TektonRoom()
-        test_room.level_data_length = 155
-        test_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                      'fixtures',
-                                      'unit',
-                                      'sample_compression_data',
-                                      'generic_blank_room.bin'
-                                      )
-        with open(test_file_path, "rb") as f:
-            expected_result = f.read()
-        test_result = tekton_compressor.compress_level_data(test_room.tiles)
-        self.assertEqual(expected_result, test_result, "Room data did not compress correctly.")
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'sample_compression_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
-        test_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                      'fixtures',
-                                      'unit',
-                                      'sample_compression_data',
-                                      'generic_blank_room_padded.bin'
-                                      )
-        with open(test_file_path, "rb") as f:
-            expected_result = f.read()
-        test_result = tekton_compressor.compress_level_data(test_room.tiles, test_room.level_data_length)
-        self.assertEqual(expected_result, test_result, "Room data did not compress correctly.")
+        test_room = tekton_room.TektonRoom()
+
+        for test_item in test_data:
+            expected_result = int_list_to_bytes(test_item["expected_result"])
+            actual_result = tekton_compressor.compress_level_data(test_room.tiles, test_item["pad"])
+            self.assertEqual(expected_result, actual_result, "Room data did not compress correctly.")
 
 
 class TestL1RepeaterField(unittest.TestCase):

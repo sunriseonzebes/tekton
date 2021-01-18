@@ -1,4 +1,4 @@
-from testing_common import tekton
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes
 from tekton import tekton_room, tekton_tile, tekton_tile_grid
 import os
 import unittest
@@ -54,24 +54,23 @@ class TestTektonRoom(unittest.TestCase):
         with self.assertRaises(ValueError):
             test_room.level_data_address = -5
 
-
-
     def test_compressed_level_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room',
+                                     'test_compressed_level_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            expected_result = int_list_to_bytes(test_item["expected_result"])
+            test_room = tekton_room.TektonRoom()
+            test_room.level_data_length = 155
+            actual_result = test_room.compressed_level_data()
+            self.assertEqual(expected_result, actual_result, "TektonRoom did not produce correct compressed data!")
+
         test_room = tekton_room.TektonRoom()
-        test_room.level_data_length = 155
-
-        test_data_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                      'fixtures',
-                                      'unit',
-                                      'sample_compression_data',
-                                      'generic_blank_room_padded.bin'
-                                      )
-        with open(test_data_file, "rb") as f:
-            expected_result = f.read()
-        actual_result = test_room.compressed_level_data()
-
-        self.assertEqual(expected_result, actual_result)
-
         test_room.level_data_length = 3
 
         with self.assertRaises(tekton_room.CompressedDataTooLargeError):

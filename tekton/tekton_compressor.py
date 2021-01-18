@@ -322,13 +322,14 @@ def compress_level_data(tiles, min_string_length=0):
     level_header = _generate_compressed_level_data_header()
 
     compressed_level_data = level_header
-    compressed_blocks = _find_layer_1_fields_for_compression(tiles)
-    for block in compressed_blocks:
-        compressed_level_data += block.compressed_data
 
-    level_end_string = b'\xe4\xff\x00'
+    layer_1_fields = _find_layer_1_fields_for_compression(tiles)
+    for field in layer_1_fields:
+        compressed_level_data += field.compressed_data
 
-    compressed_level_data += level_end_string
+    bts_layer_fields = _find_bts_layer_fields_for_compression(tiles)
+    for field in bts_layer_fields:
+        compressed_level_data += field.compressed_data
 
     # Add FF padding to grow level data to maximum size
     while len(compressed_level_data) < min_string_length:
