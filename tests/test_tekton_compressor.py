@@ -5,12 +5,15 @@ import unittest
 
 
 class TestTektonCompressor(unittest.TestCase):
-    def test_find_blocks_for_compression(self):
+    def test_find_layer_1_fields_for_compression(self):
         test_room = tekton_room.TektonRoom()
 
         for i in range(14):
-            test_room.tiles[i][0].tileno = 10
-            test_room.tiles[i][0].bts_type = 8
+            test_room.tiles[i % 16][i // 16].tileno = 10
+            test_room.tiles[i % 16][i // 16].bts_type = 8
+        for i in range(14, 256):
+            test_room.tiles[i % 16][i // 16].tileno = 3
+            test_room.tiles[i % 16][i // 16].bts_type = 1
 
         first_field = tekton_compressor.L1RepeaterField()
         first_field.num_reps = 14
@@ -18,13 +21,33 @@ class TestTektonCompressor(unittest.TestCase):
         first_field.bts_type = 8
         last_field = tekton_compressor.L1RepeaterField()
         last_field.num_reps = 242
-        last_field.tileno = 0
-        last_field.bts_type = 0
+        last_field.tileno = 3
+        last_field.bts_type = 1
 
-        test_result = tekton_compressor._find_blocks_for_compression(test_room.tiles)
         expected_result = [first_field, last_field]
+        actual_result = tekton_compressor._find_layer_1_fields_for_compression(test_room.tiles)
 
-        self.assertEqual(test_result, expected_result, "Compressor did not find the correct blocks.")
+        self.assertEqual(expected_result, actual_result, "Compressor did not find the correct layer 1 fields.")
+
+    def test_find_bts_layer_fields_for_compression(self):
+        test_room = tekton_room.TektonRoom()
+
+        for i in range(54):
+            test_room.tiles[i % 16][i // 16].bts_num = 0x1e
+        for i in range(54, 256):
+            test_room.tiles[i % 16][i // 16].bts_num = 0x02
+
+        first_field = tekton_compressor.BTSNumRepeaterField()
+        first_field.num_reps = 54
+        first_field.bts_num = 0x1e
+        last_field = tekton_compressor.BTSNumRepeaterField()
+        last_field.num_reps = 202
+        last_field.bts_num = 0x02
+
+        expected_result = [first_field, last_field]
+        actual_result = tekton_compressor._find_bts_layer_fields_for_compression(test_room.tiles)
+
+        self.assertEqual(expected_result, actual_result, "Compressor did not find the correct BTS layer fields.")
 
     def test_generate_compressed_level_data_header(self):
         expected_result = b'\x01\x00\x02'

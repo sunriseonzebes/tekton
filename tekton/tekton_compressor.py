@@ -217,20 +217,20 @@ class BTSNumRepeaterField:
 
 
 
-def _find_blocks_for_compression(level_data):
-    """Converts a TektonTileGrid into a group of objects that represent pieces of the level.
+def _find_layer_1_fields_for_compression(level_data):
+    """Converts a TektonTileGrid into a group of objects that represent pieces of layer 1 of the level.
 
     Super Metroid employs a number of "shorthand" statements in its compressed level data. These shorthands can
     represent many tiles with only a few bytes of data, and were used to reduce the size of the level data so it would
-    fit on the cartridge. This function assigns groups of tiles to "ShorthandBlock" objects, each representing part of
-    the level data in a single shorthand statement. When more than one shorthand statement could be used to represent
-    part of a level, this function chooses the shorthand statement requiring the fewest bytes of compressed level data.
+    fit on the cartridge. This function assigns groups of tiles to "Field" objects, each representing part of the level
+    data in a single shorthand statement. When more than one shorthand statement could be used to represent part of a
+    level, this function chooses the shorthand statement requiring the fewest bytes of compressed level data.
 
     Args:
         level_data (TektonTileGrid): The level data to be converted into ShorthandBlocks
 
     Returns:
-        list : A list of ShorthandBlocks containing pieces of level data
+        list : A list of Field objects containing pieces of layer 1 level data
 
     """
 
@@ -257,8 +257,38 @@ def _find_blocks_for_compression(level_data):
 
     # Write the last block
     new_field = L1RepeaterField()
-    new_field.tile = first_tile_in_field.copy()
+    new_field.tileno = first_tile_in_field.tileno
+    new_field.bts_type = first_tile_in_field.bts_type
+    new_field.h_mirror = first_tile_in_field.h_mirror
+    new_field.v_mirror = first_tile_in_field.v_mirror
     new_field.num_reps = counter - last_tile_change
+    field_list.append(new_field)
+
+    return field_list
+
+def _find_bts_layer_fields_for_compression(level_data):
+    field_list = []
+    counter = 1
+    max_tiles = level_data.width * level_data.height
+
+    last_bts_num_change = 0
+    first_tile_in_field = level_data[0][0]
+
+    while counter < max_tiles:
+        current_tile = level_data[counter % level_data.width][counter // level_data.height]
+        if current_tile != first_tile_in_field:
+            new_field = BTSNumRepeaterField()
+            new_field.bts_num = first_tile_in_field.bts_num
+            new_field.num_reps = counter - last_bts_num_change
+            field_list.append(new_field)
+            last_bts_num_change = counter
+            first_tile_in_field = current_tile
+        counter += 1
+
+    # Write the last block
+    new_field = BTSNumRepeaterField()
+    new_field.bts_num = first_tile_in_field.bts_num
+    new_field.num_reps = counter - last_bts_num_change
     field_list.append(new_field)
 
     return field_list
@@ -292,7 +322,7 @@ def compress_level_data(tiles, min_string_length=0):
     level_header = _generate_compressed_level_data_header()
 
     compressed_level_data = level_header
-    compressed_blocks = _find_blocks_for_compression(tiles)
+    compressed_blocks = _find_layer_1_fields_for_compression(tiles)
     for block in compressed_blocks:
         compressed_level_data += block.compressed_data
 
