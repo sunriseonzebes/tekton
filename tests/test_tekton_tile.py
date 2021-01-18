@@ -49,29 +49,6 @@ class TestTektonTile(unittest.TestCase):
         test_tile = tekton_tile.TektonTile()
         self.assertNotEqual(test_tile, "Test string")
 
-    def test_bts_byte(self):
-        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
-                                     'fixtures',
-                                     'unit',
-                                     'test_tekton_tile',
-                                     'test_bts_byte'
-                                     )
-        test_data = load_test_data_dir(test_data_dir)
-
-        for test_case in test_data:
-            test_tile = tekton_tile.TektonTile()
-            test_tile.bts = test_case["bts"]
-            test_tile.h_mirror = test_case["h"]
-            test_tile.v_mirror = test_case["v"]
-            expected_result = int_list_to_bytes(test_case["expected_result"])
-            self.assertEqual(test_tile.bts_tile_mirror_byte, expected_result, "Test Tile BTS Byte did not match expected result.")
-
-    def test_tileno_byte(self):
-        test_tile = tekton_tile.TektonTile()
-        test_tile.tileno = 10
-        expected_result = (10).to_bytes(1, byteorder="big")
-        self.assertEqual(test_tile.tile_byte, expected_result, "Test Tile Tile Byte did not match expected result.")
-
     def test_copy(self):
         test_tile_source = tekton_tile.TektonTile()
         test_tile_copy = test_tile_source.copy()

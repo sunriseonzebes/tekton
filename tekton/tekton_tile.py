@@ -78,22 +78,6 @@ class TektonTile:
 
         return not (self == other)
 
-    @property
-    def bts_tile_mirror_byte(self):
-        """bytes: One byte representing tile mirror and bts data, understandable by Super Metroid's level loader."""
-        byte_value = 0b00000001
-        if self.h_mirror:
-            byte_value += 0b100
-        if self.v_mirror:
-            byte_value += 0b1000
-        byte_value += (self.bts * 0b10000)
-        return byte_value.to_bytes(1, byteorder="big")
-
-    @property
-    def tile_byte(self):
-        """bytes: One byte representing the tile number of this tile."""
-        return self.tileno.to_bytes(1, byteorder="big")
-
     def copy(self):
         """Returns a new TektonTile instance with the same attribute values as the original TektonTile.
 
