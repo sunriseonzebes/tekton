@@ -4,7 +4,7 @@ This module allows the user to convert a TektonTileGrid into compressed level da
 can understand.
 
 Classes:
-    RepeaterBlock: An object representing a series of repeating tiles in level data
+    L1RepeaterField: An object representing a series of repeating tiles in layer 1 level data
 
 Functions:
     compress_level_data: converts a TektonTileGrid into compressed level data.
@@ -14,7 +14,7 @@ from .tekton_tile import TektonTile
 
 
 class L1RepeaterField:
-    """An object representing a single tile repeated a specific number of times in the level data.
+    """An object representing a single layer 1 tile repeated a specific number of times in the level data.
 
     Super Metroid employs a number of "shorthand" statements to compress level data. One of the shorthands is to
     specify a tile number and it's BTS data, followed by the number of times that tile is to be repeated. This
@@ -22,14 +22,16 @@ class L1RepeaterField:
     large fields of the same repeated tile. This object contains all the information about the tile and the number of
     times it is repeated, and can output the compressed bytes that can be concatenated into a larger set of level data.
 
-    RepeaterBlocks are considered fungible, and are compared by value rather than by reference. Two RepeaterBlocks are
-    equivalent if they specify identical TektonTiles and have the same number of repetitions.
+    L1RepeaterFields are considered fungible, and are compared by value rather than by reference. Two L1RepeaterFields
+    are equivalent if they specify identical tile attributes and have the same number of repetitions.
 
     Attributes:
         num_reps (int): The number of times the specific tile is repeated. Super Metroid will "wrap" these tiles onto
             the next row if they exceed beyond the width of the room.
-        tile (TektonTile): The specific tile to be repeated.
-        compressed_data (bytes): The string of bytes representing these repeated tiles in the compressed level data.
+        bts_type (int): BTS type of the repeated tile.
+        tileno (int): Tileset number of the repeated tile.
+        h_mirror (bool): Whether or not the repeated tile should be mirrored horizontally.
+        v_mirror (bool): Whether or not the repeated tile should be mirrored vertically.
 
     """
 
