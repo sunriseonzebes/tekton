@@ -102,7 +102,8 @@ class L1RepeaterField:
     @property
     def field_header_and_reps_bytes(self):
         field_header = int.from_bytes(b'\xe8\x01', byteorder="big")
-        field_header += (self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
+        field_header += (
+                                    self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
         return field_header.to_bytes(2, byteorder="big")
 
     @property
@@ -224,6 +225,73 @@ class BTSNumRepeaterField:
         return return_string
 
 
+class BTSNumSingleField:
+    """An object representing the BTS number of a single tile in compressed level data.
+
+    Super Metroid employs a number of "shorthand" statements in its compressed level data. Often these shorthands
+    involve specifying a tile and a number of times to repeat that tile. However, if the room contains just a single
+    tile of any type, it is not possible to use a shorthand statement to represent it. This object contains the bts
+    number of a single tile, and can output the compressed bytes that can be concatenated into a larger set of level
+    data.
+
+    BTSNumRepeaterFields are considered fungible, and are compared by value rather than by reference. Two
+    BTSNumRepeaterFields are equivalent if they specify identical bts numbers and have the same number of repetitions.
+
+    Attributes:
+        bts_num (int): BTS number of the single block.
+
+    """
+
+    def __init__(self):
+        self.bts_num = 0x00
+
+    def __repr__(self):
+        """Returns a textual representation of the BTSNumSingleField.
+
+        Returns:
+            str : A textual representation of the BTSNumSingleField's attributes.
+
+        """
+
+        template_string = "BTS Number Single Field:\n BTS Number: {bts_num}"
+        return template_string.format(bts_num=self.bts_num)
+
+    def __eq__(self, other):
+        """Determines whether two BTSNumSingleFields specify identical BTS numbers.
+
+        BTSNumSingleFields are designed to be fungible. Two BTSNumSingleFields are equivalent if they specify
+        identical bts numbers.
+
+        Args:
+            other (BTSNumSingleField): Another BTSNumSingleField object for comparing to this one.
+
+        Returns:
+            bool : True if both BTSNumSingleFields have identical tile attributes and number of repetitions. Otherwise
+                False.
+
+        """
+
+        if not isinstance(other, BTSNumSingleField):
+            raise TypeError("Must compare two BTSNumSingleField objects!")
+        return self.bts_num == other.bts_num
+
+    @property
+    def field_header_byte(self):
+        """bytes: One byte representing the field header for this Field."""
+        return b'\x00'
+
+    @property
+    def bts_number_byte(self):
+        """bytes: One byte representing the bts number of this tile."""
+        return self.bts_num.to_bytes(1, byteorder="big")
+
+    @property
+    def compressed_data(self):
+        """str: The string of bytes representing the single bts number in the compressed level data."""
+        return_string = self.field_header_byte
+        return_string += self.bts_number_byte
+        return return_string
+
 
 def _find_layer_1_fields_for_compression(level_data):
     """Converts a TektonTileGrid into a group of objects that represent pieces of layer 1 of the level.
@@ -274,6 +342,7 @@ def _find_layer_1_fields_for_compression(level_data):
 
     return field_list
 
+
 def _find_bts_layer_fields_for_compression(level_data):
     field_list = []
     counter = 1
@@ -304,6 +373,9 @@ def _find_bts_layer_fields_for_compression(level_data):
 
 def _generate_compressed_level_data_header():
     """Generates a three-byte header that must come at the beginning of the compressed level data.
+
+    Super Metroid employs a number of "shorthand" statements to compress level data. These shorthands usually involve
+    specifying a tile and a number of times to repeat it. In some instances, it is not possible to do this, and indvid
 
     Returns:
         bytes : The header for this level's compressed data

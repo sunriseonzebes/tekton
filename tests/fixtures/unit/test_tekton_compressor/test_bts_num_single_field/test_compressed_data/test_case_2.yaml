@@ -1,0 +1,4 @@
+bts_num: 0x55
+expected_result:
+  - 0x00
+  - 0x55

@@ -137,7 +137,6 @@ class TestL1RepeaterField(unittest.TestCase):
                              actual_result,
                              "L1RepeaterField did not return correct field_header_and_reps bytes!")
 
-
     def test_bts_byte(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
@@ -161,8 +160,8 @@ class TestL1RepeaterField(unittest.TestCase):
         test_field = tekton_compressor.L1RepeaterField()
         test_field.tileno = 10
         expected_result = (10).to_bytes(1, byteorder="big")
-        self.assertEqual(test_field.tile_byte, expected_result, "L1RepeaterField Tile Byte did not match expected result.")
-
+        self.assertEqual(test_field.tile_byte, expected_result,
+                         "L1RepeaterField Tile Byte did not match expected result.")
 
     def test_compressed_data(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
@@ -184,7 +183,6 @@ class TestL1RepeaterField(unittest.TestCase):
             test_result = test_field.compressed_data
             expected_result = int_list_to_bytes(test_item["expected_result"])
             self.assertEqual(expected_result, test_result, "Error when compressing L1RepeaterField{}".format(test_item))
-
 
     def _get_fields_from_eq_test_data(self, test_item):
         test_field_left = tekton_compressor.L1RepeaterField()
@@ -286,8 +284,7 @@ class TestBTSNumRepeaterField(unittest.TestCase):
             expected_result = int_list_to_bytes(test_item["expected_result"])
             self.assertEqual(expected_result,
                              test_result,
-                             "Error when compressing BTSNumRepeaterField{}".format(test_item))
-
+                             "Error when compressing BTSNumRepeaterField {}".format(test_item))
 
     def _get_fields_from_eq_test_data(self, test_item):
         test_field_left = tekton_compressor.BTSNumRepeaterField()
@@ -298,5 +295,96 @@ class TestBTSNumRepeaterField(unittest.TestCase):
 
         test_field_right.bts_num = test_item["right"]["bts_num"]
         test_field_right.num_reps = test_item["right"]["num_reps"]
+
+        return test_field_left, test_field_right
+
+
+class TestBTSNumSingleField(unittest.TestCase):
+    def test_init(self):
+        test_field = tekton_compressor.BTSNumSingleField()
+        self.assertTrue(isinstance(test_field, tekton_compressor.BTSNumSingleField))
+        self.assertEqual(0x00, test_field.bts_num, "BTSNumSingleField bts_num did not initialize to 0x00!")
+
+    def test_eq(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_bts_num_single_field',
+                                     'test_eq'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            test_field_left, test_field_right = self._get_fields_from_eq_test_data(test_item)
+            print(id(test_field_left))
+            print(id(test_field_right))
+            self.assertEqual(test_field_left,
+                             test_field_right,
+                             "BTSNumSingleField objects should be equal but they're not!")
+
+    def test_ne(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_bts_num_single_field',
+                                     'test_ne'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            test_field_left, test_field_right = self._get_fields_from_eq_test_data(test_item)
+            print(id(test_field_left))
+            print(id(test_field_right))
+            self.assertNotEqual(test_field_left,
+                                test_field_right,
+                                "BTSNumSingleField objects should not be equal but they are!")
+
+        test_field = tekton_compressor.BTSNumRepeaterField()
+        with self.assertRaises(TypeError):
+            test_field != "A string"
+
+    def test_field_header_byte(self):
+        test_field = tekton_compressor.BTSNumSingleField()
+        expected_result = b'\x00'
+        actual_result = test_field.field_header_byte
+        self.assertEqual(expected_result,
+                         actual_result,
+                         "BTSNumSingleField did not generate correct field header byte!")
+
+    def test_bts_number_byte(self):
+        test_field = tekton_compressor.BTSNumSingleField()
+        test_field.bts_num = 0xc5
+        expected_result = (0xc5).to_bytes(1, byteorder="big")
+        self.assertEqual(expected_result, test_field.bts_number_byte,
+                         "BTSNumSingleField BTS Number Byte did not match expected result.")
+
+    def test_compressed_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_bts_num_single_field',
+                                     'test_compressed_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            test_field = tekton_compressor.BTSNumSingleField()
+            test_field.bts_num = test_item["bts_num"]
+
+            test_result = test_field.compressed_data
+            expected_result = int_list_to_bytes(test_item["expected_result"])
+            self.assertEqual(expected_result,
+                             test_result,
+                             "Error when compressing BTSNumSingleField {}".format(test_item))
+
+    def _get_fields_from_eq_test_data(self, test_item):
+        test_field_left = tekton_compressor.BTSNumRepeaterField()
+        test_field_right = tekton_compressor.BTSNumRepeaterField()
+
+        test_field_left.bts_num = test_item["left"]["bts_num"]
+        test_field_right.bts_num = test_item["right"]["bts_num"]
 
         return test_field_left, test_field_right
