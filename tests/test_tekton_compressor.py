@@ -258,6 +258,13 @@ class TestBTSNumRepeaterField(unittest.TestCase):
                          actual_result,
                          "BTSNumRepeaterField did not generate correct field header byte!")
 
+    def test_num_reps_byte(self):
+        test_field = tekton_compressor.BTSNumRepeaterField()
+        test_field.num_reps = 70
+        expected_result = (69).to_bytes(1, byteorder="big")
+        self.assertEqual(expected_result, test_field.num_reps_byte,
+                         "BTSNumRepeaterField Num Reps Byte did not match expected result.")
+
     def test_bts_number_byte(self):
         test_field = tekton_compressor.BTSNumRepeaterField()
         test_field.bts_num = 0x7e
@@ -317,8 +324,6 @@ class TestBTSNumSingleField(unittest.TestCase):
 
         for test_item in test_data:
             test_field_left, test_field_right = self._get_fields_from_eq_test_data(test_item)
-            print(id(test_field_left))
-            print(id(test_field_right))
             self.assertEqual(test_field_left,
                              test_field_right,
                              "BTSNumSingleField objects should be equal but they're not!")
@@ -335,8 +340,6 @@ class TestBTSNumSingleField(unittest.TestCase):
 
         for test_item in test_data:
             test_field_left, test_field_right = self._get_fields_from_eq_test_data(test_item)
-            print(id(test_field_left))
-            print(id(test_field_right))
             self.assertNotEqual(test_field_left,
                                 test_field_right,
                                 "BTSNumSingleField objects should not be equal but they are!")
