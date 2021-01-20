@@ -252,6 +252,13 @@ class TestBTSNumRepeaterField(unittest.TestCase):
         with self.assertRaises(TypeError):
             test_field == "A string"
 
+    def test_field_header_byte(self):
+        test_field = tekton_compressor.BTSNumRepeaterField()
+        expected_result = b'\xe4'
+        actual_result = test_field.field_header_byte
+        self.assertEqual(expected_result,
+                         actual_result,
+                         "BTSNumRepeaterField did not generate correct field header byte!")
 
     def test_bts_number_byte(self):
         test_field = tekton_compressor.BTSNumRepeaterField()
