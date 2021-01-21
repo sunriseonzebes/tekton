@@ -1,0 +1,13 @@
+left: !!python/object:tekton.tekton_tile.TektonTile
+  tileno: 0x01
+  bts_type: 0x08
+  bts_num: 0x00
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'false'
+right: !!python/object:tekton.tekton_tile.TektonTile
+  tileno: 0x01
+  bts_type: 0x08
+  bts_num: 0x00
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'false'
+expected_result: !!bool 'true'

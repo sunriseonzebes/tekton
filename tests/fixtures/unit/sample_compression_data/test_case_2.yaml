@@ -154,4 +154,12 @@ expected_result:
   - 0xff
   - 0xff
   - 0xff
-pad: 155
+room_width: 1
+room_height: 1
+test_tiles:
+  - count: 256
+    tile:
+      tileno: 0x00
+      bts_type: 0x00
+      bts_num: 0x00
+level_data_length: 155

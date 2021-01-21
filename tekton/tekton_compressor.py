@@ -103,7 +103,7 @@ class L1RepeaterField:
     def field_header_and_reps_bytes(self):
         field_header = int.from_bytes(b'\xe8\x01', byteorder="big")
         field_header += (
-                                    self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
+                                self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
         return field_header.to_bytes(2, byteorder="big")
 
     @property
@@ -323,8 +323,8 @@ def _find_layer_1_fields_for_compression(level_data):
     first_tile_in_field = level_data[0][0]
 
     while counter < max_tiles:
-        current_tile = level_data[counter % level_data.width][counter // level_data.height]
-        if current_tile != first_tile_in_field:
+        current_tile = level_data[counter % level_data.width][counter // level_data.width]
+        if not _tiles_layer_1_equivalent(current_tile, first_tile_in_field):
             new_field = L1RepeaterField()
             new_field.tileno = first_tile_in_field.tileno
             new_field.bts_type = first_tile_in_field.bts_type
@@ -358,10 +358,13 @@ def _find_bts_layer_fields_for_compression(level_data):
 
     while counter < max_tiles:
         current_tile = level_data[counter % level_data.width][counter // level_data.height]
-        if current_tile != first_tile_in_field:
-            new_field = BTSNumRepeaterField()
+        if not _tiles_bts_layer_equivalent(current_tile, first_tile_in_field):
+            if (counter - last_bts_num_change) == 1:
+                new_field = BTSNumSingleField()
+            else:
+                new_field = BTSNumRepeaterField()
+                new_field.num_reps = counter - last_bts_num_change
             new_field.bts_num = first_tile_in_field.bts_num
-            new_field.num_reps = counter - last_bts_num_change
             field_list.append(new_field)
             last_bts_num_change = counter
             first_tile_in_field = current_tile
@@ -374,6 +377,23 @@ def _find_bts_layer_fields_for_compression(level_data):
     field_list.append(new_field)
 
     return field_list
+
+
+def _tiles_layer_1_equivalent(left, right):
+    if not isinstance(left, TektonTile) or not isinstance(right, TektonTile):
+        raise TypeError("_tiles_layer_1_equivalent can only accept TektonTile objects as arguments.")
+
+    return left.tileno == right.tileno and \
+           left.bts_type == right.bts_type and \
+           left.h_mirror == right.h_mirror and \
+           left.v_mirror == right.v_mirror
+
+
+def _tiles_bts_layer_equivalent(left, right):
+    if not isinstance(left, TektonTile) or not isinstance(right, TektonTile):
+        raise TypeError("_tiles_bts_layer_equivalent can only accept TektonTile objects as arguments.")
+
+    return left.bts_num == right.bts_num
 
 
 def _generate_compressed_level_data_header():

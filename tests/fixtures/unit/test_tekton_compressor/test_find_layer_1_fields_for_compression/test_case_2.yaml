@@ -1,0 +1,14 @@
+expected_result:
+  - !!python/object:tekton.tekton_compressor.L1RepeaterField
+    num_reps: 256
+    tileno: 5
+    bts_type: 4
+    h_mirror: !!bool 'false'
+    v_mirror: !!bool 'false'
+room_width: 1
+room_height: 1
+test_tiles:
+  - count: 256
+    tile:
+      tileno: 5
+      bts_type: 4

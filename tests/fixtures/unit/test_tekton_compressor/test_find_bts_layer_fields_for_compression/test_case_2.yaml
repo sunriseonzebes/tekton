@@ -1,0 +1,10 @@
+expected_result:
+  - !!python/object:tekton.tekton_compressor.BTSNumRepeaterField
+    num_reps: 256
+    bts_num: 0x11
+room_width: 1
+room_height: 1
+test_tiles:
+  - count: 256
+    tile:
+      bts_num: 0x11
