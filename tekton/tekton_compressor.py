@@ -357,7 +357,7 @@ def _find_bts_layer_fields_for_compression(level_data):
     first_tile_in_field = level_data[0][0]
 
     while counter < max_tiles:
-        current_tile = level_data[counter % level_data.width][counter // level_data.height]
+        current_tile = level_data[counter % level_data.width][counter // level_data.width]
         if not _tiles_bts_layer_equivalent(current_tile, first_tile_in_field):
             if (counter - last_bts_num_change) == 1:
                 new_field = BTSNumSingleField()
