@@ -30,6 +30,12 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["height"],
                              test_room.height_screens,
                              "Room {} imported incorrect height value!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["width"] * 16,
+                             test_room.tiles.width,
+                             "Room {} imported incorrect tile grid width value!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["height"] * 16,
+                             test_room.tiles.height,
+                             "Room {} imported incorrect tile grid height value!".format(hex(test_item["header"])))
             self.assertEqual(test_item["level_data_address"],
                              test_room.level_data_address,
                              "Room {} imported incorrect level data address!".format(hex(test_item["header"])))

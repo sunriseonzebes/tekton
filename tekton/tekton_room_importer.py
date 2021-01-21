@@ -31,11 +31,15 @@ def import_room_from_rom(rom_contents, room_header_address):
 
     pointers = _get_data_addresses(rom_contents, room_header_address)
 
-    new_room = TektonRoom()
+    room_width_screens = int.from_bytes(rom_contents[pointers["header"] + 4:pointers["header"] + 5],
+                                            byteorder="big")
+    room_height_screens = int.from_bytes(rom_contents[pointers["header"] + 5:pointers["header"] + 6],
+                                             byteorder="big")
+
+    new_room = TektonRoom(room_width_screens, room_height_screens)
     new_room.header = room_header_address
 
-    new_room.width_screens = int.from_bytes(rom_contents[pointers["header"]+4:pointers["header"]+5], byteorder="big")
-    new_room.height_screens = int.from_bytes(rom_contents[pointers["header"]+5:pointers["header"]+6], byteorder="big")
+
 
     # Level data addresses are stored in LoROM and are little endian
     level_lorom_address = rom_contents[pointers["standard"]+2:pointers["standard"]+5]
