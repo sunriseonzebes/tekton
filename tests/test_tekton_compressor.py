@@ -319,20 +319,24 @@ class TestBTSNumRepeaterField(unittest.TestCase):
         with self.assertRaises(TypeError):
             test_field == "A string"
 
-    def test_field_header_byte(self):
-        test_field = tekton_compressor.BTSNumRepeaterField()
-        expected_result = b'\xe4'
-        actual_result = test_field.field_header_byte
-        self.assertEqual(expected_result,
-                         actual_result,
-                         "BTSNumRepeaterField did not generate correct field header byte!")
+    def test_field_header_and_reps_bytes(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_bts_num_repeater_field',
+                                     'test_field_header_and_reps_bytes'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
-    def test_num_reps_byte(self):
-        test_field = tekton_compressor.BTSNumRepeaterField()
-        test_field.num_reps = 70
-        expected_result = (69).to_bytes(1, byteorder="big")
-        self.assertEqual(expected_result, test_field.num_reps_byte,
-                         "BTSNumRepeaterField Num Reps Byte did not match expected result.")
+        for test_case in test_data:
+            test_field = tekton_compressor.BTSNumRepeaterField()
+            test_field.num_reps = test_case["num_reps"]
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            self.assertEqual(test_field.field_header_and_reps_bytes,
+                             expected_result,
+                             "BTSNumRepeaterField field_header_and_reps_bytes did not match expected result.")
+
 
     def test_bts_number_byte(self):
         test_field = tekton_compressor.BTSNumRepeaterField()

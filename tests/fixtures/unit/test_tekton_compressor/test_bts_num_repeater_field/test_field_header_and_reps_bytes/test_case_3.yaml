@@ -1,0 +1,4 @@
+num_reps: 399
+expected_result:
+  - 0xe5
+  - 0x8e

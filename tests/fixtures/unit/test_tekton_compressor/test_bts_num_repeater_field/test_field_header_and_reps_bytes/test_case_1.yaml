@@ -1,0 +1,4 @@
+num_reps: 2
+expected_result:
+  - 0xe4
+  - 0x01

@@ -214,16 +214,6 @@ class BTSNumRepeaterField:
         return not (self == other)
 
     @property
-    def field_header_byte(self):
-        """bytes: One byte representing the field header for this RepeaterField."""
-        return b'\xe4'
-
-    @property
-    def num_reps_byte(self):
-        """bytes: One byte representing the number of repetitions of this tile."""
-        return (self.num_reps - 1).to_bytes(1, byteorder="big")
-
-    @property
     def field_header_and_reps_bytes(self):
         field_header = int.from_bytes(b'\xe4\x00', byteorder="big")
         field_header += (self.num_reps - 1)
