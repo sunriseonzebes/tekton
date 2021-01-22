@@ -1,4 +1,4 @@
-tileno: 16
+tileno: 0x110
 bts: 8
 h_mirror: !!bool 'false'
 v_mirror: !!bool 'false'

@@ -139,9 +139,13 @@ class L1RepeaterField:
     @property
     def attributes_bytes(self):
         """bytes: Two bytes representing the tile number, tile mirror, and bts data of this tile."""
-        return_string = self.tile_byte
-        return_string += self.bts_tile_mirror_byte
-        return return_string
+        bytes_value = self._tileno
+        if self.h_mirror:
+            bytes_value += 0b0000010000000000
+        if self.v_mirror:
+            bytes_value += 0b0000100000000000
+        bytes_value += (self.bts_type * 0b1000000000000)
+        return bytes_value.to_bytes(2, byteorder="little")
 
     @property
     def compressed_data(self):

@@ -1,4 +1,4 @@
-tileno: 10
+tileno: 0x00a
 bts: 8
 h_mirror: !!bool 'false'
 v_mirror: !!bool 'true'
@@ -7,4 +7,4 @@ expected_result:
   - 0xe9
   - 0x35
   - 0x0a
-  - 0x89
+  - 0x88

@@ -9,7 +9,7 @@ expected_result:
   - 0xe8
   - 0xff
   - 0x01
-  - 0x01
+  - 0x03
   - 0xe4
   - 0xff
   - 0x00
@@ -18,12 +18,12 @@ room_height: 1
 test_tiles:
   - count: 128
     tile:
-      tileno: 0x0a
+      tileno: 0x10a
       bts_type: 0x08
       bts_num: 0x00
   - count: 128
     tile:
-      tileno: 0x01
+      tileno: 0x301
       bts_type: 0x00
       bts_num: 0x00
 level_data_length: 0
