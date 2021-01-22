@@ -38,9 +38,10 @@ class L1RepeaterField:
     def __init__(self):
         self.num_reps = 0
         self.bts_type = 0x00
-        self.tileno = 0x00
         self.h_mirror = False
         self.v_mirror = False
+
+        self._tileno = 0x00
 
     def __repr__(self):
         """Returns a textual representation of the L1RepeaterField.
@@ -75,7 +76,7 @@ class L1RepeaterField:
         if not isinstance(other, L1RepeaterField):
             raise TypeError("Must compare two L1RepeaterField objects!")
         return self.num_reps == other.num_reps and \
-               self.tileno == other.tileno and \
+               self._tileno == other._tileno and \
                self.bts_type == other.bts_type and \
                self.h_mirror == other.h_mirror and \
                self.v_mirror == other.v_mirror
@@ -98,6 +99,19 @@ class L1RepeaterField:
         if not isinstance(other, L1RepeaterField):
             raise TypeError("Must compare two L1RepeaterField objects!")
         return not (self == other)
+
+    @property
+    def tileno(self):
+        """int: The tile number in the tileset used by this tile. Values must be between 0 and 0x3ff (1023)"""
+        return self._tileno
+
+    @tileno.setter
+    def tileno(self, new_tileno):
+        if not (isinstance(new_tileno, int)):
+            raise TypeError("tileno must be int! You can use hex notation if you like, e.g. 0x10a")
+        if new_tileno < 0 or new_tileno > 0x3ff:
+            raise ValueError("tileno must be between 0 and 0x3ff (1023)")
+        self._tileno = new_tileno
 
     @property
     def field_header_and_reps_bytes(self):

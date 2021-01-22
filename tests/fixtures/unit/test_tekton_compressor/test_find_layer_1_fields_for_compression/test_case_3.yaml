@@ -1,25 +1,25 @@
 expected_result:
   - !!python/object:tekton.tekton_compressor.L1RepeaterField
     num_reps: 150
-    tileno: 1
+    _tileno: 1
     bts_type: 1
     h_mirror: !!bool 'false'
     v_mirror: !!bool 'false'
   - !!python/object:tekton.tekton_compressor.L1RepeaterField
     num_reps: 1
-    tileno: 6
+    _tileno: 6
     bts_type: 8
     h_mirror: !!bool 'false'
     v_mirror: !!bool 'false'
   - !!python/object:tekton.tekton_compressor.L1RepeaterField
     num_reps: 124
-    tileno: 4
+    _tileno: 4
     bts_type: 0x0a
     h_mirror: !!bool 'false'
     v_mirror: !!bool 'true'
   - !!python/object:tekton.tekton_compressor.L1RepeaterField
     num_reps: 237
-    tileno: 10
+    _tileno: 10
     bts_type: 0
     h_mirror: !!bool 'true'
     v_mirror: !!bool 'false'

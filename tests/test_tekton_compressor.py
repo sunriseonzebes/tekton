@@ -125,9 +125,9 @@ class TestL1RepeaterField(unittest.TestCase):
         self.assertTrue(isinstance(test_field, tekton_compressor.L1RepeaterField))
         self.assertEqual(0, test_field.num_reps, "L1RepeaterField num_reps did not initialize to 0!")
         self.assertEqual(0x00, test_field.bts_type, "L1RepeaterField bts_type did not initialize to 0!")
-        self.assertEqual(0x00, test_field.tileno, "L1RepeaterField tileno did not initialize to 0!")
         self.assertFalse(test_field.h_mirror, msg="L1RepeaterField h_mirror did not initialize to False!")
         self.assertFalse(test_field.v_mirror, msg="L1RepeaterField v_mirror did not initialize to False!")
+        self.assertEqual(0x00, test_field._tileno, "L1RepeaterField _tileno did not initialize to 0!")
 
     def test_eq(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
@@ -166,6 +166,24 @@ class TestL1RepeaterField(unittest.TestCase):
         test_field = tekton_compressor.L1RepeaterField()
         with self.assertRaises(TypeError):
             test_field != "A string"
+
+    def test_tileno(self):
+        test_field = tekton_compressor.L1RepeaterField()
+        test_field.tileno = 0x10a
+        expected_result = 0x10a
+        self.assertEqual(expected_result,
+                         test_field.tileno,
+                         "L1RepeaterField.tileno did not return the correct result!")
+
+        with self.assertRaises(TypeError,
+                               msg="L1RepeaterField tileno should only accept int, but it accepted string!"):
+            test_field.tileno = "rock"
+        with self.assertRaises(ValueError,
+                               msg="L1RepeaterField tileno should not accept negative numbers, but it did!"):
+            test_field.tileno = -1
+        with self.assertRaises(ValueError,
+                               msg="L1RepeaterField tileno should not accept numbers greater than 0x3ff, but it did!"):
+            test_field.tileno = 0x400
 
     def test_field_header_and_reps_bytes(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
