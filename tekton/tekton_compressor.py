@@ -420,17 +420,16 @@ def _tiles_bts_layer_equivalent(left, right):
     return left.bts_num == right.bts_num
 
 
-def _generate_compressed_level_data_header():
+def _generate_compressed_level_data_header(room_width_screens, room_height_screens):
     """Generates a three-byte header that must come at the beginning of the compressed level data.
-
-    Super Metroid employs a number of "shorthand" statements to compress level data. These shorthands usually involve
-    specifying a tile and a number of times to repeat it. In some instances, it is not possible to do this, and indvid
 
     Returns:
         bytes : The header for this level's compressed data
     """
 
-    level_header_string = b'\x01\x00\x02'
+    level_header_string = b'\x01\x00'
+    screen_count = room_width_screens * room_height_screens
+    level_header_string += (screen_count << 1).to_bytes(1, byteorder="big")
     return level_header_string
 
 
@@ -448,7 +447,7 @@ def compress_level_data(tiles, min_string_length=0):
     """
 
     compressed_level_data = b''
-    level_header = _generate_compressed_level_data_header()
+    level_header = _generate_compressed_level_data_header(tiles.width // 16, tiles.height // 16)
 
     compressed_level_data = level_header
 

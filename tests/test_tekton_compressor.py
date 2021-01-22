@@ -81,10 +81,19 @@ class TestTektonCompressor(unittest.TestCase):
             tekton_compressor._tiles_layer_1_equivalent(tekton_tile.TektonTile(), "A string")
 
     def test_generate_compressed_level_data_header(self):
-        expected_result = b'\x01\x00\x02'
-        test_result = tekton_compressor._generate_compressed_level_data_header()
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_generate_compressed_level_data_header'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
 
-        self.assertEqual(expected_result, test_result)
+        for test_item in test_data:
+            expected_result = int_list_to_bytes(test_item["expected_result"])
+            actual_result = tekton_compressor._generate_compressed_level_data_header(test_item["room_width_screens"],
+                                                                                     test_item["room_height_screens"])
+            self.assertEqual(expected_result, actual_result, "Level data header did not generate correct output!")
 
     def test_compress_level_data(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
