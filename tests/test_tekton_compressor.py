@@ -212,31 +212,25 @@ class TestL1RepeaterField(unittest.TestCase):
                              actual_result,
                              "L1RepeaterField did not return correct field_header_and_reps bytes!")
 
-    def test_bts_byte(self):
+    def test_attributes_bytes(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
                                      'test_l1_repeater_field',
-                                     'test_bts_byte'
+                                     'test_attributes_bytes'
                                      )
         test_data = load_test_data_dir(test_data_dir)
 
         for test_case in test_data:
             test_field = tekton_compressor.L1RepeaterField()
+            test_field.tileno = test_case["tileno"]
             test_field.bts_type = test_case["bts_type"]
             test_field.h_mirror = test_case["h"]
             test_field.v_mirror = test_case["v"]
             expected_result = int_list_to_bytes(test_case["expected_result"])
-            self.assertEqual(test_field.bts_tile_mirror_byte,
+            self.assertEqual(test_field.attributes_bytes,
                              expected_result,
-                             "L1RepeaterField BTS Byte did not match expected result.")
-
-    def test_tileno_byte(self):
-        test_field = tekton_compressor.L1RepeaterField()
-        test_field.tileno = 10
-        expected_result = (10).to_bytes(1, byteorder="big")
-        self.assertEqual(test_field.tile_byte, expected_result,
-                         "L1RepeaterField Tile Byte did not match expected result.")
+                             "L1RepeaterField attributes_bytes did not match expected result.")
 
     def test_compressed_data(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
