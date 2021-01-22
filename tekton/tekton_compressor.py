@@ -116,8 +116,7 @@ class L1RepeaterField:
     @property
     def field_header_and_reps_bytes(self):
         field_header = int.from_bytes(b'\xe8\x01', byteorder="big")
-        field_header += (
-                                self.num_reps - 1) * 2  # bit shift num_repetitions one to the left. add it to the repeater header
+        field_header += ((self.num_reps - 1) << 1)
         return field_header.to_bytes(2, byteorder="big")
 
     @property
@@ -128,7 +127,7 @@ class L1RepeaterField:
             bytes_value += 0b0000010000000000
         if self.v_mirror:
             bytes_value += 0b0000100000000000
-        bytes_value += (self.bts_type * 0b1000000000000)
+        bytes_value += (self.bts_type << 12)
         return bytes_value.to_bytes(2, byteorder="little")
 
     @property
