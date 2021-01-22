@@ -142,6 +142,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
+                                     'test_tekton_compressor',
                                      'test_l1_repeater_field',
                                      'test_eq'
                                      )
@@ -161,6 +162,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
+                                     'test_tekton_compressor',
                                      'test_l1_repeater_field',
                                      'test_ne'
                                      )
@@ -198,6 +200,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
+                                     'test_tekton_compressor',
                                      'test_l1_repeater_field',
                                      'test_field_header_and_reps_bytes'
                                      )
@@ -216,6 +219,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
+                                     'test_tekton_compressor',
                                      'test_l1_repeater_field',
                                      'test_attributes_bytes'
                                      )
@@ -236,6 +240,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
+                                     'test_tekton_compressor',
                                      'test_l1_repeater_field',
                                      'test_compressed_data'
                                      )
