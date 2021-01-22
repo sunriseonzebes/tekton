@@ -9,9 +9,9 @@ class TestTektonTile(unittest.TestCase):
         self.assertTrue(isinstance(test_tile, tekton_tile.TektonTile))
         self.assertEqual(test_tile.bts_type, 0x00, "Test Tile BTS Type is not 0x00.")
         self.assertEqual(test_tile.bts_num, 0x00, "Test Tile BTS Number is not 0x00.")
-        self.assertEqual(test_tile.tileno, 0x00, "Test Tile Tile number is not 0x00.")
         self.assertFalse(test_tile.h_mirror, "Test Tile Horizontal Mirror is not False.")
         self.assertFalse(test_tile.v_mirror, "Test Tile Vertical Mirror is not False.")
+        self.assertEqual(test_tile._tileno, 0x00, "Test Tile _tileno is not 0x00.")
 
     def test_eq(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
@@ -46,6 +46,23 @@ class TestTektonTile(unittest.TestCase):
         test_tile = tekton_tile.TektonTile()
         with self.assertRaises(TypeError):
             test_tile != "A string"
+
+    def test_tileno(self):
+        test_tile = tekton_tile.TektonTile()
+        test_tile.tileno = 0x10a
+        expected_result = 0x10a
+
+        self.assertEqual(expected_result, test_tile.tileno, "Test Tile tileno property did not return correct value!")
+
+        with self.assertRaises(TypeError,
+                               msg="TektonTile.tileno should only accept int, but it accepted string!"):
+            test_tile.tileno = "rock"
+        with self.assertRaises(ValueError,
+                               msg="TektonTile.tileno allowed a value larger than 0x3ff, but it should not have!"):
+            test_tile.tileno = 0x400
+        with self.assertRaises(ValueError,
+                               msg="TektonTile.tileno allowed a value smaller than 0, but it should not have!"):
+            test_tile.tileno = -1
 
     def test_copy(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),

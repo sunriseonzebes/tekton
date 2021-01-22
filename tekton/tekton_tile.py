@@ -30,6 +30,8 @@ class TektonTile:
         self.h_mirror = False
         self.v_mirror = False
 
+        self._tileno = 0x00
+
     def __repr__(self):
         """Returns a textual representation of the TektonTile and its properties.
 
@@ -83,6 +85,19 @@ class TektonTile:
             raise TypeError("Must compare two TektonTile objects!")
         return not (self == other)
 
+    @property
+    def tileno(self):
+        """int: The tile number in the tileset used by this tile. Values must be between 0 and 0x3ff (1023)"""
+        return self._tileno
+
+    @tileno.setter
+    def tileno(self, new_tileno):
+        if not (isinstance(new_tileno, int)):
+            raise TypeError("tileno must be int! You can use hex notation if you like, e.g. 0x10a")
+        if new_tileno < 0 or new_tileno > 0x3ff:
+            raise ValueError("tileno must be between 0 and 0x3ff (1023)")
+        self._tileno = new_tileno
+
     def copy(self):
         """Returns a new TektonTile instance with the same attribute values as the original TektonTile.
 
@@ -94,7 +109,7 @@ class TektonTile:
 
         """
         copied = TektonTile()
-        copied.tileno = self.tileno
+        copied._tileno = self._tileno
         copied.bts_type = self.bts_type
         copied.bts_num = self.bts_num
         copied.h_mirror = self.h_mirror
