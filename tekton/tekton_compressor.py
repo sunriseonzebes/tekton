@@ -241,6 +241,12 @@ class BTSNumRepeaterField:
         return (self.num_reps - 1).to_bytes(1, byteorder="big")
 
     @property
+    def field_header_and_reps_bytes(self):
+        field_header = int.from_bytes(b'\xe4\x00', byteorder="big")
+        field_header += (self.num_reps - 1)
+        return field_header.to_bytes(2, byteorder="big")
+
+    @property
     def bts_number_byte(self):
         """bytes: One byte representing the bts number of this tile."""
         return self.bts_num.to_bytes(1, byteorder="big")
@@ -248,8 +254,7 @@ class BTSNumRepeaterField:
     @property
     def compressed_data(self):
         """str: The string of bytes representing the repeated bts number in the compressed level data."""
-        return_string = self.field_header_byte
-        return_string += self.num_reps_byte
+        return_string = self.field_header_and_reps_bytes
         return_string += self.bts_number_byte
         return return_string
 
