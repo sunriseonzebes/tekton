@@ -18,7 +18,7 @@ class TestTektonL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_l1_repeater_field',
                                      'test_eq'
                                      )
@@ -38,7 +38,7 @@ class TestTektonL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_l1_repeater_field',
                                      'test_ne'
                                      )
@@ -76,7 +76,7 @@ class TestTektonL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_l1_repeater_field',
                                      'test_field_header_and_reps_bytes'
                                      )
@@ -95,7 +95,7 @@ class TestTektonL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_l1_repeater_field',
                                      'test_attributes_bytes'
                                      )
@@ -116,7 +116,7 @@ class TestTektonL1RepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_l1_repeater_field',
                                      'test_compressed_data'
                                      )
@@ -164,7 +164,7 @@ class TestTektonBTSNumRepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_repeater_field',
                                      'test_eq'
                                      )
@@ -184,7 +184,7 @@ class TestTektonBTSNumRepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_repeater_field',
                                      'test_ne'
                                      )
@@ -204,7 +204,7 @@ class TestTektonBTSNumRepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_repeater_field',
                                      'test_field_header_and_reps_bytes'
                                      )
@@ -230,7 +230,7 @@ class TestTektonBTSNumRepeaterField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_repeater_field',
                                      'test_compressed_data'
                                      )
@@ -270,7 +270,7 @@ class TestTektonBTSNumSingleField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_single_field',
                                      'test_eq'
                                      )
@@ -286,7 +286,7 @@ class TestTektonBTSNumSingleField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_single_field',
                                      'test_ne'
                                      )
@@ -321,7 +321,7 @@ class TestTektonBTSNumSingleField(unittest.TestCase):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
                                      'unit',
-                                     'test_tekton_compressor',
+                                     'test_tekton_field',
                                      'test_bts_num_single_field',
                                      'test_compressed_data'
                                      )
