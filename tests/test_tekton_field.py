@@ -4,10 +4,10 @@ import os
 import unittest
 
 
-class TestL1RepeaterField(unittest.TestCase):
+class TestTektonL1RepeaterField(unittest.TestCase):
     def test_init(self):
-        test_field = tekton_field.L1RepeaterField()
-        self.assertTrue(isinstance(test_field, tekton_field.L1RepeaterField))
+        test_field = tekton_field.TektonL1RepeaterField()
+        self.assertTrue(isinstance(test_field, tekton_field.TektonL1RepeaterField))
         self.assertEqual(0, test_field.num_reps, "L1RepeaterField num_reps did not initialize to 0!")
         self.assertEqual(0x00, test_field.bts_type, "L1RepeaterField bts_type did not initialize to 0!")
         self.assertFalse(test_field.h_mirror, msg="L1RepeaterField h_mirror did not initialize to False!")
@@ -30,7 +30,7 @@ class TestL1RepeaterField(unittest.TestCase):
                              test_field_right,
                              "L1RepeaterField objects should be equal but they're not!")
 
-        test_field = tekton_field.L1RepeaterField()
+        test_field = tekton_field.TektonL1RepeaterField()
         with self.assertRaises(TypeError):
             test_field == "A string"
 
@@ -50,12 +50,12 @@ class TestL1RepeaterField(unittest.TestCase):
                                 test_field_right,
                                 "L1RepeaterField objects are equal but they shouldn't be!")
 
-        test_field = tekton_field.L1RepeaterField()
+        test_field = tekton_field.TektonL1RepeaterField()
         with self.assertRaises(TypeError):
             test_field != "A string"
 
     def test_tileno(self):
-        test_field = tekton_field.L1RepeaterField()
+        test_field = tekton_field.TektonL1RepeaterField()
         test_field.tileno = 0x10a
         expected_result = 0x10a
         self.assertEqual(expected_result,
@@ -83,7 +83,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
-            test_field = tekton_field.L1RepeaterField()
+            test_field = tekton_field.TektonL1RepeaterField()
             test_field.num_reps = test_item["num_reps"]
             expected_result = int_list_to_bytes(test_item["expected_result"])
             actual_result = test_field.field_header_and_reps_bytes
@@ -102,7 +102,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_case in test_data:
-            test_field = tekton_field.L1RepeaterField()
+            test_field = tekton_field.TektonL1RepeaterField()
             test_field.tileno = test_case["tileno"]
             test_field.bts_type = test_case["bts_type"]
             test_field.h_mirror = test_case["h"]
@@ -123,7 +123,7 @@ class TestL1RepeaterField(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
-            test_field = tekton_field.L1RepeaterField()
+            test_field = tekton_field.TektonL1RepeaterField()
             test_field.tileno = test_item["tileno"]
             test_field.bts_type = test_item["bts"]
             test_field.h_mirror = test_item['h_mirror']
@@ -135,8 +135,8 @@ class TestL1RepeaterField(unittest.TestCase):
             self.assertEqual(expected_result, test_result, "Error when compressing L1RepeaterField{}".format(test_item))
 
     def _get_fields_from_eq_test_data(self, test_item):
-        test_field_left = tekton_field.L1RepeaterField()
-        test_field_right = tekton_field.L1RepeaterField()
+        test_field_left = tekton_field.TektonL1RepeaterField()
+        test_field_right = tekton_field.TektonL1RepeaterField()
 
         test_field_left.tileno = test_item["left"]["tileno"]
         test_field_left.bts_type = test_item["left"]["bts"]
@@ -153,10 +153,10 @@ class TestL1RepeaterField(unittest.TestCase):
         return test_field_left, test_field_right
 
 
-class TestBTSNumRepeaterField(unittest.TestCase):
+class TestTektonBTSNumRepeaterField(unittest.TestCase):
     def test_init(self):
-        test_field = tekton_field.BTSNumRepeaterField()
-        self.assertTrue(isinstance(test_field, tekton_field.BTSNumRepeaterField))
+        test_field = tekton_field.TektonBTSNumRepeaterField()
+        self.assertTrue(isinstance(test_field, tekton_field.TektonBTSNumRepeaterField))
         self.assertEqual(0, test_field.num_reps, "BTSNumRepeaterField num_reps did not initialize to 0!")
         self.assertEqual(0x00, test_field.bts_num, "BTSNumRepeaterField bts_type did not initialize to 0!")
 
@@ -176,7 +176,7 @@ class TestBTSNumRepeaterField(unittest.TestCase):
                              test_field_right,
                              "BTSNumRepeaterField objects should be equal but they're not!")
 
-        test_field = tekton_field.BTSNumRepeaterField()
+        test_field = tekton_field.TektonBTSNumRepeaterField()
         with self.assertRaises(TypeError):
             test_field == "A string"
 
@@ -196,7 +196,7 @@ class TestBTSNumRepeaterField(unittest.TestCase):
                                 test_field_right,
                                 "BTSNumRepeaterField objects are equal but they shouldn't be!")
 
-        test_field = tekton_field.BTSNumRepeaterField()
+        test_field = tekton_field.TektonBTSNumRepeaterField()
         with self.assertRaises(TypeError):
             test_field == "A string"
 
@@ -211,7 +211,7 @@ class TestBTSNumRepeaterField(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_case in test_data:
-            test_field = tekton_field.BTSNumRepeaterField()
+            test_field = tekton_field.TektonBTSNumRepeaterField()
             test_field.num_reps = test_case["num_reps"]
             expected_result = int_list_to_bytes(test_case["expected_result"])
             self.assertEqual(test_field.field_header_and_reps_bytes,
@@ -220,7 +220,7 @@ class TestBTSNumRepeaterField(unittest.TestCase):
 
 
     def test_bts_number_byte(self):
-        test_field = tekton_field.BTSNumRepeaterField()
+        test_field = tekton_field.TektonBTSNumRepeaterField()
         test_field.bts_num = 0x7e
         expected_result = (0x7e).to_bytes(1, byteorder="big")
         self.assertEqual(expected_result, test_field.bts_number_byte,
@@ -237,7 +237,7 @@ class TestBTSNumRepeaterField(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
-            test_field = tekton_field.BTSNumRepeaterField()
+            test_field = tekton_field.TektonBTSNumRepeaterField()
             test_field.num_reps = test_item["num_reps"]
             test_field.bts_num = test_item["bts_num"]
 
@@ -248,8 +248,8 @@ class TestBTSNumRepeaterField(unittest.TestCase):
                              "Error when compressing BTSNumRepeaterField {}".format(test_item))
 
     def _get_fields_from_eq_test_data(self, test_item):
-        test_field_left = tekton_field.BTSNumRepeaterField()
-        test_field_right = tekton_field.BTSNumRepeaterField()
+        test_field_left = tekton_field.TektonBTSNumRepeaterField()
+        test_field_right = tekton_field.TektonBTSNumRepeaterField()
 
         test_field_left.bts_num = test_item["left"]["bts_num"]
         test_field_left.num_reps = test_item["left"]["num_reps"]
@@ -260,10 +260,10 @@ class TestBTSNumRepeaterField(unittest.TestCase):
         return test_field_left, test_field_right
 
 
-class TestBTSNumSingleField(unittest.TestCase):
+class TestTektonBTSNumSingleField(unittest.TestCase):
     def test_init(self):
-        test_field = tekton_field.BTSNumSingleField()
-        self.assertTrue(isinstance(test_field, tekton_field.BTSNumSingleField))
+        test_field = tekton_field.TektonBTSNumSingleField()
+        self.assertTrue(isinstance(test_field, tekton_field.TektonBTSNumSingleField))
         self.assertEqual(0x00, test_field.bts_num, "BTSNumSingleField bts_num did not initialize to 0x00!")
 
     def test_eq(self):
@@ -298,12 +298,12 @@ class TestBTSNumSingleField(unittest.TestCase):
                                 test_field_right,
                                 "BTSNumSingleField objects should not be equal but they are!")
 
-        test_field = tekton_field.BTSNumRepeaterField()
+        test_field = tekton_field.TektonBTSNumRepeaterField()
         with self.assertRaises(TypeError):
             test_field != "A string"
 
     def test_field_header_byte(self):
-        test_field = tekton_field.BTSNumSingleField()
+        test_field = tekton_field.TektonBTSNumSingleField()
         expected_result = b'\x00'
         actual_result = test_field.field_header_byte
         self.assertEqual(expected_result,
@@ -311,7 +311,7 @@ class TestBTSNumSingleField(unittest.TestCase):
                          "BTSNumSingleField did not generate correct field header byte!")
 
     def test_bts_number_byte(self):
-        test_field = tekton_field.BTSNumSingleField()
+        test_field = tekton_field.TektonBTSNumSingleField()
         test_field.bts_num = 0xc5
         expected_result = (0xc5).to_bytes(1, byteorder="big")
         self.assertEqual(expected_result, test_field.bts_number_byte,
@@ -328,7 +328,7 @@ class TestBTSNumSingleField(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
-            test_field = tekton_field.BTSNumSingleField()
+            test_field = tekton_field.TektonBTSNumSingleField()
             test_field.bts_num = test_item["bts_num"]
 
             test_result = test_field.compressed_data
@@ -338,8 +338,8 @@ class TestBTSNumSingleField(unittest.TestCase):
                              "Error when compressing BTSNumSingleField {}".format(test_item))
 
     def _get_fields_from_eq_test_data(self, test_item):
-        test_field_left = tekton_field.BTSNumRepeaterField()
-        test_field_right = tekton_field.BTSNumRepeaterField()
+        test_field_left = tekton_field.TektonBTSNumRepeaterField()
+        test_field_right = tekton_field.TektonBTSNumRepeaterField()
 
         test_field_left.bts_num = test_item["left"]["bts_num"]
         test_field_right.bts_num = test_item["right"]["bts_num"]

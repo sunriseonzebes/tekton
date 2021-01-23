@@ -1,11 +1,11 @@
 expected_result:
-  - !!python/object:tekton.tekton_compressor.L1RepeaterField
+  - !!python/object:tekton.tekton_field.TektonL1RepeaterField
     num_reps: 14
     _tileno: 10
     bts_type: 8
     h_mirror: !!bool 'false'
     v_mirror: !!bool 'false'
-  - !!python/object:tekton.tekton_compressor.L1RepeaterField
+  - !!python/object:tekton.tekton_field.TektonL1RepeaterField
     num_reps: 242
     _tileno: 3
     bts_type: 1

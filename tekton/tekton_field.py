@@ -6,7 +6,7 @@ Classes:
 """
 
 
-class L1RepeaterField:
+class TektonL1RepeaterField:
     """An object representing a single layer 1 tile repeated a specific number of times in the level data.
 
     Super Metroid employs a number of "shorthand" statements to compress level data. One of the shorthands is to
@@ -58,7 +58,7 @@ class L1RepeaterField:
         tile attributes and if they have the same number of repetitions.
 
         Args:
-            other (L1RepeaterField): Another L1RepeaterField object for comparing to this one.
+            other (TektonL1RepeaterField): Another L1RepeaterField object for comparing to this one.
 
         Returns:
             bool : True if both L1RepeaterFields have identical tile attributes and number of repetitions. Otherwise
@@ -66,7 +66,7 @@ class L1RepeaterField:
 
         """
 
-        if not isinstance(other, L1RepeaterField):
+        if not isinstance(other, TektonL1RepeaterField):
             raise TypeError("Must compare two L1RepeaterField objects!")
         return self.num_reps == other.num_reps and \
                self._tileno == other._tileno and \
@@ -81,7 +81,7 @@ class L1RepeaterField:
         tile attributes and if they have the same number of repetitions.
 
         Args:
-            other (L1RepeaterField): Another L1RepeaterField object for comparing to this one.
+            other (TektonL1RepeaterField): Another L1RepeaterField object for comparing to this one.
 
         Returns:
             bool : False if both L1RepeaterFields have identical tile attributes and number of repetitions. Otherwise
@@ -89,7 +89,7 @@ class L1RepeaterField:
 
         """
 
-        if not isinstance(other, L1RepeaterField):
+        if not isinstance(other, TektonL1RepeaterField):
             raise TypeError("Must compare two L1RepeaterField objects!")
         return not (self == other)
 
@@ -131,7 +131,7 @@ class L1RepeaterField:
         return return_string
 
 
-class BTSNumRepeaterField:
+class TektonBTSNumRepeaterField:
     """An object representing the bts number of a single tile repeated a specific number of times in the level data.
 
     Super Metroid employs a number of "shorthand" statements to compress level data. One of the shorthands is to
@@ -173,7 +173,7 @@ class BTSNumRepeaterField:
         identical bts numbers and the same number of repetitions.
 
         Args:
-            other (BTSNumRepeaterField): Another BTSNumRepeaterField object for comparing to this one.
+            other (TektonBTSNumRepeaterField): Another BTSNumRepeaterField object for comparing to this one.
 
         Returns:
             bool : True if both BTSNumRepeaterFields have identical tile attributes and number of repetitions. Otherwise
@@ -181,7 +181,7 @@ class BTSNumRepeaterField:
 
         """
 
-        if not isinstance(other, BTSNumRepeaterField):
+        if not isinstance(other, TektonBTSNumRepeaterField):
             raise TypeError("Must compare two BTSNumRepeaterField objects!")
         return self.num_reps == other.num_reps and \
                self.bts_num == other.bts_num
@@ -193,7 +193,7 @@ class BTSNumRepeaterField:
         identical bts numbers and the same number of repetitions.
 
         Args:
-            other (BTSNumRepeaterField): Another BTSNumRepeaterField object for comparing to this one.
+            other (TektonBTSNumRepeaterField): Another BTSNumRepeaterField object for comparing to this one.
 
         Returns:
             bool : False if both BTSNumRepeaterFields have identical bts numbers and number of repetitions. Otherwise
@@ -201,7 +201,7 @@ class BTSNumRepeaterField:
 
         """
 
-        if not isinstance(other, BTSNumRepeaterField):
+        if not isinstance(other, TektonBTSNumRepeaterField):
             raise TypeError("Must compare two BTSNumRepeaterField objects!")
         return not (self == other)
 
@@ -224,7 +224,7 @@ class BTSNumRepeaterField:
         return return_string
 
 
-class BTSNumSingleField:
+class TektonBTSNumSingleField:
     """An object representing the BTS number of a single tile in compressed level data.
 
     Super Metroid employs a number of "shorthand" statements in its compressed level data. Often these shorthands
@@ -262,7 +262,7 @@ class BTSNumSingleField:
         identical bts numbers.
 
         Args:
-            other (BTSNumSingleField): Another BTSNumSingleField object for comparing to this one.
+            other (TektonBTSNumSingleField): Another BTSNumSingleField object for comparing to this one.
 
         Returns:
             bool : True if both BTSNumSingleFields have identical tile attributes and number of repetitions. Otherwise
@@ -270,7 +270,7 @@ class BTSNumSingleField:
 
         """
 
-        if not isinstance(other, BTSNumSingleField):
+        if not isinstance(other, TektonBTSNumSingleField):
             raise TypeError("Must compare two BTSNumSingleField objects!")
         return self.bts_num == other.bts_num
 

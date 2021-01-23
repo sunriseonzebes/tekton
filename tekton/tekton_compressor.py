@@ -6,7 +6,7 @@ can understand.
 Functions:
     compress_level_data: converts a TektonTileGrid into compressed level data.
 """
-from .tekton_field import L1RepeaterField, BTSNumRepeaterField, BTSNumSingleField
+from .tekton_field import TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
 from .tekton_tile import TektonTile
 
 
@@ -40,7 +40,7 @@ def _find_layer_1_fields_for_compression(level_data):
     while counter < max_tiles:
         current_tile = level_data[counter % level_data.width][counter // level_data.width]
         if not _tiles_layer_1_equivalent(current_tile, first_tile_in_field):
-            new_field = L1RepeaterField()
+            new_field = TektonL1RepeaterField()
             new_field.tileno = first_tile_in_field.tileno
             new_field.bts_type = first_tile_in_field.bts_type
             new_field.h_mirror = first_tile_in_field.h_mirror
@@ -52,7 +52,7 @@ def _find_layer_1_fields_for_compression(level_data):
         counter += 1
 
     # Write the last block
-    new_field = L1RepeaterField()
+    new_field = TektonL1RepeaterField()
     new_field.tileno = first_tile_in_field.tileno
     new_field.bts_type = first_tile_in_field.bts_type
     new_field.h_mirror = first_tile_in_field.h_mirror
@@ -75,9 +75,9 @@ def _find_bts_layer_fields_for_compression(level_data):
         current_tile = level_data[counter % level_data.width][counter // level_data.width]
         if not _tiles_bts_layer_equivalent(current_tile, first_tile_in_field):
             if (counter - last_bts_num_change) == 1:
-                new_field = BTSNumSingleField()
+                new_field = TektonBTSNumSingleField()
             else:
-                new_field = BTSNumRepeaterField()
+                new_field = TektonBTSNumRepeaterField()
                 new_field.num_reps = counter - last_bts_num_change
             new_field.bts_num = first_tile_in_field.bts_num
             field_list.append(new_field)
@@ -86,7 +86,7 @@ def _find_bts_layer_fields_for_compression(level_data):
         counter += 1
 
     # Write the last block
-    new_field = BTSNumRepeaterField()
+    new_field = TektonBTSNumRepeaterField()
     new_field.bts_num = first_tile_in_field.bts_num
     new_field.num_reps = counter - last_bts_num_change
     field_list.append(new_field)

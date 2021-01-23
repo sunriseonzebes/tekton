@@ -1,14 +1,14 @@
 expected_result:
-  - !!python/object:tekton.tekton_compressor.BTSNumRepeaterField
+  - !!python/object:tekton.tekton_field.TektonBTSNumRepeaterField
     num_reps: 191
     bts_num: 0x12
-  - !!python/object:tekton.tekton_compressor.BTSNumRepeaterField
+  - !!python/object:tekton.tekton_field.TektonBTSNumRepeaterField
     num_reps: 193
     bts_num: 0x23
-  - !!python/object:tekton.tekton_compressor.BTSNumRepeaterField
+  - !!python/object:tekton.tekton_field.TektonBTSNumRepeaterField
     num_reps: 182
     bts_num: 0x34
-  - !!python/object:tekton.tekton_compressor.BTSNumRepeaterField
+  - !!python/object:tekton.tekton_field.TektonBTSNumRepeaterField
     num_reps: 202
     bts_num: 0x45
 room_width: 3

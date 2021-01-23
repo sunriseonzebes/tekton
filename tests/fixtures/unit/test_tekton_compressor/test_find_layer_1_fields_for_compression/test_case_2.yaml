@@ -1,5 +1,5 @@
 expected_result:
-  - !!python/object:tekton.tekton_compressor.L1RepeaterField
+  - !!python/object:tekton.tekton_field.TektonL1RepeaterField
     num_reps: 256
     _tileno: 5
     bts_type: 4
