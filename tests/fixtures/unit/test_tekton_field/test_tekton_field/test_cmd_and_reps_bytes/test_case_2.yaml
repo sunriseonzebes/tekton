@@ -1,0 +1,5 @@
+num_bytes: 73
+command_code: 0b000
+expected_result:
+  - 0xe0
+  - 0x48

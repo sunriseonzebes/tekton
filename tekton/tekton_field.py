@@ -6,6 +6,38 @@ Classes:
 """
 
 
+class TektonField:
+    command_code = 0b000
+    extended_command_code = 0b111
+
+    def __init__(self):
+        self._num_bytes = 1
+
+    @property
+    def num_bytes(self):
+        return self._num_bytes
+
+    @num_bytes.setter
+    def num_bytes(self, new_value):
+        if not isinstance(new_value, int):
+            raise TypeError("num_bytes must be int! You may use hex notation if you like, e.g. 0xa2")
+        if new_value < 1 or new_value > 1023:
+            raise ValueError("num_bytes must be between 1 and 1023! You may use hex notation if you like, e.g. 0xa2")
+        self._num_bytes = new_value
+
+    @property
+    def cmd_and_reps_bytes(self):
+        if self._num_bytes < 32:
+            return_value = self.command_code << 5
+            return_value += (self._num_bytes - 1)
+            return return_value.to_bytes(1, byteorder="big")
+        else:
+            return_value = self.extended_command_code << 13
+            return_value += (self.command_code << 10)
+            return_value += (self._num_bytes - 1)
+            return return_value.to_bytes(2, byteorder="big")
+
+
 class TektonL1RepeaterField:
     """An object representing a single layer 1 tile repeated a specific number of times in the level data.
 
