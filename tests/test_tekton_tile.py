@@ -64,6 +64,33 @@ class TestTektonTile(unittest.TestCase):
                                msg="TektonTile.tileno allowed a value smaller than 0, but it should not have!"):
             test_tile.tileno = -1
 
+    def test_l1_attributes_bytes(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_tile',
+                                     'test_attributes_bytes'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            test_tile = tekton_tile.TektonTile()
+            test_tile.tileno = test_case["tileno"]
+            test_tile.bts_type = test_case["bts_type"]
+            test_tile.h_mirror = test_case["h"]
+            test_tile.v_mirror = test_case["v"]
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            self.assertEqual(test_tile.l1_attributes_bytes,
+                             expected_result,
+                             "TektonTile l1_attributes_bytes did not match expected result.")
+
+    def test_bts_number_byte(self):
+        test_tile = tekton_tile.TektonTile()
+        test_tile.bts_num = 0x7e
+        expected_result = (0x7e).to_bytes(1, byteorder="big")
+        self.assertEqual(expected_result, test_tile.bts_number_byte,
+                         "TektonTile BTS Number Byte did not match expected result.")
+
     def test_copy(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',

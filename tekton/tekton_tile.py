@@ -98,6 +98,22 @@ class TektonTile:
             raise ValueError("tileno must be between 0 and 0x3ff (1023)")
         self._tileno = new_tileno
 
+    @property
+    def l1_attributes_bytes(self):
+        """bytes: Two bytes representing the tile number, tile mirror, and bts data of this tile."""
+        bytes_value = self._tileno
+        if self.h_mirror:
+            bytes_value += 0b0000010000000000
+        if self.v_mirror:
+            bytes_value += 0b0000100000000000
+        bytes_value += (self.bts_type << 12)
+        return bytes_value.to_bytes(2, byteorder="little")
+
+    @property
+    def bts_number_byte(self):
+        """bytes: One byte representing the bts number of this tile."""
+        return self.bts_num.to_bytes(1, byteorder="big")
+
     def copy(self):
         """Returns a new TektonTile instance with the same attribute values as the original TektonTile.
 
