@@ -1,0 +1,5 @@
+bytes_data:
+  - 0xce
+expected_result:
+  - 0x00
+  - 0xce

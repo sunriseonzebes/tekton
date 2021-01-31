@@ -37,6 +37,38 @@ class TektonField:
             return_value += (self._num_bytes - 1)
             return return_value.to_bytes(2, byteorder="big")
 
+class TektonDirectCopyField(TektonField):
+    command_code = 0b000
+
+    def __init__(self):
+        super(TektonDirectCopyField, self).__init__()
+        self._bytes_data = b'\x00'
+
+    @property
+    def bytes_data(self):
+        return self._bytes_data
+
+    @bytes_data.setter
+    def bytes_data(self, new_bytes_data):
+        if not isinstance(new_bytes_data, (int, bytes)):
+            raise TypeError("bytes_data must be of type bytes or int. You may use hex notation, e.g. 0xfa")
+        if isinstance(new_bytes_data, int):
+            if new_bytes_data < 0:
+                raise ValueError("bytes_data must be a positive integer!")
+            new_bytes_data = new_bytes_data.to_bytes((new_bytes_data.bit_length() // 8) + 1, byteorder="big")
+        elif isinstance(new_bytes_data, bytes):
+            if len(new_bytes_data) < 1:
+                raise ValueError("bytes_data must contain at least one byte!")
+        self._bytes_data = new_bytes_data
+        self._num_bytes = len(self._bytes_data)
+
+    @property
+    def compressed_data(self):
+        return_string = self.cmd_and_reps_bytes
+        return_string += self._bytes_data
+
+        return return_string
+
 
 class TektonByteFillField(TektonField):
     command_code = 0b001

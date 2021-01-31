@@ -44,7 +44,6 @@ class TektonCompressionMapper:
         new_field = TektonByteFillField()
         new_field.num_bytes = num_bytes
         new_field.byte = byte
-        print(new_field.byte)
         for i in range(start_offset, start_offset+num_bytes):
             self._byte_map[i] = new_field
 
