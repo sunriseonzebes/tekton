@@ -37,7 +37,23 @@ class TestTektonCompressionMapper(unittest.TestCase):
                 expected_field = test_case["expected_results"][field_num]
                 actual_field = actual_result[field_num]
                 expected_type = self._get_expected_type(expected_field["type"])
-                self.assertTrue(isinstance(actual_field, expected_type))
+                self.assertTrue(isinstance(actual_field, expected_type),
+                                msg="Field {} should be {} but is {}!".format(field_num,
+                                                                                  expected_type,
+                                                                                  type(actual_field)))
+                if isinstance(actual_field, tekton_field.TektonDirectCopyField):
+                    expected_bytes_data = int_list_to_bytes(expected_field["bytes_data"])
+                    self.assertEqual(expected_bytes_data,
+                                     actual_field.bytes_data,
+                                     "Field {} does not have correct bytes data!".format(field_num))
+                if isinstance(actual_field, tekton_field.TektonByteFillField):
+                    self.assertEqual(expected_field["num_bytes"],
+                                     actual_field.num_bytes,
+                                     "Field {} does not have correct num_bytes data!".format(field_num))
+                    self.assertEqual(expected_field["byte"].to_bytes(1, byteorder="big"),
+                                     actual_field.byte,
+                                     "Field {} does not have correct byte data!".format(field_num))
+
 
     def test_map_repeating_bytes_fields(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
