@@ -1,5 +1,6 @@
-from testing_common import tekton
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_tiles
 from tekton import tekton_tile_grid, tekton_tile
+import os
 import unittest
 
 class TestTektonTileGrid(unittest.TestCase):
@@ -37,3 +38,21 @@ class TestTektonTileGrid(unittest.TestCase):
         for col in range(width):
             for row in range(height):
                 self.assertTrue(isinstance(test_grid._tiles[col][row], tekton_tile.TektonTile))
+
+    def test_uncompressed_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_tile_grid',
+                                     'test_uncompressed_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            test_room = load_room_from_test_tiles(test_case)
+            actual_result = test_room.tiles.uncompressed_data
+            self.assertEqual(expected_result,
+                             actual_result,
+                             "Test room did not produce correct uncompressed data!")
+

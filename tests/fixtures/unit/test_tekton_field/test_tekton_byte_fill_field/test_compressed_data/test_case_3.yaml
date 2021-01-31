@@ -1,0 +1,6 @@
+num_bytes: 99
+byte: 0x88
+expected_result:
+  - 0xe4
+  - 0x62
+  - 0x88

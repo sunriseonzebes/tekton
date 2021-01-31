@@ -45,6 +45,20 @@ class TektonTileGrid:
         """int: Number of rows contained in the TektonTileGrid."""
         return len(self._tiles[0])
 
+    @property
+    def uncompressed_data(self):
+        """bytes: String of uncompressed data, matching what the level data looks like in game RAM."""
+        return_string = b''
+        for y in range(self.height):
+            for x in range(self.width):
+                return_string += self._tiles[x][y].l1_attributes_bytes
+        for y in range(self.height):
+            for x in range(self.width):
+                return_string += self._tiles[x][y].bts_number_byte
+
+        return return_string
+
+
     def fill(self):
         """Fills every column/row in the TektonTileGrid with a default TektonTile object."""
         for row in range(self.height):

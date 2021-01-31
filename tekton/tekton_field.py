@@ -38,6 +38,39 @@ class TektonField:
             return return_value.to_bytes(2, byteorder="big")
 
 
+class TektonByteFillField(TektonField):
+    command_code = 0b001
+
+    def __init__(self):
+        super(TektonByteFillField, self).__init__()
+        self._byte = b'\x00'
+
+    @property
+    def byte(self):
+        """bytes: Returns the byte value which this field is filled with."""
+        return self._byte
+
+    @byte.setter
+    def byte(self, new_byte):
+        if not isinstance(new_byte, (int, bytes)):
+            raise TypeError("byte property must be of type int or bytes! You may use hex notation, e.g. 0x1f")
+        if isinstance(new_byte, int):
+            if new_byte < 0 or new_byte > 255:
+                raise ValueError("byte value must be between 0 and 255 (0x00 and 0xff)")
+            new_byte = new_byte.to_bytes(1, byteorder="big")
+        elif isinstance(new_byte, bytes):
+            if len(new_byte) != 1:
+                raise ValueError("byte must be a single byte!")
+        self._byte = new_byte
+
+    @property
+    def compressed_data(self):
+        return_string = self.cmd_and_reps_bytes
+        return_string += self._byte
+
+        return return_string
+
+
 class TektonL1RepeaterField:
     """An object representing a single layer 1 tile repeated a specific number of times in the level data.
 

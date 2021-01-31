@@ -1,0 +1,24 @@
+expected_results:
+  - start_index: 0
+    end_index: 15
+    field:
+      type: "TektonByteFillField"
+      num_bytes: 16
+      byte: 0x00
+uncompressed_data:
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00

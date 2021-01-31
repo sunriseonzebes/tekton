@@ -6,11 +6,73 @@ can understand.
 Functions:
     compress_level_data: converts a TektonTileGrid into compressed level data.
 """
-from .tekton_field import TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
+from .tekton_field import TektonByteFillField, TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
 from .tekton_tile import TektonTile
 
 
-# TODO: Superclass the RepeaterField objects? or all Field objects?
+class TektonCompressionMapper:
+    def __init__(self):
+        self.uncompressed_data = b''
+        self._byte_map = []
+
+
+    @property
+    def compressed_data(self):
+        self._map_fields()
+        compression_fields = self._generate_compression_fields()
+
+
+    def _map_repeating_byte_fields(self):
+        counter = 0
+        last_byte_change_index = counter
+
+        while counter < len(self.uncompressed_data):
+            current_byte = self.uncompressed_data[counter]
+            last_byte_changed = self.uncompressed_data[last_byte_change_index]
+            num_bytes = counter - last_byte_change_index
+            if num_bytes == 1024 or current_byte != last_byte_changed:
+                if num_bytes > 1:
+                    self._map_repeating_byte_field(last_byte_changed, num_bytes, last_byte_change_index)
+                last_byte_change_index = counter
+            counter += 1
+        last_byte_changed = self.uncompressed_data[last_byte_change_index]
+        num_bytes = counter - last_byte_change_index
+        if num_bytes > 1:
+            self._map_repeating_byte_field(last_byte_changed, num_bytes, last_byte_change_index)
+
+    def _map_repeating_byte_field(self, byte, num_bytes, start_offset):
+        new_field = TektonByteFillField()
+        new_field.num_bytes = num_bytes
+        new_field.byte = byte
+        print(new_field.byte)
+        for i in range(start_offset, start_offset+num_bytes):
+            self._byte_map[i] = new_field
+
+    def _init_byte_map(self):
+        self._byte_map = [None for i in range(len(self.uncompressed_data))]
+
+    def _map_fields(self):
+        if len(self.uncompressed_data) < 1:
+            return
+
+        self._map_repeating_byte_fields()
+
+    def _generate_compression_fields(self):
+        compression_fields = []
+        if len(self._byte_map) < 1:
+            return compression_fields
+        last_field = self._byte_map[0]
+        for i in range(len(self._byte_map)):
+            current_field = self._byte_map[i]
+            if current_field != last_field:
+                compression_fields.append(last_field)
+                last_field = current_field
+        compression_fields.append(current_field)
+
+        return compression_fields
+
+
+
 
 
 def _find_layer_1_fields_for_compression(level_data):

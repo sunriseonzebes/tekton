@@ -1,0 +1,5 @@
+num_bytes: 21
+byte: 0xde
+expected_result:
+  - 0x34
+  - 0xde

@@ -45,6 +45,49 @@ class TestTektonField(unittest.TestCase):
             self.assertEqual(expected_result, actual_result, "cmd_and_reps_bytes did not return correct result!")
 
 
+class TestTektonByteFillField(unittest.TestCase):
+    def test_init(self):
+        test_field = tekton_field.TektonByteFillField()
+        self.assertTrue(isinstance(test_field, tekton_field.TektonByteFillField))
+        self.assertEqual(1, test_field.num_bytes, "TektonByteFilLField num_bytes initialized with incorrect value!")
+        self.assertEqual(b'\x00', test_field._byte, "TektonByteFilLField byte initialized with incorrect value!")
+
+    def test_byte(self):
+        test_field = tekton_field.TektonByteFillField()
+        test_field.byte = b'\xaf'
+        self.assertEqual(b'\xaf', test_field.byte, "TektonByteFillField byte was not set properly!")
+        test_field.byte = 0x4d
+        self.assertEqual(b'\x4d', test_field.byte, "TektonByteFillField byte was not set properly!")
+        with self.assertRaises(TypeError):
+            test_field.byte = "A string."
+        with self.assertRaises(ValueError):
+            test_field.byte = b''
+        with self.assertRaises(ValueError):
+            test_field.byte = b'\x12\x34'
+        with self.assertRaises(ValueError):
+            test_field.byte = -1
+        with self.assertRaises(ValueError):
+            test_field.byte = 0x1234
+
+    def test_compressed_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_field',
+                                     'test_tekton_byte_fill_field',
+                                     'test_compressed_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            test_field = tekton_field.TektonByteFillField()
+            test_field.num_bytes = test_case["num_bytes"]
+            test_field.byte = test_case["byte"]
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            actual_result = test_field.compressed_data
+            self.assertEqual(expected_result, actual_result, "TektonByteFillField did not compress correctly!")
+
+
 
 class TestTektonL1RepeaterField(unittest.TestCase):
     def test_init(self):
