@@ -88,7 +88,6 @@ class TestTektonDirectCopyField(unittest.TestCase):
             self.assertEqual(expected_result, actual_result, "TektonDirectCopyField compressed_data is wrong!")
 
 
-
 class TestTektonByteFillField(unittest.TestCase):
     def test_init(self):
         test_field = tekton_field.TektonByteFillField()
@@ -130,6 +129,48 @@ class TestTektonByteFillField(unittest.TestCase):
             expected_result = int_list_to_bytes(test_case["expected_result"])
             actual_result = test_field.compressed_data
             self.assertEqual(expected_result, actual_result, "TektonByteFillField did not compress correctly!")
+
+
+class TestTektonWordFillField(unittest.TestCase):
+    def test_init(self):
+        test_field = tekton_field.TektonWordFillField()
+        self.assertTrue(isinstance(test_field, tekton_field.TektonWordFillField))
+        self.assertEqual(b'\x00\x00', test_field._word, "TektonWordFillField _word did not initialize correctly!")
+
+    def test_word(self):
+        test_field = tekton_field.TektonWordFillField()
+        test_field.word = b'\xaf\x46'
+        self.assertEqual(b'\xaf\x46', test_field.word, "TektonWordFillField word returned wrong value!")
+        test_field.word = 0xaf46
+        self.assertEqual(b'\xaf\x46', test_field.word, "TektonWordFillField word returned wrong value!")
+        with self.assertRaises(TypeError):
+            test_field.word = "A string."
+        with self.assertRaises(ValueError):
+            test_field.word = b'\x12'
+        with self.assertRaises(ValueError):
+            test_field.word = b'\x12\x34\x56'
+        with self.assertRaises(ValueError):
+            test_field.word = -1
+        with self.assertRaises(ValueError):
+            test_field.word = 70000
+
+    def test_compressed_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_field',
+                                     'test_tekton_word_fill_field',
+                                     'test_compressed_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            test_field = tekton_field.TektonWordFillField()
+            test_field.num_bytes = test_case["num_bytes"]
+            test_field.word = int_list_to_bytes(test_case["word"])
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            actual_result = test_field.compressed_data
+            self.assertEqual(expected_result, actual_result, "TektonWordFillField did not compress correctly!")
 
 
 

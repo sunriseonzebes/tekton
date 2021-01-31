@@ -37,6 +37,11 @@ class TektonField:
             return_value += (self._num_bytes - 1)
             return return_value.to_bytes(2, byteorder="big")
 
+    @property
+    def compressed_data(self):
+        pass
+
+
 class TektonDirectCopyField(TektonField):
     command_code = 0b000
 
@@ -101,6 +106,39 @@ class TektonByteFillField(TektonField):
         return_string += self._byte
 
         return return_string
+
+
+class TektonWordFillField(TektonField):
+    command_code = 0b010
+
+    def __init__(self):
+        super(TektonWordFillField, self).__init__()
+        self._word = b'\x00\x00'
+
+    @property
+    def word(self):
+        return self._word
+
+    @word.setter
+    def word(self, new_word):
+        if not isinstance(new_word, (int, bytes)):
+            raise TypeError("word must be of type int or bytes. You may use hex notation, e.g. 0x39f2")
+        if isinstance(new_word, bytes):
+            if len(new_word) != 2:
+                raise ValueError("word must contain exactly two bytes!")
+        if isinstance(new_word, int):
+            if new_word < 0 or new_word > 65535:
+                raise ValueError("word must be between 0 and 65535 (0x0000 and 0xffff)")
+            new_word = new_word.to_bytes(2, byteorder="big")
+        self._word = new_word
+
+    @property
+    def compressed_data(self):
+        return_string = self.cmd_and_reps_bytes
+        return_string += self._word
+
+        return return_string
+
 
 
 class TektonL1RepeaterField:
