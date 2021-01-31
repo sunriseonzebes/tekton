@@ -6,7 +6,7 @@ can understand.
 Functions:
     compress_level_data: converts a TektonTileGrid into compressed level data.
 """
-from .tekton_field import TektonByteFillField, TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
+from .tekton_field import TektonByteFillField, TektonDirectCopyField, TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
 from .tekton_tile import TektonTile
 
 
@@ -44,6 +44,38 @@ class TektonCompressionMapper:
         new_field = TektonByteFillField()
         new_field.num_bytes = num_bytes
         new_field.byte = byte
+        for i in range(start_offset, start_offset+num_bytes):
+            self._byte_map[i] = new_field
+
+    def _map_direct_copy_fields(self):
+        counter = 0
+        last_unmapped_byte_index = None
+
+        while counter < len(self.uncompressed_data):
+            if last_unmapped_byte_index is not None:
+                num_bytes = counter - last_unmapped_byte_index
+            if self._byte_map[counter] is not None:
+                if last_unmapped_byte_index is not None:
+                    print(num_bytes)
+                    self._map_direct_copy_field(num_bytes, last_unmapped_byte_index)
+                    last_unmapped_byte_index = None
+            else:
+                if last_unmapped_byte_index is None:
+                    last_unmapped_byte_index = counter
+                else:
+                    if num_bytes > 1024: # Max size for Field, need to split it into two fields at this point
+                        self._map_direct_copy_field(num_bytes, last_unmapped_byte_index)
+                        last_unmapped_byte_index = counter
+            counter += 1
+
+
+        if last_unmapped_byte_index is not None:
+            num_bytes = counter - last_unmapped_byte_index
+            self._map_direct_copy_field(num_bytes, last_unmapped_byte_index)
+
+    def _map_direct_copy_field(self, num_bytes, start_offset):
+        new_field = TektonDirectCopyField()
+        new_field.bytes_data = self.uncompressed_data[start_offset:start_offset+num_bytes]
         for i in range(start_offset, start_offset+num_bytes):
             self._byte_map[i] = new_field
 

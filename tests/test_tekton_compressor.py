@@ -74,10 +74,50 @@ class TestTektonCompressionMapper(unittest.TestCase):
                                      test_mapper._byte_map[i],
                                      error_message.format(i, start_index))
 
+    def test_map_direct_copy_fields(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_map_direct_copy_fields'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            test_mapper = tekton_compressor.TektonCompressionMapper()
+            test_mapper.uncompressed_data = int_list_to_bytes(test_case["uncompressed_data"])
+            test_mapper._init_byte_map()
+            if "test_fills" in test_case.keys():
+                test_fill_field = tekton_field.TektonField()
+                for test_fill in test_case["test_fills"]:
+                    for i in range(test_fill["start_index"], test_fill["end_index"]+1):
+                        test_mapper._byte_map[i] = test_fill_field
+            test_mapper._map_direct_copy_fields()
+            for result in test_case["expected_results"]:
+                start_index = result["start_index"]
+                end_index = result["end_index"]
+                expected_field = result["field"]
+                expected_type = self._get_expected_type(expected_field["type"])
+                actual_field = test_mapper._byte_map[start_index]
+                self.assertTrue(isinstance(actual_field, expected_type))
+                if isinstance(actual_field, tekton_field.TektonDirectCopyField):
+                    self.assertEqual(int_list_to_bytes(expected_field["bytes_data"]),
+                                     actual_field.bytes_data,
+                                     "map_direct_copy_fields yielded incorrect bytes_data value at index {}!".format(start_index))
+                for i in range(start_index, end_index+1):
+                    error_message = "map_direct_copy_fields did not map fields correctly! " \
+                                    "Object at index {} should match object at index {}"
+                    self.assertEqual(actual_field,
+                                     test_mapper._byte_map[i],
+                                     error_message.format(i, start_index))
+
+
 
     def _get_expected_type(self, type_string):
         if type_string == "TektonByteFillField":
             return tekton_field.TektonByteFillField
+        if type_string == "TektonDirectCopyField":
+            return tekton_field.TektonDirectCopyField
         if type_string == "NoneType":
             return type(None)
         else:
