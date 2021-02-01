@@ -14,14 +14,16 @@ expected_results:
       - 0x0b
       - 0x97
   - type: "TektonByteFillField"
-    num_bytes: 470
+    num_bytes: 469
     byte: 0x00
-  - type: "TektonDirectCopyField"
-    bytes_data:
+  - type: "TektonWordFillField"
+    num_bytes:
+    word:
+      - 0x00
       - 0x01
   - type: "TektonByteFillField"
-    num_bytes: 215
-    byte: 0x04
+    num_bytes: 214
+    byte: 0x00
 room_width: 1
 room_height: 1
 test_tiles:
@@ -51,4 +53,4 @@ test_tiles:
     tile:
       tileno: 0x000
       bts_type: 0x00
-      bts_num: 0x04
+      bts_num: 0x00

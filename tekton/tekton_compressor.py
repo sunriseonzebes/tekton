@@ -25,6 +25,7 @@ class TektonCompressionMapper:
         if len(self.uncompressed_data) < 1:
             return
 
+        self._map_repeating_word_fields()
         self._map_repeating_byte_fields()
         self._map_direct_copy_fields()
 
@@ -58,17 +59,19 @@ class TektonCompressionMapper:
         for i in range(start_index, start_index + num_bytes):
             self._byte_map[i] = new_field
 
-
-
     def _map_repeating_byte_fields(self):
         counter = 0
         last_byte_change_index = counter
 
         while counter < len(self.uncompressed_data):
+            if self._byte_map[last_byte_change_index] is not None:
+                counter += 1
+                last_byte_change_index = counter
+                continue
             current_byte = self.uncompressed_data[counter]
             last_byte_changed = self.uncompressed_data[last_byte_change_index]
             num_bytes = counter - last_byte_change_index
-            if num_bytes == 1024 or current_byte != last_byte_changed:
+            if num_bytes == 1024 or current_byte != last_byte_changed or self._byte_map[counter] is not None:
                 if num_bytes > 1:
                     self._map_repeating_byte_field(last_byte_changed, num_bytes, last_byte_change_index)
                 last_byte_change_index = counter
