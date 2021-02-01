@@ -6,7 +6,7 @@ can understand.
 Functions:
     compress_level_data: converts a TektonTileGrid into compressed level data.
 """
-from .tekton_field import TektonByteFillField, TektonDirectCopyField, TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
+from .tekton_field import TektonWordFillField, TektonByteFillField, TektonDirectCopyField, TektonL1RepeaterField, TektonBTSNumRepeaterField, TektonBTSNumSingleField
 from .tekton_tile import TektonTile
 
 
@@ -27,6 +27,38 @@ class TektonCompressionMapper:
 
         self._map_repeating_byte_fields()
         self._map_direct_copy_fields()
+
+    def _map_repeating_word_fields(self):
+        counter = 0
+        lookahead_offset = 0
+
+        while counter < len(self.uncompressed_data) - 1:
+            current_word = self.uncompressed_data[counter:counter+2]
+            if current_word[0] == current_word[1]:
+                counter += 1
+                continue  # Don't want a word fill field whose bytes are identical, that should be a byte fill field
+            for lookahead_counter in range(counter, len(self.uncompressed_data) + 1):
+                num_bytes = lookahead_counter - counter
+                lookahead_byte = self.uncompressed_data[lookahead_counter:lookahead_counter+1]
+                compare_byte = current_word[num_bytes%2:(num_bytes%2)+1]
+                if compare_byte != lookahead_byte or \
+                        lookahead_counter == len(self.uncompressed_data) or \
+                        num_bytes == 1024:
+                    if num_bytes > 2:
+                        self._map_repeating_word_field(current_word, num_bytes, counter)
+                        counter = lookahead_counter
+                    else:
+                        counter += 1
+                    break
+
+    def _map_repeating_word_field(self, word, num_bytes, start_index):
+        new_field = TektonWordFillField()
+        new_field.num_bytes = num_bytes
+        new_field.word = word
+        for i in range(start_index, start_index + num_bytes):
+            self._byte_map[i] = new_field
+
+
 
     def _map_repeating_byte_fields(self):
         counter = 0
@@ -72,7 +104,6 @@ class TektonCompressionMapper:
                         self._map_direct_copy_field(num_bytes, last_unmapped_byte_index)
                         last_unmapped_byte_index = counter
             counter += 1
-
 
         if last_unmapped_byte_index is not None:
             num_bytes = counter - last_unmapped_byte_index
