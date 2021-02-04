@@ -13,6 +13,44 @@ class TestTektonCompressionMapper(unittest.TestCase):
         self.assertEqual([],
                          test_mapper._byte_map,
                          "TektonCompressionMapper _byte_map did not init with correct value!")
+        self.assertEqual(1,
+                         test_mapper._width_screens,
+                         "TektonCompressionMapper _width_screens did not init with correct value!")
+        self.assertEqual(1,
+                         test_mapper._height_screens,
+                         "TektonCompressionMapper _height_screens did not init with correct value!")
+
+    def test_width_screens(self):
+        test_mapper = tekton_compressor.TektonCompressionMapper()
+        test_mapper.width_screens = 4
+        self.assertEqual(4,
+                         test_mapper.width_screens,
+                         "TektonCompressionMapper did not return correct width_screens value.")
+        with self.assertRaises(ValueError):
+            test_mapper.width_screens = 0
+        with self.assertRaises(ValueError):
+            test_mapper.width_screens = 51
+        with self.assertRaises(ValueError):
+            test_mapper._height_screens = 10
+            test_mapper.width_screens = 6
+        with self.assertRaises(TypeError):
+            test_mapper.width_screens = "A string."
+
+    def test_height_screens(self):
+        test_mapper = tekton_compressor.TektonCompressionMapper()
+        test_mapper.height_screens = 4
+        self.assertEqual(4,
+                         test_mapper.height_screens,
+                         "TektonCompressionMapper did not return correct width_screens value.")
+        with self.assertRaises(ValueError):
+            test_mapper.height_screens = 0
+        with self.assertRaises(ValueError):
+            test_mapper.height_screens = 51
+        with self.assertRaises(ValueError):
+            test_mapper._width_screens = 8
+            test_mapper.height_screens = 8
+        with self.assertRaises(TypeError):
+            test_mapper.height_screens = "A string."
 
     def test_map_fields(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),

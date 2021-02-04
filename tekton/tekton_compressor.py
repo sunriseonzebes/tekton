@@ -14,7 +14,36 @@ class TektonCompressionMapper:
     def __init__(self):
         self.uncompressed_data = b''
         self._byte_map = []
+        self._width_screens = 1
+        self._height_screens = 1
 
+    @property
+    def width_screens(self):
+        return self._width_screens
+
+    @width_screens.setter
+    def width_screens(self, new_width):
+        if not isinstance(new_width, int):
+            raise TypeError("width_screens must be of type int!")
+        if new_width < 1:
+            raise ValueError("width_screens must be 1 or greater.")
+        if (new_width * self._height_screens) > 50:
+            raise ValueError("Room must not contain more than 50 screens! (width_screens * height_screens <= 50)")
+        self._width_screens = new_width
+
+    @property
+    def height_screens(self):
+        return self._height_screens
+
+    @height_screens.setter
+    def height_screens(self, new_height):
+        if not isinstance(new_height, int):
+            raise TypeError("height_screens must be of type int!")
+        if new_height < 1:
+            raise ValueError("height_screens must be 1 or greater.")
+        if (new_height * self._width_screens) > 50:
+            raise ValueError("Room must not contain more than 50 screens! (width_screens * height_screens <= 50)")
+        self._height_screens = new_height
 
     @property
     def compressed_data(self):
