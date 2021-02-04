@@ -98,6 +98,24 @@ class TestTektonCompressionMapper(unittest.TestCase):
                                      test_mapper._byte_map[i],
                                      "Incorrect field at byte map index {}!".format(i))
 
+    def test_compressed_level_data_header(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_compressor',
+                                     'test_compressed_level_data_header'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            test_mapper = tekton_compressor.TektonCompressionMapper()
+            test_mapper.width_screens = test_case["room_width_screens"]
+            test_mapper.height_screens = test_case["room_height_screens"]
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            actual_result = test_mapper.compressed_level_data_header
+            self.assertEqual(expected_result, actual_result, "Level data header did not generate correct output!")
+
+
     def test_generate_compression_fields(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',

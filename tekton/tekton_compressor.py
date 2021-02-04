@@ -50,6 +50,15 @@ class TektonCompressionMapper:
         self._map_fields()
         compression_fields = self._generate_compression_fields()
 
+    @property
+    def compressed_level_data_header(self):
+        """bytes : The three-byte header for this level's compressed data"""
+
+        level_header_string = b'\x01\x00'
+        screen_count = self._width_screens * self._height_screens
+        level_header_string += (screen_count << 1).to_bytes(1, byteorder="big")
+        return level_header_string
+
     def _map_fields(self):
         if len(self.uncompressed_data) < 1:
             return
