@@ -12,7 +12,8 @@ Classes:
 
 from .tekton_tile import TektonTile
 from .tekton_tile_grid import TektonTileGrid
-from .tekton_compressor import compress_level_data
+from .tekton_compressor import TektonCompressionMapper
+from .tekton_system import pad_bytes
 
 class TektonRoom:
     """An object representing a single room in Super Metroid, with many different modifiable attributes.
@@ -77,11 +78,15 @@ class TektonRoom:
             bytes : The string of compressed level data representing the room's tiles.
 
         """
-        compressed_data = compress_level_data(self.tiles, self.level_data_length)
+        compressor = TektonCompressionMapper()
+        compressor.width_screens = self.width_screens
+        compressor.height_screens = self.height_screens
+        compressor.uncompressed_data = self.tiles.uncompressed_data
+        compressed_data = compressor.compressed_data
         if len(compressed_data) > self.level_data_length:
             raise CompressedDataTooLargeError("Compressed data is {0} bytes, but max size is {1} bytes!".format(len(compressed_data),
                                                                                                                 self.level_data_length))
-        return compressed_data
+        return pad_bytes(compressed_data, self.level_data_length, b'\xff')
 
 
 class CompressedDataTooLargeError(Exception):
