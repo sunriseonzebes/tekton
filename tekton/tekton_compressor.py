@@ -69,7 +69,6 @@ class TektonCompressionMapper:
 
     def _map_repeating_word_fields(self):
         counter = 0
-        lookahead_offset = 0
 
         while counter < len(self.uncompressed_data) - 1:
             current_word = self.uncompressed_data[counter:counter+2]
@@ -99,25 +98,22 @@ class TektonCompressionMapper:
 
     def _map_repeating_byte_fields(self):
         counter = 0
-        last_byte_change_index = counter
 
-        while counter < len(self.uncompressed_data):
-            if self._byte_map[last_byte_change_index] is not None:
-                counter += 1
-                last_byte_change_index = counter
-                continue
-            current_byte = self.uncompressed_data[counter]
-            last_byte_changed = self.uncompressed_data[last_byte_change_index]
-            num_bytes = counter - last_byte_change_index
-            if num_bytes == 1024 or current_byte != last_byte_changed or self._byte_map[counter] is not None:
-                if num_bytes > 1:
-                    self._map_repeating_byte_field(last_byte_changed, num_bytes, last_byte_change_index)
-                last_byte_change_index = counter
-            counter += 1
-        last_byte_changed = self.uncompressed_data[last_byte_change_index]
-        num_bytes = counter - last_byte_change_index
-        if num_bytes > 1:
-            self._map_repeating_byte_field(last_byte_changed, num_bytes, last_byte_change_index)
+        while counter < len(self.uncompressed_data) - 1:
+            current_byte = self.uncompressed_data[counter:counter+1]
+            for lookahead_counter in range(counter, len(self.uncompressed_data) + 1):
+                num_bytes = lookahead_counter - counter
+                lookahead_byte = self.uncompressed_data[lookahead_counter:lookahead_counter+1]
+                if current_byte != lookahead_byte or \
+                        lookahead_counter == len(self.uncompressed_data) or \
+                        num_bytes == 1024 or \
+                        self._byte_map[lookahead_counter] is not None:
+                    if num_bytes > 2:
+                        self._map_repeating_byte_field(current_byte, num_bytes, counter)
+                        counter = lookahead_counter
+                    else:
+                        counter += 1
+                    break
 
     def _map_repeating_byte_field(self, byte, num_bytes, start_offset):
         new_field = TektonByteFillField()
