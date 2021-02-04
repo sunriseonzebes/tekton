@@ -73,3 +73,10 @@ def overwrite_bytes_at_index(original_string, replace_string, replace_start_inde
     output_string += original_string[replace_end_index:]
 
     return output_string
+
+
+def pad_bytes(input_string, min_length, pad_byte):
+    return_string = input_string
+    while len(return_string) < min_length:
+        return_string += pad_byte
+    return return_string

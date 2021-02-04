@@ -1,0 +1,10 @@
+input_string:
+  - 0x00
+  - 0x01
+min_length: 4
+pad_byte: 0xcd
+expected_result:
+  - 0x00
+  - 0x01
+  - 0xcd
+  - 0xcd
