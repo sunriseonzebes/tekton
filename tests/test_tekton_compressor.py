@@ -116,6 +116,26 @@ class TestTektonCompressionMapper(unittest.TestCase):
             self.assertEqual(expected_result, actual_result, "Level data header did not generate correct output!")
 
 
+    def test_compressed_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'integration',
+                                     'test_tekton_compressor',
+                                     'test_compressed_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            test_mapper = tekton_compressor.TektonCompressionMapper()
+            test_room = load_room_from_test_tiles(test_item)
+            test_mapper.width_screens = test_room.width_screens
+            test_mapper.height_screens = test_room.height_screens
+            test_mapper.uncompressed_data = test_room.tiles.uncompressed_data
+            expected_result = int_list_to_bytes(test_item["expected_result"])
+            actual_result = test_mapper.compressed_data
+            self.assertEqual(expected_result, actual_result, "Room data did not compress correctly.")
+
+
     def test_generate_compression_fields(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',

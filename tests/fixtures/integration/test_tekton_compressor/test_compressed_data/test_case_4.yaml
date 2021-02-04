@@ -1,0 +1,21 @@
+expected_result:
+  - 0x01
+  - 0x00
+  - 0x04
+  - 0xeb
+  - 0xff
+  - 0x0f
+  - 0x87
+  - 0xe5
+  - 0xff
+  - 0x02
+room_width: 2
+room_height: 1
+test_tiles:
+  - count: 512
+    tile:
+      tileno: 0x30f
+      bts_type: 0x08
+      bts_num: 0x02
+      h_mirror: !!bool 'true'
+level_data_length: 0

@@ -47,8 +47,12 @@ class TektonCompressionMapper:
 
     @property
     def compressed_data(self):
+        self._init_byte_map()
         self._map_fields()
         compression_fields = self._generate_compression_fields()
+        return_string = self.compressed_level_data_header
+        return_string += self._get_bytes_string_from_compression_fields(compression_fields)
+        return return_string
 
     @property
     def compressed_level_data_header(self):
@@ -155,8 +159,6 @@ class TektonCompressionMapper:
     def _init_byte_map(self):
         self._byte_map = [None for i in range(len(self.uncompressed_data))]
 
-
-
     def _generate_compression_fields(self):
         compression_fields = []
         if len(self._byte_map) < 1:
@@ -170,6 +172,13 @@ class TektonCompressionMapper:
         compression_fields.append(current_field)
 
         return compression_fields
+
+    def _get_bytes_string_from_compression_fields(self, compression_fields):
+        return_string = b''
+        for field in compression_fields:
+            return_string += field.compressed_data
+
+        return return_string
 
 
 

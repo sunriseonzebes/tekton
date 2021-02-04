@@ -21,8 +21,8 @@ class TektonField:
     def num_bytes(self, new_value):
         if not isinstance(new_value, int):
             raise TypeError("num_bytes must be int! You may use hex notation if you like, e.g. 0xa2")
-        if new_value < 1 or new_value > 1023:
-            raise ValueError("num_bytes must be between 1 and 1023! You may use hex notation if you like, e.g. 0xa2")
+        if new_value < 1 or new_value > 1024:
+            raise ValueError("num_bytes must be between 1 and 1024! You may use hex notation if you like, e.g. 0xa2")
         self._num_bytes = new_value
 
     @property
