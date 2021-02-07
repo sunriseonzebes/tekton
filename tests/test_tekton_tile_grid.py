@@ -23,7 +23,9 @@ class TestTektonTileGrid(unittest.TestCase):
 
     def test_get_item(self):
         test_grid = tekton_tile_grid.TektonTileGrid(1, 1)
-        self.assertIsNone(test_grid[0][0])
+        test_tile = tekton_tile.TektonTile()
+        test_grid._tiles[0][0] = test_tile
+        self.assertEqual(test_tile, test_grid[0][0], "TektonTileGrid _get_item did not find correct object!")
 
     def test_fill(self):
         width = 16
