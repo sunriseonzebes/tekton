@@ -25,6 +25,7 @@ class TektonRoom:
         name (str): The nickname for this room. (This data is not copied to the ROM.)
         tiles (TektonTileGrid): An object containing a two-dimensional matrix of the tiles in this room.
         width_screens (int): The width (in screens) of the room. One screen is 16 tiles.
+        write_level_data (bool): If True, writes data in tiles to modified ROM. If False, does not modify level data.
 
     """
     def __init__(self, width=1, height=1):
@@ -35,6 +36,7 @@ class TektonRoom:
         self.tiles = TektonTileGrid(width * 16, height * 16)
         self.tiles.fill()
         self.width_screens = width
+        self.write_level_data = True
 
         self._header = 0x00
         self._level_data_address = 0x00

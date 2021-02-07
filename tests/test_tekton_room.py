@@ -19,6 +19,7 @@ class TestTektonRoom(unittest.TestCase):
         self.assertEqual(0x00, test_room._level_data_address, "Tekton Room default level data address is not 0x00!")
         self.assertEqual(test_room.level_data_length, 0)
         self.assertEqual(test_room.doors, [], "Tekton Room doors list did not initialize correctly!")
+        self.assertTrue(test_room.write_level_data, msg="Tekton Room write_level_data did not initialize correctly!")
 
         test_room = None
         test_room = tekton_room.TektonRoom(3, 4)
