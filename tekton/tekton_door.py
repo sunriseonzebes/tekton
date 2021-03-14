@@ -12,7 +12,7 @@ class DoorBitFlag(Enum):
     ELEVATOR_AREA_CHANGE_4 = 0Xf0
 
 
-class DoorExitDirection(Enum):
+class DoorEjectDirection(Enum):
     RIGHT_NO_DOOR_CLOSE = 0x00
     LEFT_NO_DOOR_CLOSE = 0x01
     DOWN_NO_DOOR_CLOSE = 0x02
@@ -53,14 +53,14 @@ class TektonDoor:  # TODO: Probably make a superclass of Door and Launchpad
         self.asm_pointer = 0x00
 
         self._bit_flag = DoorBitFlag.DOOR_SAME_AREA
-        self._exit_direction = DoorExitDirection.RIGHT_NO_DOOR_CLOSE
+        self._eject_direction = DoorEjectDirection.RIGHT_NO_DOOR_CLOSE
 
     def __repr__(self):
         template_string = "Tekton Door:\n" + \
                           "Door Data Address: {data_address}\n" + \
                           "Target Room ID: {room_id}\n" + \
                           "Bit Flag: {bit_flag_name} ({bit_flag_value})\n" + \
-                          "Exit Direction: {direction_name} ({direction_value})\n" + \
+                          "Eject Direction: {direction_name} ({direction_value})\n" + \
                           "Target Door Cap Coords: {door_cap_x}, {door_cap_y}\n" + \
                           "Target Room Screen Coords: {screen_x}, {screen_y}\n" + \
                           "Distance to Spawn: {dist_to_spawn}\n" + \
@@ -70,8 +70,8 @@ class TektonDoor:  # TODO: Probably make a superclass of Door and Launchpad
                                       room_id=hex(self.target_room_id),
                                       bit_flag_name=self.bit_flag.name,
                                       bit_flag_value=hex(self.bit_flag.value),
-                                      direction_name=self.exit_direction.name,
-                                      direction_value=hex(self.exit_direction.value),
+                                      direction_name=self.eject_direction.name,
+                                      direction_value=hex(self.eject_direction.value),
                                       door_cap_x=hex(self.target_door_cap_col),
                                       door_cap_y=hex(self.target_door_cap_row),
                                       screen_x=hex(self.target_room_screen_h),
@@ -105,25 +105,25 @@ class TektonDoor:  # TODO: Probably make a superclass of Door and Launchpad
                             "You can set a hex value using int hex notation, e.g. 0x795d4")
 
     @property
-    def exit_direction(self):
-        """DoorExitDirection: Enum member representing this door's exit direction into the target room, and whether its
+    def eject_direction(self):
+        """DoorEjectDirection: Enum member representing this door's eject direction into the target room, and whether its
         door cap should close behind it."""
-        return self._exit_direction
+        return self._eject_direction
 
-    @exit_direction.setter
-    def exit_direction(self, new_exit_direction):
-        if isinstance(new_exit_direction, int):
-            valid_values = [item.value for item in list(DoorExitDirection)]
-            if new_exit_direction not in valid_values:
-                raise ValueError("{0} is not a valid door exit direction! Valid values are: {1}".format(
-                    hex(new_exit_direction),
+    @eject_direction.setter
+    def eject_direction(self, new_eject_direction):
+        if isinstance(new_eject_direction, int):
+            valid_values = [item.value for item in list(DoorEjectDirection)]
+            if new_eject_direction not in valid_values:
+                raise ValueError("{0} is not a valid door eject direction! Valid values are: {1}".format(
+                    hex(new_eject_direction),
                     ", ".join([hex(value) for value in valid_values])
                 ))
-            self._exit_direction = DoorExitDirection(new_exit_direction)
-        elif isinstance(new_exit_direction, DoorExitDirection):
-            self._exit_direction = new_exit_direction
+            self._eject_direction = DoorEjectDirection(new_eject_direction)
+        elif isinstance(new_eject_direction, DoorEjectDirection):
+            self._eject_direction = new_eject_direction
         else:
-            raise TypeError("Door exit direction must be int or DoorExitDirection. "
+            raise TypeError("Door eject direction must be int or DoorEjectDirection. "
                             "You can set a hex value using int hex notation, e.g. 0x795d4")
 
     @property
@@ -131,7 +131,7 @@ class TektonDoor:  # TODO: Probably make a superclass of Door and Launchpad
         """bytes: String of bytes representing door data as it should appear in the ROM"""
         door_string = (self.target_room_id % 0x010000).to_bytes(2, byteorder="little")
         door_string += self._bit_flag.value.to_bytes(1, byteorder="little")
-        door_string += self._exit_direction.value.to_bytes(1, byteorder="little")
+        door_string += self._eject_direction.value.to_bytes(1, byteorder="little")
         door_string += self.target_door_cap_col.to_bytes(1, byteorder="little")
         door_string += self.target_door_cap_row.to_bytes(1, byteorder="little")
         door_string += self.target_room_screen_h.to_bytes(1, byteorder="little")

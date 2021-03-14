@@ -14,9 +14,9 @@ class TestTektonDoor(unittest.TestCase):
         self.assertEqual(test_door.bit_flag,
                          tekton_door.DoorBitFlag.DOOR_SAME_AREA,
                          "Door bit flag did not initialize correctly!")
-        self.assertEqual(test_door.exit_direction,
-                         tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE,
-                         "Door exit direction did not initialize correctly!")
+        self.assertEqual(test_door.eject_direction,
+                         tekton_door.DoorEjectDirection.RIGHT_NO_DOOR_CLOSE,
+                         "Door eject direction did not initialize correctly!")
         self.assertEqual(test_door.target_door_cap_col,
                          0x00,
                          "Door Target Door Cap Column did not initialize correctly!")
@@ -50,23 +50,23 @@ class TestTektonDoor(unittest.TestCase):
         with self.assertRaises(ValueError):
             test_door.bit_flag = 0x15
 
-    def test_exit_direction_property(self):
+    def test_eject_direction_property(self):
         test_door = tekton_door.TektonDoor()
 
-        test_door.exit_direction = tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
-        expected_value = tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
-        self.assertEqual(expected_value, test_door.exit_direction)
+        test_door.eject_direction = tekton_door.DoorEjectDirection.RIGHT_NO_DOOR_CLOSE
+        expected_value = tekton_door.DoorEjectDirection.RIGHT_NO_DOOR_CLOSE
+        self.assertEqual(expected_value, test_door.eject_direction)
 
-        test_door.exit_direction = 0x00
-        expected_value = tekton_door.DoorExitDirection.RIGHT_NO_DOOR_CLOSE
-        self.assertEqual(expected_value, test_door.exit_direction)
+        test_door.eject_direction = 0x00
+        expected_value = tekton_door.DoorEjectDirection.RIGHT_NO_DOOR_CLOSE
+        self.assertEqual(expected_value, test_door.eject_direction)
 
         with self.assertRaises(TypeError):
-            test_door.exit_direction = 0.0
+            test_door.eject_direction = 0.0
         with self.assertRaises(TypeError):
-            test_door.exit_direction = "0"
+            test_door.eject_direction = "0"
         with self.assertRaises(ValueError):
-            test_door.exit_direction = 0x99
+            test_door.eject_direction = 0x99
 
     def test_door_data(self):
         test_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -83,7 +83,7 @@ class TestTektonDoor(unittest.TestCase):
             test_door.data_address = test_item["data_address"]
             test_door.target_room_id = test_item["target_room_id"]
             test_door.bit_flag = test_item["bit_flag"]
-            test_door.exit_direction = test_item["exit_direction"]
+            test_door.eject_direction = test_item["eject_direction"]
             test_door.target_door_cap_col = test_item["target_door_cap_col"]
             test_door.target_door_cap_row = test_item["target_door_cap_row"]
             test_door.target_room_screen_h = test_item["target_room_screen_h"]

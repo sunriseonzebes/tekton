@@ -63,7 +63,7 @@ class TestTektonProjectIntegration(unittest.TestCase):
                         new_door.data_address = test_door_data["data_address"]
                         new_door.target_room_id = test_door_data["target_room_id"]
                         new_door.bit_flag = test_door_data["bit_flag"]
-                        new_door.exit_direction = test_door_data["exit_direction"]
+                        new_door.eject_direction = test_door_data["eject_direction"]
                         new_door.target_door_cap_col = test_door_data["target_door_cap_col"]
                         new_door.target_door_cap_row = test_door_data["target_door_cap_row"]
                         new_door.target_room_screen_h = test_door_data["target_room_screen_h"]

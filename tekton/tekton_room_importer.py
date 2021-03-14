@@ -10,7 +10,7 @@ Functions:
 
 from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc
-from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorExitDirection
+from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
 
 
 def import_room_from_rom(rom_contents, room_header_address):
@@ -161,7 +161,7 @@ def _import_simple_door(rom_contents, door_info_address):
     new_door.bit_flag = DoorBitFlag(
         int.from_bytes(rom_contents[door_info_address+2:door_info_address+3], byteorder="little")
     )
-    new_door.exit_direction = DoorExitDirection(
+    new_door.eject_direction = DoorEjectDirection(
         int.from_bytes(rom_contents[door_info_address+3:door_info_address+4], byteorder="little")
     )
     new_door.target_door_cap_col = int.from_bytes(

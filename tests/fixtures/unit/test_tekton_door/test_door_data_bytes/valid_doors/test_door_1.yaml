@@ -1,7 +1,7 @@
 data_address: 0x18b59
 target_room_id: 0x7990d
 bit_flag: 0x40
-exit_direction: 0x04
+eject_direction: 0x04
 target_door_cap_col: 0x1b
 target_door_cap_row: 0x45
 target_room_screen_h: 0x01

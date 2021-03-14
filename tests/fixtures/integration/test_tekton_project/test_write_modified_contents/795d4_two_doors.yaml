@@ -8,7 +8,7 @@ rooms:
       - data_address: 0x18ac6
         target_room_id: 0x79461
         bit_flag: 0x00
-        exit_direction: 0x04
+        eject_direction: 0x04
         target_door_cap_col: 0x1e
         target_door_cap_row: 0x06
         target_room_screen_h: 0x01
@@ -18,7 +18,7 @@ rooms:
       - data_address: 0x18ad2
         target_room_id: 0x792b3
         bit_flag: 0x00
-        exit_direction: 0x05
+        eject_direction: 0x05
         target_door_cap_col: 0x01
         target_door_cap_row: 0x06
         target_room_screen_h: 0x00
