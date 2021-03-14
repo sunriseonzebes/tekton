@@ -35,6 +35,10 @@ class TektonTileGrid:
 
         return self._tiles[item]
 
+    def __len__(self):
+        """Returns length of first dimension (width) of tile grid"""
+        return len(self._tiles)
+
     @property
     def width(self):
         """int: Number of columns contained in the TektonTileGrid."""
