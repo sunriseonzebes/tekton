@@ -59,8 +59,11 @@ class TektonTileGrid:
         return return_string
 
 
-    def fill(self):
+    def fill(self, fill_tile=None):
         """Fills every column/row in the TektonTileGrid with a default TektonTile object."""
+        if fill_tile is None:
+            fill_tile = TektonTile()
         for row in range(self.height):
             for col in range(self.width):
-                self._tiles[col][row] = TektonTile()
+                self._tiles[col][row] = fill_tile.copy()
+

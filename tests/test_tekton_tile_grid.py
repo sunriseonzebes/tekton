@@ -41,6 +41,17 @@ class TestTektonTileGrid(unittest.TestCase):
             for row in range(height):
                 self.assertTrue(isinstance(test_grid._tiles[col][row], tekton_tile.TektonTile))
 
+        unique_tile = tekton_tile.TektonTile()
+        unique_tile.tileno = 0x2e0
+        unique_tile.bts_type = 0x08
+
+        test_grid = tekton_tile_grid.TektonTileGrid(width, height)
+        test_grid.fill(unique_tile)
+        for col in range(width):
+            for row in range(height):
+                self.assertTrue(isinstance(test_grid._tiles[col][row], tekton_tile.TektonTile))
+                self.assertEqual(unique_tile, test_grid[col][row], "TektonTileGrid was not filled with correct tile!")
+
     def test_uncompressed_data(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',
@@ -57,4 +68,5 @@ class TestTektonTileGrid(unittest.TestCase):
             self.assertEqual(expected_result,
                              actual_result,
                              "Test room did not produce correct uncompressed data!")
+
 
