@@ -70,3 +70,59 @@ class TestTektonTileGrid(unittest.TestCase):
                              "Test room did not produce correct uncompressed data!")
 
 
+    def test_overwrite_with(self):
+        bg_grid = tekton_tile_grid.TektonTileGrid(16, 16)
+        bg_tile = tekton_tile.TektonTile()
+        bg_tile.tileno = 0x080
+        bg_tile.bts_type = 0x00
+        bg_grid.fill(bg_tile)
+
+        paste_grid = tekton_tile_grid.TektonTileGrid(4, 4)
+        paste_tile = tekton_tile.TektonTile()
+        paste_tile.tileno = 0x2e0
+        paste_tile.bts_type = 0x08
+        paste_grid.fill(paste_tile)
+
+        bg_grid.overwrite_with(paste_grid, 10, 6)
+
+        for row in range(6):
+            for col in range(16):
+                self.assertEqual(bg_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+        for row in range(6, 10):
+            for col in range(16):
+                if col >= 10 and col <= 13:
+                    self.assertEqual(paste_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+                else:
+                    self.assertEqual(bg_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+        for row in range(11, 16):
+            for col in range(16):
+                self.assertEqual(bg_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+
+        bg_grid = tekton_tile_grid.TektonTileGrid(16, 16)
+        bg_grid.fill(bg_tile)
+        paste_grid = tekton_tile_grid.TektonTileGrid(4, 4)
+        paste_grid.fill(paste_tile)
+        bg_grid.overwrite_with(paste_grid, 15, 14)
+
+        for row in range(14):
+            for col in range(16):
+                self.assertEqual(bg_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+        for row in range(14, 16):
+            for col in range(16):
+                if col == 15:
+                    self.assertEqual(paste_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+                else:
+                    self.assertEqual(bg_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+
+        bg_grid = tekton_tile_grid.TektonTileGrid(16, 16)
+        bg_grid.fill(bg_tile)
+        paste_grid = tekton_tile_grid.TektonTileGrid(4, 4)
+        paste_grid[2][2] = paste_tile
+        bg_grid.overwrite_with(paste_grid, 6, 12)
+
+        for row in range(16):
+            for col in range(16):
+                if col == 8 and row == 14:
+                    self.assertEqual(paste_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")
+                else:
+                    self.assertEqual(bg_tile, bg_grid[col][row], "TileGrid returned incorrect tile!")

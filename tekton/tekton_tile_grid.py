@@ -60,10 +60,24 @@ class TektonTileGrid:
 
 
     def fill(self, fill_tile=None):
-        """Fills every column/row in the TektonTileGrid with a default TektonTile object."""
+        """Fills every column/row in the TektonTileGrid with a TektonTile object.
+
+        Args:
+            fill_tile (TektonTile): The tile that the grid should be filled with. If not specified, grid is filled with
+                a default TektonTile.
+
+        """
         if fill_tile is None:
             fill_tile = TektonTile()
         for row in range(self.height):
             for col in range(self.width):
                 self._tiles[col][row] = fill_tile.copy()
+
+
+    def overwrite_with(self, new_tile_grid, left_coord=0, top_coord=0):
+        for row in range(new_tile_grid.height):
+            for col in range(new_tile_grid.width):
+                if (col+left_coord < self.width) and (row+top_coord < self.height):
+                    if new_tile_grid[col][row] is not None:
+                        self._tiles[col+left_coord][row+top_coord] = new_tile_grid[col][row].copy()
 
