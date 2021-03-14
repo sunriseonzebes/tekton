@@ -71,6 +71,15 @@ class TektonRoomDict:
         for key in self.keys():
             yield key, self[key]
 
+    def values(self):
+        """Returns the TektonRoom objects from this dict as a list of values.
+
+        Returns:
+            list : List containing all the TektonRoom objects in this TektonRoomDict.
+        """
+
+        return self._rooms
+
 
 class DuplicateRoomError(Exception):
     """Raised when the user attempts to add a room whose header already exists in the TektonRoomDict."""
