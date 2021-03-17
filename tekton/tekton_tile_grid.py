@@ -20,6 +20,21 @@ class TektonTileGrid:
     def __init__(self, width, height):
         self._tiles = [[None for row in range(height)] for col in range(width)]
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return_string = "TektonTileGrid:\n"
+        for col in range(len(self._tiles)):
+            for row in range(len(self._tiles[col])):
+                repr_char = '.'
+                if self._tiles[col][row] is not None:
+                    repr_char = hex(self._tiles[col][row].tileno).replace("0x", "")
+                return_string += "{0: <4}".format(repr_char)
+            return_string += "\n"
+
+        return return_string
+
     def __getitem__(self, item):
         """Allows you to get a specific column from the grid by index.
 
