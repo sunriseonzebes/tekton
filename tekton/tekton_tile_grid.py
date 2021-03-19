@@ -25,8 +25,8 @@ class TektonTileGrid:
 
     def __str__(self):
         return_string = "TektonTileGrid:\n"
-        for col in range(len(self._tiles)):
-            for row in range(len(self._tiles[col])):
+        for row in range(len(self._tiles[0])):
+            for col in range(len(self._tiles)):
                 repr_char = '.'
                 if self._tiles[col][row] is not None:
                     repr_char = hex(self._tiles[col][row].tileno).replace("0x", "")
