@@ -85,7 +85,7 @@ class TektonRoom:
         compressor.height_screens = self.height_screens
         compressor.uncompressed_data = self.tiles.uncompressed_data
         compressed_data = compressor.compressed_data
-        if len(compressed_data) > self.level_data_length:
+        if 0 < self.level_data_length < len(compressed_data):
             raise CompressedDataTooLargeError("Compressed data is {0} bytes, but max size is {1} bytes!".format(len(compressed_data),
                                                                                                                 self.level_data_length))
         return pad_bytes(compressed_data, self.level_data_length, b'\xff')
