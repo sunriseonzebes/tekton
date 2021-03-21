@@ -101,9 +101,14 @@ def _get_data_addresses(rom_contents, room_header_address):
                  "standard": room_header_address + 11}
 
     # Find Standard pointer
-    while rom_contents[addresses["standard"]:addresses["standard"] + 2] == b"\x12\xe6":
+    # TODO: Make this a factory function that returns different kinds of TektonRoomData objects
+    allowed_events_pointers = [b"\x12\xe6", b"\x69\xe6", b"\x29\xe6"]
+    while rom_contents[addresses["standard"]:addresses["standard"] + 2] in allowed_events_pointers:
         addresses["events_pointers"].append(addresses["standard"])
-        addresses["standard"] += 5  # Room contains an events 1 pointer, skip 5 bytes to locate standard pointer
+        if rom_contents[addresses["standard"]:addresses["standard"] + 2] == b"\x69\xe6":
+            addresses["standard"] += 4  # Pointer holds 2 bytes of data, skip 4 bytes to locate standard pointer
+        else:
+            addresses["standard"] += 5  # Pointer holds 3 bytes of data, skip 5 bytes to locate standard pointer
     if rom_contents[addresses["standard"]:addresses["standard"] + 2] != b'\xe6\xe5':
         unrecognized_bytes = hex(
             int.from_bytes(rom_contents[addresses["standard"]:addresses["standard"] + 2], byteorder="big")
