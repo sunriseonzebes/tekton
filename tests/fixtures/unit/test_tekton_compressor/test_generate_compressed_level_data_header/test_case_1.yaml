@@ -1,6 +1,0 @@
-room_width_screens: 1
-room_height_screens: 1
-expected_result:
-  - 0x01
-  - 0x00
-  - 0x02
