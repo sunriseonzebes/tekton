@@ -1,5 +1,5 @@
 from testing_common import tekton, load_test_data_dir, int_list_to_bytes
-from tekton import tekton_room, tekton_tile, tekton_tile_grid
+from tekton import tekton_room, tekton_tile, tekton_tile_grid, tekton_room_header_data
 import os
 import unittest
 
@@ -16,6 +16,7 @@ class TestTektonRoom(unittest.TestCase):
                 self.assertTrue(isinstance(test_room.tiles[x][y], tekton_tile.TektonTile), "Test Room tile at {0}, {1} is not a TektonTile".format(x, y))
         self.assertEqual(test_room.width_screens, 1)
         self.assertEqual(test_room.height_screens, 1)
+        self.assertTrue(isinstance(test_room.header_data, tekton_room_header_data.TektonRoomHeaderData))
         self.assertEqual(0x00, test_room._level_data_address, "Tekton Room default level data address is not 0x00!")
         self.assertEqual(test_room.level_data_length, 0)
         self.assertEqual(test_room.doors, [], "Tekton Room doors list did not initialize correctly!")

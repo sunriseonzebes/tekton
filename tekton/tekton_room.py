@@ -14,6 +14,7 @@ from .tekton_tile import TektonTile
 from .tekton_tile_grid import TektonTileGrid
 from .tekton_compressor import TektonCompressionMapper
 from .tekton_system import pad_bytes
+from .tekton_room_header_data import TektonRoomHeaderData
 
 
 class TektonRoom:
@@ -32,6 +33,7 @@ class TektonRoom:
 
     def __init__(self, width=1, height=1):
         self.doors = []
+        self.header_data = TektonRoomHeaderData()
         self.height_screens = height
         self.level_data_length = 0
         self.name = None

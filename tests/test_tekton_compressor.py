@@ -287,8 +287,6 @@ class TestTektonCompressionMapper(unittest.TestCase):
                                      test_mapper._byte_map[i],
                                      error_message.format(i, start_index))
 
-
-
     def _get_expected_type(self, type_string):
         if type_string == "TektonWordFillField":
             return tekton_field.TektonWordFillField
