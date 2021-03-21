@@ -7,6 +7,7 @@ Classes:
 
 from .tekton_tile import TektonTile
 
+
 class TektonTileGrid:
     """A two-dimensional list for storing and organizing TektonTile objects.
 
@@ -47,7 +48,6 @@ class TektonTileGrid:
             list : List of TektonTiles contained in the specified column, indexed by row.
 
         """
-
         return self._tiles[item]
 
     def __len__(self):
@@ -77,7 +77,6 @@ class TektonTileGrid:
 
         return return_string
 
-
     def fill(self, fill_tile=None):
         """Fills every column/row in the TektonTileGrid with a TektonTile object.
 
@@ -92,11 +91,19 @@ class TektonTileGrid:
             for col in range(self.width):
                 self._tiles[col][row] = fill_tile.copy()
 
-
     def overwrite_with(self, new_tile_grid, left_coord=0, top_coord=0):
+        """Overwrites some or all of the tile grid with tiles from new_tile_grid. Will not copy any elements of
+            new_tile_grid whose value is None. new_tile_grid may be smaller than this tile grid, and x and y coordinates
+            may be specified to overwrite values in the middle of this tile grid.
+
+        Args:
+            new_tile_grid (TektonTileGrid): A new tile grid to overwrite this tile grid with.
+            left_coord (int): X coordinate on this tile grid where overwriting should start.
+            top_coord (int): Y coordinate on this tile grid where overwriting should start.
+
+        """
         for row in range(new_tile_grid.height):
             for col in range(new_tile_grid.width):
-                if (col+left_coord < self.width) and (row+top_coord < self.height):
+                if (col + left_coord < self.width) and (row + top_coord < self.height):
                     if new_tile_grid[col][row] is not None:
-                        self._tiles[col+left_coord][row+top_coord] = new_tile_grid[col][row].copy()
-
+                        self._tiles[col + left_coord][row + top_coord] = new_tile_grid[col][row].copy()

@@ -15,6 +15,7 @@ from .tekton_tile_grid import TektonTileGrid
 from .tekton_compressor import TektonCompressionMapper
 from .tekton_system import pad_bytes
 
+
 class TektonRoom:
     """An object representing a single room in Super Metroid, with many different modifiable attributes.
 
@@ -28,6 +29,7 @@ class TektonRoom:
         write_level_data (bool): If True, writes data in tiles to modified ROM. If False, does not modify level data.
 
     """
+
     def __init__(self, width=1, height=1):
         self.doors = []
         self.height_screens = height
@@ -72,7 +74,6 @@ class TektonRoom:
             raise ValueError("Room level data address must be a positive number.")
         self._level_data_address = new_address
 
-
     def compressed_level_data(self):
         """Returns compressed level data which the Super Metroid ROM can understand.
 
@@ -86,8 +87,9 @@ class TektonRoom:
         compressor.uncompressed_data = self.tiles.uncompressed_data
         compressed_data = compressor.compressed_data
         if 0 < self.level_data_length < len(compressed_data):
-            raise CompressedDataTooLargeError("Compressed data is {0} bytes, but max size is {1} bytes!".format(len(compressed_data),
-                                                                                                                self.level_data_length))
+            raise CompressedDataTooLargeError(
+                "Compressed data is {0} bytes, but max size is {1} bytes!".format(len(compressed_data),
+                                                                                  self.level_data_length))
         return pad_bytes(compressed_data, self.level_data_length, b'\xff')
 
 

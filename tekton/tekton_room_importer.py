@@ -5,6 +5,7 @@ with that data.
 
 Functions:
     import_room_from_rom: Populates a TektonRoom object using the ROM contents and a level header address
+    import_door: Reads door data from ROM contents and returns an object populated with the door's attributes.
 
 """
 
@@ -32,17 +33,15 @@ def import_room_from_rom(rom_contents, room_header_address):
     pointers = _get_data_addresses(rom_contents, room_header_address)
 
     room_width_screens = int.from_bytes(rom_contents[pointers["header"] + 4:pointers["header"] + 5],
-                                            byteorder="big")
+                                        byteorder="big")
     room_height_screens = int.from_bytes(rom_contents[pointers["header"] + 5:pointers["header"] + 6],
-                                             byteorder="big")
+                                         byteorder="big")
 
     new_room = TektonRoom(room_width_screens, room_height_screens)
     new_room.header = room_header_address
 
-
-
     # Level data addresses are stored in LoROM and are little endian
-    level_lorom_address = rom_contents[pointers["standard"]+2:pointers["standard"]+5]
+    level_lorom_address = rom_contents[pointers["standard"] + 2:pointers["standard"] + 5]
     new_room.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
 
     for door_data_address in _get_door_data_addresses(rom_contents, room_header_address):
@@ -56,7 +55,8 @@ def import_room_from_rom(rom_contents, room_header_address):
 
 
 def import_door(rom_contents, door_info_address):
-    """Reads door data from ROM contents and returns a TektonDoor object populated with the door's attributes.
+    """Reads door data from ROM contents and returns a TektonDoor or TektonElevatorLaunchpad object populated with the
+    door's attributes.
 
     This function will attempt to parse the 12 bytes beginning at door_info_address.
 
@@ -71,7 +71,7 @@ def import_door(rom_contents, door_info_address):
 
     if not isinstance(door_info_address, int):
         raise TypeError("door_info_address must be a positive integer. "
-        "If you want to specify a hex value you can use hex notation, e.g. 0x18ac6")
+                        "If you want to specify a hex value you can use hex notation, e.g. 0x18ac6")
     if door_info_address < 0:
         raise ValueError("door_info_address must be a positive integer.")
 
@@ -128,6 +128,7 @@ def _get_data_addresses(rom_contents, room_header_address):
 
     return addresses
 
+
 def _get_door_data_addresses(rom_contents, room_header_address):
     door_list_address = _get_data_addresses(rom_contents, room_header_address)["doors"]
     door_addresses = []
@@ -138,7 +139,7 @@ def _get_door_data_addresses(rom_contents, room_header_address):
         current_door_bytes = rom_contents[start_pos:end_pos]
         if current_door_bytes == b'\x00\x00':
             break
-        current_door_bytes += b'\x83' # Super Metroid assumes all door data lives in bank $83.
+        current_door_bytes += b'\x83'  # Super Metroid assumes all door data lives in bank $83.
         try:
             pc_door_data_address = lorom_to_pc(current_door_bytes, byteorder="little")
         except ValueError:
@@ -151,12 +152,32 @@ def _get_door_data_addresses(rom_contents, room_header_address):
 
 
 def _get_door_target_room_id(rom_contents, door_info_address):
+    """Gets the header address for the farside room of a door.
+
+    Args:
+        rom_contents (bytes): The contents of the source ROM
+        door_info_address (int): The byte offset in the source ROM where the door's data is found.
+
+    Returns:
+        int : PC address of the farside room's level header data.
+
+    """
     target_room_id_address = rom_contents[door_info_address:door_info_address + 2]
     target_room_id_address += b'\x8f'  # Super Metroid assumes all target rooms will have headers in bank $8F.
     return lorom_to_pc(target_room_id_address, byteorder="little")
 
 
 def _import_simple_door(rom_contents, door_info_address):
+    """Reads door info data from the source ROM and converts it into a TektonDoor object.
+
+    Args:
+        rom_contents (bytes): The contents of the source ROM
+        door_info_address (int): The byte offset in the source ROM where the door's data is found.
+
+    Returns:
+        TektonDoor : Object representing all the attributes of the door data found.
+
+    """
     new_door = TektonDoor()
     new_door.data_address = door_info_address
 
@@ -164,38 +185,49 @@ def _import_simple_door(rom_contents, door_info_address):
     new_door.target_room_id = door_target_room_id
 
     new_door.bit_flag = DoorBitFlag(
-        int.from_bytes(rom_contents[door_info_address+2:door_info_address+3], byteorder="little")
+        int.from_bytes(rom_contents[door_info_address + 2:door_info_address + 3], byteorder="little")
     )
     new_door.eject_direction = DoorEjectDirection(
-        int.from_bytes(rom_contents[door_info_address+3:door_info_address+4], byteorder="little")
+        int.from_bytes(rom_contents[door_info_address + 3:door_info_address + 4], byteorder="little")
     )
     new_door.target_door_cap_col = int.from_bytes(
-        rom_contents[door_info_address+4:door_info_address+5],
+        rom_contents[door_info_address + 4:door_info_address + 5],
         byteorder="little"
     )
     new_door.target_door_cap_row = int.from_bytes(
-        rom_contents[door_info_address+5:door_info_address+6],
+        rom_contents[door_info_address + 5:door_info_address + 6],
         byteorder="little"
     )
     new_door.target_room_screen_h = int.from_bytes(
-        rom_contents[door_info_address+6:door_info_address+7],
+        rom_contents[door_info_address + 6:door_info_address + 7],
         byteorder="little"
     )
     new_door.target_room_screen_v = int.from_bytes(
-        rom_contents[door_info_address+7:door_info_address+8],
+        rom_contents[door_info_address + 7:door_info_address + 8],
         byteorder="little"
     )
     new_door.distance_to_spawn = int.from_bytes(
-        rom_contents[door_info_address+8:door_info_address+10],
+        rom_contents[door_info_address + 8:door_info_address + 10],
         byteorder="little"
     )
     new_door.asm_pointer = int.from_bytes(
-        rom_contents[door_info_address+10:door_info_address+12],
+        rom_contents[door_info_address + 10:door_info_address + 12],
         byteorder="little"
     )
     return new_door
 
+
 def _import_elevator_launchpad(rom_contents, door_info_address):
+    """Reads door info data from the source ROM and converts it into a TektonElevatorLaunchpad object.
+
+    Args:
+        rom_contents (bytes): The contents of the source ROM
+        door_info_address (int): The byte offset in the source ROM where the door's data is found.
+
+    Returns:
+        TektonElevatorLaunchpad : Object representing all the attributes of the door data found.
+
+    """
     new_launchpad = TektonElevatorLaunchpad()
     new_launchpad.data_address = door_info_address
     new_launchpad.door_data = rom_contents[door_info_address:door_info_address + 12]

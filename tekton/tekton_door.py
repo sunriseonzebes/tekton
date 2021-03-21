@@ -1,7 +1,28 @@
+"""Tekton Door
+
+This module implements classes that represent doors and elevators in Super Metroid. These classes represent the data in
+the ROM that stores facts about each door or elevator: what door it connects to, what direction the screen transitions
+when moving through the door, how far away from the farside door should Samus spawn, etc.
+
+This module also implements various enums to represent some door attributes that have only a few possible values, e.g.
+what direction the camera should transition when passing through the door.
+
+Classes:
+    DoorBitFlag: An enum representing special instructions for rendering the mini map when passing through a door.
+    DoorEjectDirection: An enum representing what direction the camera should scroll when passing through a door, and
+        whether the blue door shield should close behind Samus after passing through the door.
+    TektonDoor: An object representing door data for a single door in Super Metroid, including the header address of the
+        farside room, what direction the camera should scroll, etc.
+    TektonElevatorLaunchpad: An object representing a special kind of door that occupies the same tiles as an idle
+        elevator. This special door sits in the middle of the room and doesn't trigger a screen transition like a normal
+        door.
+
+"""
 from enum import Enum
 
 
 class DoorBitFlag(Enum):
+    """Enum representing any special instructions for the minimap when passing through a door."""
     DOOR_SAME_AREA = 0x00
     DOOR_AREA_CHANGE = 0x40
     ELEVATOR_SAME_AREA = 0x80
@@ -13,6 +34,8 @@ class DoorBitFlag(Enum):
 
 
 class DoorEjectDirection(Enum):
+    """Enum representing camera scroll direction when passing through a door, and whether the blue door shield should
+    close behind Samus after passing through the door."""
     RIGHT_NO_DOOR_CLOSE = 0x00
     LEFT_NO_DOOR_CLOSE = 0x01
     DOWN_NO_DOOR_CLOSE = 0x02
@@ -106,8 +129,8 @@ class TektonDoor:  # TODO: Probably make a superclass of Door and Launchpad
 
     @property
     def eject_direction(self):
-        """DoorEjectDirection: Enum member representing this door's eject direction into the target room, and whether its
-        door cap should close behind it."""
+        """DoorEjectDirection: Enum member representing the camera scroll direction into the target room, and whether
+        this doors blue shield should close behind it."""
         return self._eject_direction
 
     @eject_direction.setter

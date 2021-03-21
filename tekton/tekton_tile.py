@@ -8,6 +8,7 @@ Classes:
 
 """
 
+
 class TektonTile:
     """An object representing a single tile in a Super Metroid room.
 

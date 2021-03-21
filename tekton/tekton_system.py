@@ -76,6 +76,19 @@ def overwrite_bytes_at_index(original_string, replace_string, replace_start_inde
 
 
 def pad_bytes(input_string, min_length, pad_byte):
+    """Appends bytes to the end of a input_string to ensure it contains at least min_length bytes. Does not modify the
+    string if it is already longer than min_length.
+
+    Args:
+        input_string (bytes): The input string to pad with bytes, if necessary
+        min_length (int): The minimum length input_string should be
+        pad_byte (byte): The byte value used to pad input_string, if necessary
+
+    Returns:
+        bytes : input_string if it is already longer than min_length, otherwise returns input_string padded with bytes
+            to make it min_length bytes long.
+
+    """
     return_string = input_string
     while len(return_string) < min_length:
         return_string += pad_byte

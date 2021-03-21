@@ -1,12 +1,32 @@
 """Tekton Field
 
+This module implements a various classes that represent compression algorithm techniques used by Super Metroid to
+compress level data. Each class represents a single technique or method of compressing data. These classes are used by
+the TektonCompressor class to represent uncompressed level data as a series of "fields" that can be compressed with a
+specific algorithm. Each chunk can output a string of compressed data, which can be concatenated to represent the
+complete compressed data for an entire room.
+
 Classes:
-    L1RepeaterField: An object representing a series of repeating tiles in layer 1 level data
+    TektonField: Superclass for the different kinds of compression algorithms Super Metroid can use.
+    TektonDirectCopyField: Field that contains data that was too complicated to be compressed, and must be represented
+        in uncompressed form.
+    TektonByteFillField: Field that represents a single byte repeated a number of times.
+    TektonWordFillField: Field that represents a single word (two bytes) repeated for a number of bytes (allows an odd
+        number of bytes which will split the final word in half.)
 
 """
 
 
 class TektonField:
+    """Superclass of other "Field" objects which defines common behavior between them.
+
+    Class Attributes:
+        command_code: Three-bit number representing which compression "instruction" is used by this field. Each type of
+            algorithm has a unique three-bit command code.
+        extended_command_code: Three-bit number prepended to the command code when this field represents more than 33
+            bytes of data.
+
+    """
     command_code = 0b000
     extended_command_code = 0b111
 
@@ -15,6 +35,7 @@ class TektonField:
 
     @property
     def num_bytes(self):
+        """int: Number of bytes produced by this field."""
         return self._num_bytes
 
     @num_bytes.setter
@@ -27,6 +48,10 @@ class TektonField:
 
     @property
     def cmd_and_reps_bytes(self):
+        """bytes: One- or two-byte sequence which contains the command code followed by the number of bytes produced by
+        this field. When num_bytes is less than 33, this returns a single byte, consisting of the three-bit command code
+        followed by the five-bit number of bytes. If num_bytes is 33 or greater, this returns two bytes, consisting of
+        a three-bit extended command code, a three bit command code, and a ten-bit number of bytes."""
         if self._num_bytes < 32:
             return_value = self.command_code << 5
             return_value += (self._num_bytes - 1)
@@ -39,6 +64,7 @@ class TektonField:
 
     @property
     def compressed_data(self):
+        """bytes: A string of compressed level data that Super Metroid can understand."""
         pass
 
 
@@ -117,6 +143,7 @@ class TektonWordFillField(TektonField):
 
     @property
     def word(self):
+        """bytes: Returns the word (two bytes) which this field is filled with."""
         return self._word
 
     @word.setter
