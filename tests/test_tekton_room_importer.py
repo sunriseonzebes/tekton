@@ -46,6 +46,12 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(tekton_room_header_data.MapArea(test_item["header_data"]["map_area"]),
                              test_room.header_data.map_area,
                              "Room {} imported incorrect map_area!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["header_data"]["minimap_x_coord"],
+                             test_room.header_data.minimap_x_coord,
+                             "Room {} imported incorrect minimap_x_coord!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["header_data"]["minimap_y_coord"],
+                             test_room.header_data.minimap_y_coord,
+                             "Room {} imported incorrect minimap_y_coord!".format(hex(test_item["header"])))
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
                              len(test_room.doors),

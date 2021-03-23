@@ -9,6 +9,8 @@ doors:
 header: 0x7a322
 header_data:
   map_area: 0x01
+  minimap_x_coord: 0x25
+  minimap_y_coord: 0x04
   room_index: 0x24
 width: 3
 height: 8

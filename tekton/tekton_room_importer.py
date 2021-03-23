@@ -84,6 +84,7 @@ def import_door(rom_contents, door_info_address):
 
     return _import_simple_door(rom_contents, door_info_address)
 
+
 def _get_level_header_data(rom_contents, room_header_address):
     """Reads a room's header data from ROM contents and returns a TektonLevelDataHeader object that contains various
         facts about the room.
@@ -98,7 +99,11 @@ def _get_level_header_data(rom_contents, room_header_address):
     new_header_data.room_index = int.from_bytes(rom_contents[room_header_address:room_header_address + 1],
                                                 byteorder="big")
     new_header_data.map_area = MapArea(int.from_bytes(rom_contents[room_header_address + 1:room_header_address + 2],
-                                                        byteorder="big"))
+                                                      byteorder="big"))
+    new_header_data.minimap_x_coord = int.from_bytes(rom_contents[room_header_address + 2:room_header_address + 3],
+                                                     byteorder="big")
+    new_header_data.minimap_y_coord = int.from_bytes(rom_contents[room_header_address + 3:room_header_address + 4],
+                                                     byteorder="big")
 
     return new_header_data
 
