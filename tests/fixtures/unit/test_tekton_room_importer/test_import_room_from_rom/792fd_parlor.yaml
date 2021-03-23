@@ -1,5 +1,7 @@
+doors: []
 header: 0x792fd
+header_data:
+  room_index: 0x02
 width: 5
 height: 5
 level_data_address: 0x215bc4
-doors: []

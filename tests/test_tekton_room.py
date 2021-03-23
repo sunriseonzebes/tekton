@@ -16,6 +16,8 @@ class TestTektonRoom(unittest.TestCase):
                 self.assertTrue(isinstance(test_room.tiles[x][y], tekton_tile.TektonTile), "Test Room tile at {0}, {1} is not a TektonTile".format(x, y))
         self.assertEqual(test_room.width_screens, 1)
         self.assertEqual(test_room.height_screens, 1)
+        self.assertIsNone(test_room.standard_state, "TektonRoom.standard_state did not initialize correctly!")
+        self.assertEqual([], test_room.extra_states, "TektonRoom.standard_state did not initialize correctly!")
         self.assertTrue(isinstance(test_room.header_data, tekton_room_header_data.TektonRoomHeaderData))
         self.assertEqual(0x00, test_room._level_data_address, "Tekton Room default level data address is not 0x00!")
         self.assertEqual(test_room.level_data_length, 0)

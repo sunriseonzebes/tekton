@@ -33,10 +33,12 @@ class TektonRoom:
 
     def __init__(self, width=1, height=1):
         self.doors = []
+        self.extra_states = []
         self.header_data = TektonRoomHeaderData()
         self.height_screens = height
         self.level_data_length = 0
         self.name = None
+        self.standard_state = None
         self.tiles = TektonTileGrid(width * 16, height * 16)
         self.tiles.fill()
         self.width_screens = width

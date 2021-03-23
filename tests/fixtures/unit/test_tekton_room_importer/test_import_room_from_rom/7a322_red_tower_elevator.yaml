@@ -1,7 +1,3 @@
-header: 0x7a322
-width: 3
-height: 8
-level_data_address: 0x231f4b
 doors:
   - 0x19096
   - 0x190a2
@@ -10,3 +6,9 @@ doors:
   - 0x190c6
   - 0x188fc
   - 0x190d2
+header: 0x7a322
+header_data:
+  room_index: 0x24
+width: 3
+height: 8
+level_data_address: 0x231f4b
