@@ -45,6 +45,19 @@ class TestTektonRoomState(unittest.TestCase):
         self.assertEqual(0,
                          test_state.setup_asm_pointer,
                          "TektonRoomState.main_asm_pointer did not initialize correctly!")
+        self.assertIsNone(test_state.tiles,
+                         "TektonRoomState.tiles did not initialize correctly!")
         self.assertEqual(0,
                          test_state._level_data_address,
                          "TektonRoomState._level_data_address did not initialize correctly!")
+
+    def test_level_data_address(self):
+        test_state = tekton_room_state.TektonRoomState()
+
+        test_state.level_data_address = 0x21bcd2
+        self.assertEqual(0x21bcd2, test_state.level_data_address, "Tekton Room does not have correct level data address")
+
+        with self.assertRaises(TypeError):
+            test_state.level_data_address = "21bcd2"
+        with self.assertRaises(ValueError):
+            test_state.level_data_address = -5

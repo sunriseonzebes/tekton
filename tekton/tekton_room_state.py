@@ -30,13 +30,13 @@ class TileSet(Enum):
     CERES = 0x0f
     CERES_GREEN = 0x10
     CERES_ENTRANCE = 0x11
-    CERES_ENTRACE_GREEN = 0x12
+    CERES_ENTRANCE_GREEN = 0x12
     CERES_RIDLEY_ROOM = 0x13
     CERES_RIDLEY_ROOM_GREEN = 0x14
     SAVE_ROOM_PINK = 0x15
     SAVE_ROOM_PINK_DARK = 0x16
     SAVE_ROOM_BLUE = 0x17
-    SAVE_ROOM_LIME = 0x18
+    SAVE_ROOM_GREEN = 0x18
     SAVE_ROOM_YELLOW = 0x19
     KRAID_ROOM = 0x1a
     CROCOMIRE_ROOM = 0x1b
@@ -48,7 +48,7 @@ class SongSet(Enum):
     TITLE_SCREEN = 0x03
     EMPTY_CRATERIA = 0x06
     SPACE_PIRATES = 0x09
-    RETURN_TO_CRATERA = 0x0c
+    RETURN_TO_CRATERIA = 0x0c
     UPPER_BRINSTAR = 0x0f
     LOWER_BRINSTAR = 0x12
     UPPER_NORFAIR = 0x15
@@ -87,7 +87,21 @@ class TektonRoomState:
     """An object that holds information about a single state for a room. This includes things like what tileset it uses,
         what music plays in the room, the scroll speed of the background, etc.
 
-
+    Attributes:
+        tileset (TileSet): Which tileset the room's tiles use when in this state.
+        songset (SongSet): Which group of songs this room uses when in this state.
+        song_play_index (SongPlayIndex): Which index of songset to play when in this state.
+        fx_pointer (int): Address in FX bank where the FX / Layer 3 data for this room state is stored.
+        enemy_set_pointer (int): Address in enemy set bank where the enemy set for this room state is stored.
+        enemy_gfx_pointer (int): Address in enemy graphics data bank where the enemy graphics for this room state are
+            stored.
+        background_x_scroll (int): Speed and direction of background x scroll.
+        background_y_scroll (int): Speed and direction of background y scroll.
+        room_scrolls_pointer (int): Address in room scrolls bank where the scroll data for this room state are stored.
+        unused_pointer (int): Two-byte pointer which is supposedly unused.  TODO: Verify this is not used and remove
+        main_asm_pointer (int): Address to main ASM routine for this room when in this state.
+        setup_asm_pointer (int): Address to setup ASM routine for this room when in this state.
+        tiles (TektonTileGrid): Level data when room is in this state.
 
     """
     def __init__(self):
@@ -103,4 +117,21 @@ class TektonRoomState:
         self.unused_pointer = 0
         self.main_asm_pointer = 0
         self.setup_asm_pointer = 0
+        self.tiles = None
         self._level_data_address = 0
+
+    @property
+    def level_data_address(self):
+        """int: Get or set the PC address in the ROM where this room's level data can be found."""
+        return self._level_data_address
+
+    @level_data_address.setter
+    def level_data_address(self, new_address):
+        if not isinstance(new_address, int):
+            raise TypeError(
+                "Room level data address must be of type int. "
+                "You can set a hex value using int hex notation, e.g. 0x21bcd2"
+            )
+        if new_address < 0:
+            raise ValueError("Room level data address must be a positive number.")
+        self._level_data_address = new_address
