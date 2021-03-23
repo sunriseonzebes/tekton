@@ -8,6 +8,7 @@ doors:
   - 0x190d2
 header: 0x7a322
 header_data:
+  map_area: 0x01
   room_index: 0x24
 width: 3
 height: 8

@@ -12,6 +12,7 @@ Functions:
 from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
+from .tekton_room_header_data import TektonRoomHeaderData, MapArea
 
 
 def import_room_from_rom(rom_contents, room_header_address):
@@ -39,8 +40,7 @@ def import_room_from_rom(rom_contents, room_header_address):
 
     new_room = TektonRoom(room_width_screens, room_height_screens)
     new_room.header = room_header_address
-    new_room.header_data.room_index = int.from_bytes(rom_contents[pointers["header"]:pointers["header"] + 1],
-                                                     byteorder="big")
+    new_room.header_data = _get_level_header_data(rom_contents, pointers["header"])
 
     # Level data addresses are stored in LoROM and are little endian
     level_lorom_address = rom_contents[pointers["standard"] + 2:pointers["standard"] + 5]
@@ -83,6 +83,24 @@ def import_door(rom_contents, door_info_address):
         return _import_elevator_launchpad(rom_contents, door_info_address)
 
     return _import_simple_door(rom_contents, door_info_address)
+
+def _get_level_header_data(rom_contents, room_header_address):
+    """Reads a room's header data from ROM contents and returns a TektonLevelDataHeader object that contains various
+        facts about the room.
+
+    Args:
+        rom_contents (bytes): Byte string of ROM to import room header data from
+        room_header_address (int): PC address of room header data to import
+
+    """
+    new_header_data = TektonRoomHeaderData()
+
+    new_header_data.room_index = int.from_bytes(rom_contents[room_header_address:room_header_address + 1],
+                                                byteorder="big")
+    new_header_data.map_area = MapArea(int.from_bytes(rom_contents[room_header_address + 1:room_header_address + 2],
+                                                        byteorder="big"))
+
+    return new_header_data
 
 
 def _get_data_addresses(rom_contents, room_header_address):

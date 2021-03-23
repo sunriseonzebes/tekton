@@ -11,7 +11,7 @@ class TestTektonRoomHeaderData(unittest.TestCase):
                          test_header_data.room_index,
                          "TektonRoomHeaderData room_index did not initialize correctly!")
         self.assertEqual(tekton_room_header_data.MapArea.CRATERIA,
-                         test_header_data.area,
+                         test_header_data.map_area,
                          "TektonRoomHeaderData area did not initialize correctly!")
         self.assertEqual(0,
                          test_header_data.minimap_x_coord,

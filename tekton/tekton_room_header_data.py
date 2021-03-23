@@ -27,7 +27,7 @@ class MapArea(Enum):
 class TektonRoomHeaderData:
     def __init__(self):
         self.room_index = 0
-        self.area = MapArea.CRATERIA
+        self.map_area = MapArea.CRATERIA
         self.minimap_x_coord = 0
         self.minimap_y_coord = 0
         self.up_scroller = 0

@@ -1,6 +1,7 @@
 doors: []
 header: 0x792fd
 header_data:
+  map_area: 0x00
   room_index: 0x02
 width: 5
 height: 5

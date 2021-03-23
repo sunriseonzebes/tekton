@@ -43,6 +43,9 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["header_data"]["room_index"],
                              test_room.header_data.room_index,
                              "Room {} imported incorrect room index!".format(hex(test_item["header"])))
+            self.assertEqual(tekton_room_header_data.MapArea(test_item["header_data"]["map_area"]),
+                             test_room.header_data.map_area,
+                             "Room {} imported incorrect map_area!".format(hex(test_item["header"])))
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
                              len(test_room.doors),
