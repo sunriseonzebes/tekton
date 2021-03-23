@@ -2,6 +2,49 @@ from testing_common import tekton
 from tekton import tekton_room_state
 import unittest
 
+
+class TestTektonRoomStatePointer(unittest.TestCase):
+    def test_init(self):
+        test_pointer = tekton_room_state.TektonRoomStatePointer()
+        self.assertTrue(isinstance(test_pointer, tekton_room_state.TektonRoomStatePointer),
+                        msg="TektonRoomStatePointer did not initialize properly!")
+
+
+class TestTektonRoomEventStatePointer(unittest.TestCase):
+    def test_init(self):
+        test_pointer = tekton_room_state.TektonRoomEventStatePointer()
+        self.assertTrue(isinstance(test_pointer, tekton_room_state.TektonRoomEventStatePointer),
+                        msg="TektonRoomEventStatePointer did not initialize properly!")
+        self.assertEqual(0,
+                         test_pointer.event_value,
+                         "TektonRoomEventStatePointer.event_value did not initialize properly!")
+        self.assertIsNone(test_pointer.room_state,
+                        msg="TektonRoomEventStatePointer.room_state did not initialize properly!")
+
+    def test_pointer_code(self):
+        test_pointer = tekton_room_state.TektonRoomEventStatePointer()
+        actual_result = test_pointer.pointer_code
+        self.assertEqual(b'\x12\xe6',
+                         actual_result,
+                         "TektonRoomEventStatePointer returned the wrong pointer code!")
+
+
+class TestTektonRoomSpecialStatePointer(unittest.TestCase):
+    def test_init(self):
+        test_pointer = tekton_room_state.TektonRoomSpecialStatePointer()
+        self.assertTrue(isinstance(test_pointer, tekton_room_state.TektonRoomSpecialStatePointer),
+                        msg="TektonRoomSpecialStatePointer did not initialize properly!")
+        self.assertIsNone(test_pointer.room_state,
+                        msg="TektonRoomSpecialStatePointer.room_state did not initialize properly!")
+
+    def test_pointer_code(self):
+        test_pointer = tekton_room_state.TektonRoomSpecialStatePointer()
+        actual_result = test_pointer.pointer_code
+        self.assertEqual(b'\x69\xe6',
+                         actual_result,
+                         "TektonRoomSpecialStatePointer returned the wrong pointer code!")
+
+
 class TestTektonRoomState(unittest.TestCase):
     def test_init(self):
         test_state = tekton_room_state.TektonRoomState()

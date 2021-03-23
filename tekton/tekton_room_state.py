@@ -83,6 +83,57 @@ class SongPlayIndex(Enum):
     STOP_MUSIC = 0x80
 
 
+class TektonRoomStatePointer:
+    """A superclass for pointers representing different kinds of room states. Room header data contains zero or more
+        pointers to special room states that are not the standard room state.
+
+    Attributes:
+
+
+    """
+    def __init__(self):
+        pass
+
+    @property
+    def pointer_code(self):
+        pass
+
+
+class TektonRoomEventStatePointer(TektonRoomStatePointer):
+    """Class that represents a single event state pointer in room header data. Holds the event state data and the event
+        value that triggers the state.
+
+    Attributes:
+        event_value (int): Event value that triggers this room state.
+        room_state (TektonRoomState): Room state data associated with this pointer.
+
+    """
+    def __init__(self):
+        self.event_value = 0
+        self.room_state = None
+
+    @property
+    def pointer_code(self):
+        return b'\x12\xe6'
+
+
+class TektonRoomSpecialStatePointer(TektonRoomStatePointer):
+    """Class that represents a special state pointer in room header data. So far I have only encountered a pointer like
+        this in Landing Site's room header data. It has a pointer to a room state, but not an event value. I do not
+        know what this is for.
+
+    Attributes:
+        room_state (TektonRoomState): Room state data associated with this pointer.
+
+    """
+    def __init__(self):
+        self.room_state = None
+
+    @property
+    def pointer_code(self):
+        return b'\x69\xe6'
+
+
 class TektonRoomState:
     """An object that holds information about a single state for a room. This includes things like what tileset it uses,
         what music plays in the room, the scroll speed of the background, etc.
