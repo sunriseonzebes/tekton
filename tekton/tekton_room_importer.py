@@ -13,6 +13,7 @@ from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
 from .tekton_room_header_data import TektonRoomHeaderData, MapArea
+from .tekton_room_state import TektonRoomState, TileSet
 
 
 def import_room_from_rom(rom_contents, room_header_address):
@@ -42,9 +43,7 @@ def import_room_from_rom(rom_contents, room_header_address):
     new_room.header = room_header_address
     new_room.header_data = _get_level_header_data(rom_contents, pointers["header"])
 
-    # Level data addresses are stored in LoROM and are little endian
-    level_lorom_address = rom_contents[pointers["standard"] + 2:pointers["standard"] + 5]
-    new_room.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
+    new_room.standard_state = _get_room_state_at_address(rom_contents, pointers["standard"])
 
     for door_data_address in _get_door_data_addresses(rom_contents, room_header_address):
         try:
@@ -112,6 +111,19 @@ def _get_level_header_data(rom_contents, room_header_address):
                                                               byteorder="big")
 
     return new_header_data
+
+
+def _get_room_state_at_address(rom_contents, room_state_address):
+    new_state = TektonRoomState()
+
+    # Level data addresses are stored in LoROM and are little endian
+    level_lorom_address = rom_contents[room_state_address + 2:room_state_address + 5]
+    new_state.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
+
+    new_state.tileset = TileSet(int.from_bytes(rom_contents[room_state_address + 5:room_state_address + 6],
+                                               byteorder="big"))
+
+    return new_state
 
 
 def _get_data_addresses(rom_contents, room_header_address):

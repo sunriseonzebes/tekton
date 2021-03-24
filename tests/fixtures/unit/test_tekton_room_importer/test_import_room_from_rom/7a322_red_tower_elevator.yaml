@@ -15,6 +15,9 @@ header_data:
   room_index: 0x24
   special_graphics_bitflag: 0x00
   up_scroller: 0x70
-width: 3
 height: 8
-level_data_address: 0x231f4b
+standard_state:
+  level_data_address: 0x231f4b
+  tileset: 0x07
+width: 3
+

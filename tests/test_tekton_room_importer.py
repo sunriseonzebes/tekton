@@ -1,5 +1,5 @@
 from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
-from tekton import tekton_room_importer, tekton_room, tekton_system, tekton_door, tekton_room_state, tekton_room_header_data
+from tekton import tekton_room_importer, tekton_room, tekton_door, tekton_room_state, tekton_room_header_data
 from pydoc import locate
 import os
 import unittest
@@ -35,9 +35,6 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["height"] * 16,
                              test_room.tiles.height,
                              "Room {} imported incorrect tile grid height value!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["level_data_address"],
-                             test_room.level_data_address,
-                             "Room {} imported incorrect level data address!".format(hex(test_item["header"])))
             self.assertTrue(isinstance(test_room.header_data, tekton_room_header_data.TektonRoomHeaderData),
                             msg="Imported room header_data is not of type TektonRoomHeaderData!")
             self.assertEqual(test_item["header_data"]["room_index"],
@@ -61,6 +58,15 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["header_data"]["special_graphics_bitflag"],
                              test_room.header_data.special_graphics_bitflag,
                              "Room {} imported incorrect special_graphics_bitflag!".format(hex(test_item["header"])))
+            self.assertTrue(isinstance(test_room.standard_state, tekton_room_state.TektonRoomState),
+                            msg="Room Standard State is not an instance of TektonRoomState!")
+            self.assertEqual(test_item["standard_state"]["level_data_address"],
+                             test_room.standard_state.level_data_address,
+                             "Room {} imported incorrect standard state level data address!".format(hex(test_item["header"])))
+            self.assertEqual(tekton_room_state.TileSet(test_item["standard_state"]["tileset"]),
+                             test_room.standard_state.tileset,
+                             "Room {} imported incorrect standard state tileset!".format(
+                                 hex(test_item["header"])))
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
                              len(test_room.doors),
