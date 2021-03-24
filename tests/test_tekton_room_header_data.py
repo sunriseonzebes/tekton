@@ -28,6 +28,3 @@ class TestTektonRoomHeaderData(unittest.TestCase):
         self.assertEqual(0,
                          test_header_data.special_graphics_bitflag,
                          "TektonRoomHeaderData special_graphics_bitflag did not initialize correctly!")
-        self.assertEqual(0,
-                         test_header_data.door_out_pointer,
-                         "TektonRoomHeaderData door_out_pointer did not initialize correctly!")

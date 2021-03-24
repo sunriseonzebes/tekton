@@ -104,10 +104,12 @@ def _get_level_header_data(rom_contents, room_header_address):
                                                      byteorder="big")
     new_header_data.minimap_y_coord = int.from_bytes(rom_contents[room_header_address + 3:room_header_address + 4],
                                                      byteorder="big")
-    new_header_data.up_scroller = int.from_bytes(rom_contents[room_header_address + 4:room_header_address + 5],
+    new_header_data.up_scroller = int.from_bytes(rom_contents[room_header_address + 6:room_header_address + 7],
                                                  byteorder="big")
-    new_header_data.down_scroller = int.from_bytes(rom_contents[room_header_address + 5:room_header_address + 6],
+    new_header_data.down_scroller = int.from_bytes(rom_contents[room_header_address + 7:room_header_address + 8],
                                                    byteorder="big")
+    new_header_data.special_graphics_bitflag = int.from_bytes(rom_contents[room_header_address + 8:room_header_address + 9],
+                                                              byteorder="big")
 
     return new_header_data
 

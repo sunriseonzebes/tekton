@@ -58,6 +58,9 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["header_data"]["down_scroller"],
                              test_room.header_data.down_scroller,
                              "Room {} imported incorrect down_scroller!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["header_data"]["special_graphics_bitflag"],
+                             test_room.header_data.special_graphics_bitflag,
+                             "Room {} imported incorrect special_graphics_bitflag!".format(hex(test_item["header"])))
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
                              len(test_room.doors),

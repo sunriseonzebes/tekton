@@ -1,12 +1,13 @@
 doors: []
 header: 0x799bd
 header_data:
-  down_scroller: 0x07
+  down_scroller: 0xa0
   map_area: 0x00
   minimap_x_coord: 0x0b
   minimap_y_coord: 0x02
   room_index: 0x1c
-  up_scroller: 0x01
+  special_graphics_bitflag: 0x00
+  up_scroller: 0x70
 width: 1
 height: 7
 level_data_address: 0x21ee60

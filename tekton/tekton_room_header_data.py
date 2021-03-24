@@ -33,4 +33,3 @@ class TektonRoomHeaderData:
         self.up_scroller = 0
         self.down_scroller = 0
         self.special_graphics_bitflag = 0
-        self.door_out_pointer = 0
