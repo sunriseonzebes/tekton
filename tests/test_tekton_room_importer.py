@@ -72,6 +72,16 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(tekton_room_state.SongPlayIndex(test_item["standard_state"]["song_play_index"]),
                              test_room.standard_state.song_play_index,
                              "Room {} imported incorrect standard state song_play_index!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["standard_state"]["fx_pointer"],
+                             test_room.standard_state.fx_pointer,
+                             "Room {} imported incorrect standard state fx_pointer!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["standard_state"]["enemy_set_pointer"],
+                             test_room.standard_state.enemy_set_pointer,
+                             "Room {} imported incorrect standard state enemy_set_pointer!".format(hex(test_item["header"])))
+            self.assertEqual(test_item["standard_state"]["enemy_gfx_pointer"],
+                             test_room.standard_state.enemy_gfx_pointer,
+                             "Room {} imported incorrect standard state enemy_gfx_pointer!".format(
+                                 hex(test_item["header"])))
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
                              len(test_room.doors),

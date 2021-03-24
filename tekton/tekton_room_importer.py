@@ -130,6 +130,12 @@ def _get_room_state_at_address(rom_contents, room_state_address):
                                                byteorder="big"))
     new_state.song_play_index = SongPlayIndex(int.from_bytes(rom_contents[room_state_address + 7:room_state_address + 8],
                                                              byteorder="big"))
+    new_state.fx_pointer = int.from_bytes(rom_contents[room_state_address + 8:room_state_address + 10],
+                                          byteorder="little")
+    new_state.enemy_set_pointer = int.from_bytes(rom_contents[room_state_address + 10:room_state_address + 12],
+                                                 byteorder="little")
+    new_state.enemy_gfx_pointer = int.from_bytes(rom_contents[room_state_address + 12:room_state_address + 14],
+                                                 byteorder="little")
 
     return new_state
 

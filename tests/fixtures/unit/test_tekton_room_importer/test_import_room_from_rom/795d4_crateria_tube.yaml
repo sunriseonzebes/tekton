@@ -10,6 +10,9 @@ header_data:
   up_scroller: 0x70
 height: 1
 standard_state:
+  enemy_set_pointer: 0x8b3b
+  enemy_gfx_pointer: 0x8233
+  fx_pointer: 0x8168
   level_data_address: 0x21bcd2
   songset: 0x00
   song_play_index: 0x00
