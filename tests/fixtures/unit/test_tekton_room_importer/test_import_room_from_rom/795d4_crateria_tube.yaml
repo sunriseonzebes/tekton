@@ -10,6 +10,8 @@ header_data:
   up_scroller: 0x70
 height: 1
 standard_state:
+  background_x_scroll: 0x00
+  background_y_scroll: 0x00
   enemy_set_pointer: 0x8b3b
   enemy_gfx_pointer: 0x8233
   fx_pointer: 0x8168

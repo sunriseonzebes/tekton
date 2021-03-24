@@ -136,6 +136,10 @@ def _get_room_state_at_address(rom_contents, room_state_address):
                                                  byteorder="little")
     new_state.enemy_gfx_pointer = int.from_bytes(rom_contents[room_state_address + 12:room_state_address + 14],
                                                  byteorder="little")
+    new_state.background_x_scroll = int.from_bytes(rom_contents[room_state_address + 14:room_state_address + 15],
+                                                   byteorder="little")
+    new_state.background_y_scroll = int.from_bytes(rom_contents[room_state_address + 15:room_state_address + 16],
+                                                   byteorder="little")
 
     return new_state
 
