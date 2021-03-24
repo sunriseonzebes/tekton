@@ -86,8 +86,14 @@ class TestTektonRoomState(unittest.TestCase):
                          test_state.main_asm_pointer,
                          "TektonRoomState.main_asm_pointer did not initialize correctly!")
         self.assertEqual(0,
+                         test_state.plm_set_pointer,
+                         "TektonRoomState.plm_set_pointer did not initialize correctly!")
+        self.assertEqual(0,
+                         test_state.background_pointer,
+                         "TektonRoomState.background_asm_pointer did not initialize correctly!")
+        self.assertEqual(0,
                          test_state.setup_asm_pointer,
-                         "TektonRoomState.main_asm_pointer did not initialize correctly!")
+                         "TektonRoomState.setup_asm_pointer did not initialize correctly!")
         self.assertIsNone(test_state.tiles,
                          "TektonRoomState.tiles did not initialize correctly!")
         self.assertEqual(0,

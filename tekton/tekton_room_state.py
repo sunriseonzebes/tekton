@@ -167,6 +167,8 @@ class TektonRoomState:
         self.room_scrolls_pointer = 0
         self.unused_pointer = 0
         self.main_asm_pointer = 0
+        self.plm_set_pointer = 0
+        self.background_pointer = 0
         self.setup_asm_pointer = 0
         self.tiles = None
         self._level_data_address = 0
