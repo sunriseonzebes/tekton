@@ -104,6 +104,10 @@ def _get_level_header_data(rom_contents, room_header_address):
                                                      byteorder="big")
     new_header_data.minimap_y_coord = int.from_bytes(rom_contents[room_header_address + 3:room_header_address + 4],
                                                      byteorder="big")
+    new_header_data.up_scroller = int.from_bytes(rom_contents[room_header_address + 4:room_header_address + 5],
+                                                 byteorder="big")
+    new_header_data.down_scroller = int.from_bytes(rom_contents[room_header_address + 5:room_header_address + 6],
+                                                   byteorder="big")
 
     return new_header_data
 

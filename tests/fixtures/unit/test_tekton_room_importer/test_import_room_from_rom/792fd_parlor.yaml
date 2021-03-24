@@ -1,10 +1,12 @@
 doors: []
 header: 0x792fd
 header_data:
+  down_scroller: 0x05
   map_area: 0x00
   minimap_x_coord: 0x12
   minimap_y_coord: 0x04
   room_index: 0x02
+  up_scroller: 0x05
 width: 5
 height: 5
 level_data_address: 0x215bc4
