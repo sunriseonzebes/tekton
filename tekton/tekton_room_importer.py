@@ -125,11 +125,11 @@ def _get_room_state_at_address(rom_contents, room_state_address):
     new_state.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
 
     new_state.tileset = TileSet(int.from_bytes(rom_contents[room_state_address + 5:room_state_address + 6],
-                                               byteorder="big"))
+                                               byteorder="little"))
     new_state.songset = SongSet(int.from_bytes(rom_contents[room_state_address + 6:room_state_address + 7],
-                                               byteorder="big"))
+                                               byteorder="little"))
     new_state.song_play_index = SongPlayIndex(int.from_bytes(rom_contents[room_state_address + 7:room_state_address + 8],
-                                                             byteorder="big"))
+                                                             byteorder="little"))
     new_state.fx_pointer = int.from_bytes(rom_contents[room_state_address + 8:room_state_address + 10],
                                           byteorder="little")
     new_state.enemy_set_pointer = int.from_bytes(rom_contents[room_state_address + 10:room_state_address + 12],
@@ -140,6 +140,18 @@ def _get_room_state_at_address(rom_contents, room_state_address):
                                                    byteorder="little")
     new_state.background_y_scroll = int.from_bytes(rom_contents[room_state_address + 15:room_state_address + 16],
                                                    byteorder="little")
+    new_state.room_scrolls_pointer = int.from_bytes(rom_contents[room_state_address + 16:room_state_address + 18],
+                                                    byteorder="little")
+    new_state.unused_pointer = int.from_bytes(rom_contents[room_state_address + 18:room_state_address + 20],
+                                              byteorder="little")
+    new_state.main_asm_pointer = int.from_bytes(rom_contents[room_state_address + 20:room_state_address + 22],
+                                                byteorder="little")
+    new_state.plm_set_pointer = int.from_bytes(rom_contents[room_state_address + 22:room_state_address + 24],
+                                               byteorder="little")
+    new_state.background_pointer = int.from_bytes(rom_contents[room_state_address + 24:room_state_address + 26],
+                                                  byteorder="little")
+    new_state.setup_asm_pointer = int.from_bytes(rom_contents[room_state_address + 26:room_state_address + 28],
+                                                 byteorder="little")
 
     return new_state
 

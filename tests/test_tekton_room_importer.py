@@ -60,33 +60,8 @@ class TestTektonRoomImporter(unittest.TestCase):
                              "Room {} imported incorrect special_graphics_bitflag!".format(hex(test_item["header"])))
             self.assertTrue(isinstance(test_room.standard_state, tekton_room_state.TektonRoomState),
                             msg="Room Standard State is not an instance of TektonRoomState!")
-            self.assertEqual(test_item["standard_state"]["level_data_address"],
-                             test_room.standard_state.level_data_address,
-                             "Room {} imported incorrect standard state level data address!".format(hex(test_item["header"])))
-            self.assertEqual(tekton_room_state.TileSet(test_item["standard_state"]["tileset"]),
-                             test_room.standard_state.tileset,
-                             "Room {} imported incorrect standard state tileset!".format(hex(test_item["header"])))
-            self.assertEqual(tekton_room_state.SongSet(test_item["standard_state"]["songset"]),
-                             test_room.standard_state.songset,
-                             "Room {} imported incorrect standard state songset!".format(hex(test_item["header"])))
-            self.assertEqual(tekton_room_state.SongPlayIndex(test_item["standard_state"]["song_play_index"]),
-                             test_room.standard_state.song_play_index,
-                             "Room {} imported incorrect standard state song_play_index!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["standard_state"]["fx_pointer"],
-                             test_room.standard_state.fx_pointer,
-                             "Room {} imported incorrect standard state fx_pointer!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["standard_state"]["enemy_set_pointer"],
-                             test_room.standard_state.enemy_set_pointer,
-                             "Room {} imported incorrect standard state enemy_set_pointer!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["standard_state"]["enemy_gfx_pointer"],
-                             test_room.standard_state.enemy_gfx_pointer,
-                             "Room {} imported incorrect standard state enemy_gfx_pointer!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["standard_state"]["background_x_scroll"],
-                             test_room.standard_state.background_x_scroll,
-                             "Room {} imported incorrect standard state background_x_scroll!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["standard_state"]["background_y_scroll"],
-                             test_room.standard_state.background_y_scroll,
-                             "Room {} imported incorrect standard state background_y_scroll!".format(hex(test_item["header"])))
+            self._test_room_state(test_room.standard_state, test_item["standard_state"], test_item["header"])
+
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
                              len(test_room.doors),
@@ -200,3 +175,61 @@ class TestTektonRoomImporter(unittest.TestCase):
                 test_door = tekton_room_importer.import_door(rom_contents, "0x18ac6")
             with self.assertRaises(ValueError):
                 test_door = tekton_room_importer.import_door(rom_contents, -5)
+
+    def _test_room_state(self, actual_result, expected_result, room_header_address):
+        self.assertEqual(expected_result["level_data_address"],
+                         actual_result.level_data_address,
+                         "Room {} state imported incorrect level data address!".format(
+                             hex(room_header_address)))
+        self.assertEqual(tekton_room_state.TileSet(expected_result["tileset"]),
+                         actual_result.tileset,
+                         "Room {} state imported incorrect tileset!".format(hex(room_header_address)))
+        self.assertEqual(tekton_room_state.SongSet(expected_result["songset"]),
+                         actual_result.songset,
+                         "Room {} state imported incorrect songset!".format(hex(room_header_address)))
+        self.assertEqual(tekton_room_state.SongPlayIndex(expected_result["song_play_index"]),
+                         actual_result.song_play_index,
+                         "Room {} state imported incorrect song_play_index!".format(hex(room_header_address)))
+        self.assertEqual(expected_result["fx_pointer"],
+                         actual_result.fx_pointer,
+                         "Room {} state imported incorrect fx_pointer!".format(hex(room_header_address)))
+        self.assertEqual(expected_result["enemy_set_pointer"],
+                         actual_result.enemy_set_pointer,
+                         "Room {} state imported incorrect enemy_set_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["enemy_gfx_pointer"],
+                         actual_result.enemy_gfx_pointer,
+                         "Room {} state imported incorrect enemy_gfx_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["background_x_scroll"],
+                         actual_result.background_x_scroll,
+                         "Room {} state imported incorrect background_x_scroll!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["background_y_scroll"],
+                         actual_result.background_y_scroll,
+                         "Room {} state imported incorrect background_y_scroll!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["room_scrolls_pointer"],
+                         actual_result.room_scrolls_pointer,
+                         "Room {} state imported incorrect room_scrolls_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["unused_pointer"],
+                         actual_result.unused_pointer,
+                         "Room {} state imported incorrect unused_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["main_asm_pointer"],
+                         actual_result.main_asm_pointer,
+                         "Room {} state imported incorrect main_asm_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["plm_set_pointer"],
+                         actual_result.plm_set_pointer,
+                         "Room {} state imported incorrect plm_set_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["background_pointer"],
+                         actual_result.background_pointer,
+                         "Room {} state imported incorrect background_pointer!".format(
+                             hex(room_header_address)))
+        self.assertEqual(expected_result["setup_asm_pointer"],
+                         actual_result.setup_asm_pointer,
+                         "Room {} state imported incorrect setup_asm_pointer!".format(
+                             hex(room_header_address)))

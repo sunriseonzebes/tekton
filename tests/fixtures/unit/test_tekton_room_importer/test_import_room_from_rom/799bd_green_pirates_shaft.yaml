@@ -10,13 +10,19 @@ header_data:
   up_scroller: 0x70
 height: 7
 standard_state:
+  background_pointer: 0xb956
   background_x_scroll: 0x01
   background_y_scroll: 0xc1
   enemy_set_pointer: 0x8500
   enemy_gfx_pointer: 0x80c1
   fx_pointer: 0x81c2
   level_data_address: 0x21ee60
+  main_asm_pointer: 0x0000
+  plm_set_pointer: 0x844c
+  room_scrolls_pointer: 0x99ec
+  setup_asm_pointer: 0x91d4
   songset: 0x00
   song_play_index: 0x05
+  unused_pointer: 0x0000
   tileset: 0x02
 width: 1
