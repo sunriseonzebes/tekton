@@ -11,6 +11,8 @@ header_data:
 height: 5
 standard_state:
   level_data_address: 0x215bc4
+  songset: 0x00
+  song_play_index: 0x00
   tileset: 0x00
 width: 5
 

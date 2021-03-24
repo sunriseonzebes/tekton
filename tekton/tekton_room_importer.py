@@ -13,7 +13,7 @@ from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
 from .tekton_room_header_data import TektonRoomHeaderData, MapArea
-from .tekton_room_state import TektonRoomState, TileSet
+from .tekton_room_state import TektonRoomState, TileSet, SongSet, SongPlayIndex
 
 
 def import_room_from_rom(rom_contents, room_header_address):
@@ -126,6 +126,10 @@ def _get_room_state_at_address(rom_contents, room_state_address):
 
     new_state.tileset = TileSet(int.from_bytes(rom_contents[room_state_address + 5:room_state_address + 6],
                                                byteorder="big"))
+    new_state.songset = SongSet(int.from_bytes(rom_contents[room_state_address + 6:room_state_address + 7],
+                                               byteorder="big"))
+    new_state.song_play_index = SongPlayIndex(int.from_bytes(rom_contents[room_state_address + 7:room_state_address + 8],
+                                                             byteorder="big"))
 
     return new_state
 
