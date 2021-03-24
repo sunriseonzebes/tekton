@@ -43,6 +43,10 @@ def import_room_from_rom(rom_contents, room_header_address):
     new_room.header = room_header_address
     new_room.header_data = _get_level_header_data(rom_contents, pointers["header"])
 
+    # Level data addresses are stored in LoROM and are little endian
+    level_lorom_address = rom_contents[pointers["standard"] + 2:pointers["standard"] + 5]
+    new_room.level_data_address = lorom_to_pc(level_lorom_address, byteorder="little")
+
     new_room.standard_state = _get_room_state_at_address(rom_contents, pointers["standard"])
 
     for door_data_address in _get_door_data_addresses(rom_contents, room_header_address):

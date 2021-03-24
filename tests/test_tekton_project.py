@@ -157,3 +157,6 @@ class TestTektonProjectIntegration(unittest.TestCase):
         self.assertEqual(expected_values["height"],
                          test_room.height_screens,
                          "Room {} did not import correct height.".format(hex(expected_values["header"])))
+        self.assertEqual(expected_values["level_data_address"],
+                         test_room.level_data_address,
+                         "Room {} did not import correct level data address.".format(hex(expected_values["header"])))
