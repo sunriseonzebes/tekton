@@ -14,6 +14,7 @@ from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
 from .tekton_room_header_data import TektonRoomHeaderData, MapArea
 from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, TektonRoomLandingStatePointer, TektonRoomFlywayStatePointer, TileSet, SongSet, SongPlayIndex
+from .tekton_tile_grid import TektonTileGrid
 
 
 def import_room_from_rom(rom_contents, room_header_address):
@@ -44,7 +45,9 @@ def import_room_from_rom(rom_contents, room_header_address):
     current_offset = room_header_address + 11
     allowed_events_pointers = [b"\x12\xe6", b"\x69\xe6", b"\x29\xe6"]
     while rom_contents[current_offset:current_offset + 2] in allowed_events_pointers:
-        new_room.extra_states.append(_get_room_state_pointer_at_address(rom_contents, current_offset))
+        new_room_state = _get_room_state_pointer_at_address(rom_contents, current_offset)
+        new_room_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
+        new_room.extra_states.append(new_room_state)
         current_offset += _get_offset_of_next_state_pointer(rom_contents[current_offset:current_offset + 2])
 
     if rom_contents[current_offset:current_offset + 2] != b'\xe6\xe5':
@@ -58,7 +61,7 @@ def import_room_from_rom(rom_contents, room_header_address):
 
     standard_state_address = current_offset + 2
     new_room.standard_state = _get_room_state_at_address(rom_contents, standard_state_address)
-    new_room.level_data_address = new_room.standard_state.level_data_address
+    new_room.standard_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
 
     for door_data_address in _get_door_data_addresses(rom_contents, room_header_address):
         try:
@@ -210,6 +213,13 @@ def _get_room_state_at_address(rom_contents, room_state_address):
                                                  byteorder="little")
 
     return new_state
+
+
+def _get_empty_tile_data_for_room(room_width_screens, room_height_screens):
+    new_grid = TektonTileGrid(room_width_screens * 16, room_height_screens * 16)
+    new_grid.fill()
+    return new_grid
+
 
 def _get_offset_of_next_state_pointer(current_state_pointer):
     if current_state_pointer == b'\x12\xe6':

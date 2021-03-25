@@ -1,5 +1,5 @@
 from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
-from tekton import tekton_project, tekton_room_dict, tekton_room, tekton_door
+from tekton import tekton_project, tekton_room_dict, tekton_room, tekton_door, tekton_room_state, tekton_tile_grid
 import hashlib
 import modified_test_roms
 import os
@@ -54,7 +54,10 @@ class TestTektonProjectIntegration(unittest.TestCase):
             for test_room_data in test_item["rooms"]:
                 new_room = tekton_room.TektonRoom(test_room_data["width"], test_room_data["height"])
                 new_room.header = test_room_data["header"]
-                new_room.level_data_address = test_room_data["level_data_address"]
+                new_room.standard_state = tekton_room_state.TektonRoomState()
+                new_room.standard_state.level_data_address = test_room_data["level_data_address"]
+                new_room.standard_state.tiles = tekton_tile_grid.TektonTileGrid(test_room_data["width"] * 16, test_room_data["height"] * 16)
+                new_room.standard_state.tiles.fill()
                 if "level_data_length" in test_room_data.keys():
                     new_room.level_data_length = test_room_data["level_data_length"]
                 if "doors" in test_room_data.keys():
@@ -157,6 +160,3 @@ class TestTektonProjectIntegration(unittest.TestCase):
         self.assertEqual(expected_values["height"],
                          test_room.height_screens,
                          "Room {} did not import correct height.".format(hex(expected_values["header"])))
-        self.assertEqual(expected_values["level_data_address"],
-                         test_room.level_data_address,
-                         "Room {} did not import correct level data address.".format(hex(expected_values["header"])))

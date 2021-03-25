@@ -45,7 +45,6 @@ class TektonRoom:
         self.write_level_data = True
 
         self._header = 0x00
-        self._level_data_address = 0x00
 
     @property
     def header(self):
@@ -62,22 +61,6 @@ class TektonRoom:
             raise ValueError("Room header address must be a positive number.")
         self._header = new_header
 
-    @property
-    def level_data_address(self):
-        """int: Get or set the PC address in the ROM where this room's level data can be found."""
-        return self._level_data_address
-
-    @level_data_address.setter
-    def level_data_address(self, new_address):
-        if not isinstance(new_address, int):
-            raise TypeError(
-                "Room level data address must be of type int. "
-                "You can set a hex value using int hex notation, e.g. 0x21bcd2"
-            )
-        if new_address < 0:
-            raise ValueError("Room level data address must be a positive number.")
-        self._level_data_address = new_address
-
     def compressed_level_data(self):
         """Returns compressed level data which the Super Metroid ROM can understand.
 
@@ -88,7 +71,7 @@ class TektonRoom:
         compressor = TektonCompressionMapper()
         compressor.width_screens = self.width_screens
         compressor.height_screens = self.height_screens
-        compressor.uncompressed_data = self.tiles.uncompressed_data
+        compressor.uncompressed_data = self.standard_state.tiles.uncompressed_data
         compressed_data = compressor.compressed_data
         if 0 < self.level_data_length < len(compressed_data):
             raise CompressedDataTooLargeError(
