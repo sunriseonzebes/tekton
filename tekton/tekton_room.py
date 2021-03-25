@@ -64,7 +64,7 @@ class TektonRoom:
     def tiles(self):
         raise ValueError("This attribute has been removed.")
 
-    def compressed_level_data(self):
+    def compressed_level_data(self, room_state):
         """Returns compressed level data which the Super Metroid ROM can understand.
 
         Returns:
@@ -74,7 +74,7 @@ class TektonRoom:
         compressor = TektonCompressionMapper()
         compressor.width_screens = self.width_screens
         compressor.height_screens = self.height_screens
-        compressor.uncompressed_data = self.standard_state.tiles.uncompressed_data
+        compressor.uncompressed_data = room_state.tiles.uncompressed_data
         compressed_data = compressor.compressed_data
         if 0 < self.level_data_length < len(compressed_data):
             raise CompressedDataTooLargeError(

@@ -4,10 +4,9 @@ expected_results:
     byte: 0x00
 room_width: 1
 room_height: 1
-standard_state:
-  tiles:
-    - count: 256
-      tile:
-        tileno: 0x000
-        bts_type: 0x00
-        bts_num: 0x00
+tiles:
+  - count: 256
+    tile:
+      tileno: 0x000
+      bts_type: 0x00
+      bts_num: 0x00

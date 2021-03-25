@@ -1,4 +1,4 @@
-from testing_common import tekton, load_test_data_dir, int_list_to_bytes
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_data
 from tekton import tekton_room, tekton_tile, tekton_tile_grid, tekton_room_header_data, tekton_room_state
 import os
 import unittest
@@ -46,13 +46,11 @@ class TestTektonRoom(unittest.TestCase):
         test_data = load_test_data_dir(test_data_dir)
 
         for test_item in test_data:
-            expected_result = int_list_to_bytes(test_item["expected_result"])
-            test_room = tekton_room.TektonRoom()
-            test_room.level_data_length = 155
-            test_room.standard_state.tiles = tekton_tile_grid.TektonTileGrid(16, 16)
-            test_room.standard_state.tiles.fill()
-            actual_result = test_room.compressed_level_data()
-            self.assertEqual(expected_result, actual_result, "TektonRoom did not produce correct compressed data!")
+            test_room = load_room_from_test_data(test_item)
+            if "standard_state" in test_item.keys():
+                expected_result = int_list_to_bytes(test_item["standard_state"]["expected_result"])
+                actual_result = test_room.compressed_level_data(test_room.standard_state)
+                self.assertEqual(expected_result, actual_result, "TektonRoom did not produce correct compressed data!")
 
         test_room = tekton_room.TektonRoom()
         test_room.level_data_length = 3
@@ -60,5 +58,5 @@ class TestTektonRoom(unittest.TestCase):
         test_room.standard_state.tiles.fill()
 
         with self.assertRaises(tekton_room.CompressedDataTooLargeError):
-            actual_result = test_room.compressed_level_data()
+            actual_result = test_room.compressed_level_data(test_room.standard_state)
 

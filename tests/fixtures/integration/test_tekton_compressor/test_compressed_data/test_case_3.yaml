@@ -21,23 +21,21 @@ expected_result:
   - 0x03
 room_width: 1
 room_height: 1
-standard_state:
-  tiles:
-    - count: 38
-      tile:
-        tileno: 0x104
-        bts_type: 0x08
-        bts_num: 0x00
-        h_mirror: !!bool 'true'
-    - count: 26
-      tile:
-        tileno: 0x20a
-        bts_type: 0x00
-        bts_num: 0x00
-        v_mirror: !!bool 'true'
-    - count: 192
-      tile:
-        tileno: 0x307
-        bts_type: 0x01
-        bts_num: 0x03
-level_data_length: 0
+tiles:
+  - count: 38
+    tile:
+      tileno: 0x104
+      bts_type: 0x08
+      bts_num: 0x00
+      h_mirror: !!bool 'true'
+  - count: 26
+    tile:
+      tileno: 0x20a
+      bts_type: 0x00
+      bts_num: 0x00
+      v_mirror: !!bool 'true'
+  - count: 192
+    tile:
+      tileno: 0x307
+      bts_type: 0x01
+      bts_num: 0x03

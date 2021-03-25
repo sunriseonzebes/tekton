@@ -1,4 +1,4 @@
-from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_tiles
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_data, load_room_state_from_test_data
 from tekton import tekton_compressor, tekton_tile, tekton_field
 import os
 import unittest
@@ -63,8 +63,8 @@ class TestTektonCompressionMapper(unittest.TestCase):
 
         for test_case in test_data:
             test_mapper = tekton_compressor.TektonCompressionMapper()
-            test_room = load_room_from_test_tiles(test_case)
-            test_mapper.uncompressed_data = test_room.standard_state.tiles.uncompressed_data
+            test_state = load_room_state_from_test_data(test_case, test_case["room_width"], test_case["room_height"])
+            test_mapper.uncompressed_data = test_state.tiles.uncompressed_data
             test_mapper._init_byte_map()
             test_mapper._map_fields()
             for expected_map_range in test_case["expected_results"]:
@@ -127,10 +127,10 @@ class TestTektonCompressionMapper(unittest.TestCase):
 
         for test_item in test_data:
             test_mapper = tekton_compressor.TektonCompressionMapper()
-            test_room = load_room_from_test_tiles(test_item)
-            test_mapper.width_screens = test_room.width_screens
-            test_mapper.height_screens = test_room.height_screens
-            test_mapper.uncompressed_data = test_room.standard_state.tiles.uncompressed_data
+            test_state = load_room_state_from_test_data(test_item, test_item["room_width"], test_item["room_height"])
+            test_mapper.width_screens = test_item["room_width"]
+            test_mapper.height_screens = test_item["room_height"]
+            test_mapper.uncompressed_data = test_state.tiles.uncompressed_data
             expected_result = int_list_to_bytes(test_item["expected_result"])
             actual_result = test_mapper.compressed_data
             self.assertEqual(expected_result, actual_result, "Room data did not compress correctly.")
@@ -147,8 +147,8 @@ class TestTektonCompressionMapper(unittest.TestCase):
 
         for test_case in test_data:
             test_mapper = tekton_compressor.TektonCompressionMapper()
-            test_room = load_room_from_test_tiles(test_case)
-            test_mapper.uncompressed_data = test_room.standard_state.tiles.uncompressed_data
+            test_state = load_room_state_from_test_data(test_case, test_case["room_width"], test_case["room_height"])
+            test_mapper.uncompressed_data = test_state.tiles.uncompressed_data
             test_mapper._init_byte_map()
             test_mapper._map_fields()
             actual_result = test_mapper._generate_compression_fields()

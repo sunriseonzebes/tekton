@@ -28,21 +28,27 @@ def int_list_to_bytes(int_list):
         bytes_value += el.to_bytes(1, byteorder="big")
     return bytes_value
 
-def load_room_from_test_tiles(test_tile_data):
-    test_room = tekton.tekton_room.TektonRoom(test_tile_data["room_width"], test_tile_data["room_height"])
-    test_room.standard_state = tekton.tekton_room_state.TektonRoomState()
-    test_room.standard_state.tiles = tekton.tekton_tile_grid.TektonTileGrid(test_tile_data["room_width"] * 16, test_tile_data["room_height"] * 16)
-    test_room.standard_state.tiles.fill()
-    tiles_width = test_room.standard_state.tiles.width
-    if "level_data_length" in test_tile_data.keys():
-        test_room.level_data_length = test_tile_data["level_data_length"]
+def load_room_from_test_data(test_room_data):
+    test_room = tekton.tekton_room.TektonRoom(test_room_data["room_width"], test_room_data["room_height"])
+    if "level_data_length" in test_room_data.keys():
+        test_room.level_data_length = test_room_data["level_data_length"]
+    if "standard_state" in test_room_data.keys():
+        test_room.standard_state = load_room_state_from_test_data(test_room_data["standard_state"], test_room_data["room_width"], test_room_data["room_height"])
+
+    return test_room
+
+def load_room_state_from_test_data(test_state_data, room_width, room_height):
+    new_state = tekton.tekton_room_state.TektonRoomState()
+    new_state.tiles = tekton.tekton_tile_grid.TektonTileGrid(room_width * 16, room_height * 16)
+    new_state.tiles.fill()
+    tiles_width = new_state.tiles.width
     counter = 0
-    for tile_group in test_tile_data["standard_state"]["tiles"]:
+    for tile_group in test_state_data["tiles"]:
         for i in range(tile_group["count"]):
             for key in tile_group["tile"].keys():
-                setattr(test_room.standard_state.tiles[counter % tiles_width][counter // tiles_width],
+                setattr(new_state.tiles[counter % tiles_width][counter // tiles_width],
                         key,
                         tile_group["tile"][key])
             counter += 1
 
-    return test_room
+    return new_state

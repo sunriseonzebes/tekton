@@ -1,4 +1,4 @@
-from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_tiles
+from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_data
 from tekton import tekton_tile_grid, tekton_tile
 import os
 import unittest
@@ -63,7 +63,7 @@ class TestTektonTileGrid(unittest.TestCase):
 
         for test_case in test_data:
             expected_result = int_list_to_bytes(test_case["expected_result"])
-            test_room = load_room_from_test_tiles(test_case)
+            test_room = load_room_from_test_data(test_case)
             actual_result = test_room.standard_state.tiles.uncompressed_data
             self.assertEqual(expected_result,
                              actual_result,
