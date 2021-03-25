@@ -6,8 +6,7 @@ can understand.
 Functions:
     compress_level_data: converts a TektonTileGrid into compressed level data.
 """
-from .tekton_field import TektonWordFillField, TektonByteFillField, TektonDirectCopyField, TektonL1RepeaterField, \
-    TektonBTSNumRepeaterField, TektonBTSNumSingleField
+from .tekton_field import TektonWordFillField, TektonByteFillField, TektonDirectCopyField
 from .tekton_tile import TektonTile
 
 
