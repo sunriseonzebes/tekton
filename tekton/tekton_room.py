@@ -15,6 +15,7 @@ from .tekton_tile_grid import TektonTileGrid
 from .tekton_compressor import TektonCompressionMapper
 from .tekton_system import pad_bytes
 from .tekton_room_header_data import TektonRoomHeaderData
+from .tekton_room_state import TektonRoomState
 
 
 class TektonRoom:
@@ -38,9 +39,7 @@ class TektonRoom:
         self.height_screens = height
         self.level_data_length = 0
         self.name = None
-        self.standard_state = None
-        self.tiles = TektonTileGrid(width * 16, height * 16)
-        self.tiles.fill()
+        self.standard_state = TektonRoomState()
         self.width_screens = width
         self.write_level_data = True
 
@@ -60,6 +59,10 @@ class TektonRoom:
         if new_header < 0:
             raise ValueError("Room header address must be a positive number.")
         self._header = new_header
+
+    @property
+    def tiles(self):
+        raise ValueError("This attribute has been removed.")
 
     def compressed_level_data(self):
         """Returns compressed level data which the Super Metroid ROM can understand.

@@ -24,31 +24,32 @@ expected_results:
     byte: 0x04
 room_width: 1
 room_height: 1
-test_tiles:
-  - count: 15
-    tile:
-      tileno: 0x000
-      bts_type: 0x00
-      bts_num: 0x00
-  - count: 1
-    tile:
-      tileno: 0x2fa
-      bts_type: 0x09
-      bts_num: 0x00
-      v_mirror: !!bool 'true'
-  - count: 24
-    tile:
-      tileno: 0x080
-      bts_type: 0x08
-      bts_num: 0x00
-  - count: 1
-    tile:
-      tileno: 0x30b
-      bts_type: 0x09
-      bts_num: 0x01
-      h_mirror: !!bool 'true'
-  - count: 215
-    tile:
-      tileno: 0x000
-      bts_type: 0x00
-      bts_num: 0x04
+standard_state:
+  tiles:
+    - count: 15
+      tile:
+        tileno: 0x000
+        bts_type: 0x00
+        bts_num: 0x00
+    - count: 1
+      tile:
+        tileno: 0x2fa
+        bts_type: 0x09
+        bts_num: 0x00
+        v_mirror: !!bool 'true'
+    - count: 24
+      tile:
+        tileno: 0x080
+        bts_type: 0x08
+        bts_num: 0x00
+    - count: 1
+      tile:
+        tileno: 0x30b
+        bts_type: 0x09
+        bts_num: 0x01
+        h_mirror: !!bool 'true'
+    - count: 215
+      tile:
+        tileno: 0x000
+        bts_type: 0x00
+        bts_num: 0x04

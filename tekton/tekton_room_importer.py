@@ -45,9 +45,9 @@ def import_room_from_rom(rom_contents, room_header_address):
     current_offset = room_header_address + 11
     allowed_events_pointers = [b"\x12\xe6", b"\x69\xe6", b"\x29\xe6"]
     while rom_contents[current_offset:current_offset + 2] in allowed_events_pointers:
-        new_room_state = _get_room_state_pointer_at_address(rom_contents, current_offset)
-        new_room_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
-        new_room.extra_states.append(new_room_state)
+        new_room_state_pointer = _get_room_state_pointer_at_address(rom_contents, current_offset)
+        new_room_state_pointer.room_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
+        new_room.extra_states.append(new_room_state_pointer)
         current_offset += _get_offset_of_next_state_pointer(rom_contents[current_offset:current_offset + 2])
 
     if rom_contents[current_offset:current_offset + 2] != b'\xe6\xe5':

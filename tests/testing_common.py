@@ -30,14 +30,17 @@ def int_list_to_bytes(int_list):
 
 def load_room_from_test_tiles(test_tile_data):
     test_room = tekton.tekton_room.TektonRoom(test_tile_data["room_width"], test_tile_data["room_height"])
-    tiles_width = test_room.tiles.width
+    test_room.standard_state = tekton.tekton_room_state.TektonRoomState()
+    test_room.standard_state.tiles = tekton.tekton_tile_grid.TektonTileGrid(test_tile_data["room_width"] * 16, test_tile_data["room_height"] * 16)
+    test_room.standard_state.tiles.fill()
+    tiles_width = test_room.standard_state.tiles.width
     if "level_data_length" in test_tile_data.keys():
         test_room.level_data_length = test_tile_data["level_data_length"]
     counter = 0
-    for tile_group in test_tile_data["test_tiles"]:
+    for tile_group in test_tile_data["standard_state"]["tiles"]:
         for i in range(tile_group["count"]):
             for key in tile_group["tile"].keys():
-                setattr(test_room.tiles[counter % tiles_width][counter // tiles_width],
+                setattr(test_room.standard_state.tiles[counter % tiles_width][counter // tiles_width],
                         key,
                         tile_group["tile"][key])
             counter += 1

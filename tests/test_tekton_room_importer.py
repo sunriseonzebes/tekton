@@ -1,5 +1,5 @@
 from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
-from tekton import tekton_room_importer, tekton_room, tekton_door, tekton_room_state, tekton_room_header_data
+from tekton import tekton_room_importer, tekton_room, tekton_door, tekton_room_state, tekton_room_header_data, tekton_tile_grid
 from pydoc import locate
 import os
 import unittest
@@ -29,12 +29,6 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["height"],
                              test_room.height_screens,
                              "Room {} imported incorrect height value!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["width"] * 16,
-                             test_room.tiles.width,
-                             "Room {} imported incorrect tile grid width value!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["height"] * 16,
-                             test_room.tiles.height,
-                             "Room {} imported incorrect tile grid height value!".format(hex(test_item["header"])))
             self.assertTrue(isinstance(test_room.header_data, tekton_room_header_data.TektonRoomHeaderData),
                             msg="Imported room header_data is not of type TektonRoomHeaderData!")
             self.assertEqual(test_item["header_data"]["room_index"],
@@ -60,12 +54,12 @@ class TestTektonRoomImporter(unittest.TestCase):
                              "Room {} imported incorrect special_graphics_bitflag!".format(hex(test_item["header"])))
             self.assertTrue(isinstance(test_room.standard_state, tekton_room_state.TektonRoomState),
                             msg="Room Standard State is not an instance of TektonRoomState!")
-            self._test_room_state(test_room.standard_state, test_item["standard_state"], test_item["header"])
+            self._test_room_state(test_room.standard_state, test_item["standard_state"], test_item["header"], test_item["width"], test_item["height"])
             self.assertEqual(len(test_item["extra_states"]),
                              len(test_room.extra_states),
                              "Room {} has incorrect number of extra state pointers!".format(hex(test_item["header"])))
             for i in range(len(test_item["extra_states"])):
-                self._test_room_state_pointer(test_room.extra_states[i], test_item["extra_states"][i], test_item["header"])
+                self._test_room_state_pointer(test_room.extra_states[i], test_item["extra_states"][i], test_item["header"], test_item["width"], test_item["height"])
 
 
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
@@ -83,9 +77,6 @@ class TestTektonRoomImporter(unittest.TestCase):
                 self.assertEqual(expected_door_address,
                                  actual_door.data_address,
                                  "Door {} imported incorrect data address!".format(i))
-
-
-
 
         with self.assertRaises(ValueError):
             test_room = tekton_room_importer.import_room_from_rom(rom_contents, 0x795d3)
@@ -165,7 +156,7 @@ class TestTektonRoomImporter(unittest.TestCase):
             with self.assertRaises(ValueError):
                 test_door = tekton_room_importer.import_door(rom_contents, -5)
 
-    def _test_room_state_pointer(self, actual_result, expected_result, room_header_address):
+    def _test_room_state_pointer(self, actual_result, expected_result, room_header_address, room_width, room_height):
         print(actual_result)
         if expected_result["type"] == "event_state":
             self.assertTrue(isinstance(actual_result, tekton_room_state.TektonRoomEventStatePointer),
@@ -180,9 +171,9 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(expected_result["event_value"],
                              actual_result.event_value,
                              "Room {} Room State Pointer has incorrect event value!".format(hex(room_header_address)))
-        self._test_room_state(actual_result.room_state, expected_result["state"], room_header_address)
+        self._test_room_state(actual_result.room_state, expected_result["state"], room_header_address, room_width, room_height)
 
-    def _test_room_state(self, actual_result, expected_result, room_header_address):
+    def _test_room_state(self, actual_result, expected_result, room_header_address, room_width, room_height):
         self.assertEqual(expected_result["level_data_address"],
                          actual_result.level_data_address,
                          "Room {} state imported incorrect level data address!".format(
@@ -239,3 +230,11 @@ class TestTektonRoomImporter(unittest.TestCase):
                          actual_result.setup_asm_pointer,
                          "Room {} state imported incorrect setup_asm_pointer!".format(
                              hex(room_header_address)))
+        self.assertTrue(isinstance(actual_result.tiles, tekton_tile_grid.TektonTileGrid),
+                        msg="Room {} state tiles did not initialize correctly!".format(hex(room_header_address)))
+        self.assertEqual(room_width * 16,
+                         actual_result.tiles.width,
+                         "Room {} imported incorrect tile grid width value!".format(hex(room_header_address)))
+        self.assertEqual(room_height * 16,
+                         actual_result.tiles.height,
+                         "Room {} imported incorrect tile grid height value!".format(hex(room_header_address)))
