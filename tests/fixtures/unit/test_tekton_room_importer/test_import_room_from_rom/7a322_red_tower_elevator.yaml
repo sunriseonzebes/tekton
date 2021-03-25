@@ -6,6 +6,7 @@ doors:
   - 0x190c6
   - 0x188fc
   - 0x190d2
+extra_states: []
 header: 0x7a322
 header_data:
   down_scroller: 0xa0

@@ -61,6 +61,12 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertTrue(isinstance(test_room.standard_state, tekton_room_state.TektonRoomState),
                             msg="Room Standard State is not an instance of TektonRoomState!")
             self._test_room_state(test_room.standard_state, test_item["standard_state"], test_item["header"])
+            self.assertEqual(len(test_item["extra_states"]),
+                             len(test_room.extra_states),
+                             "Room {} has incorrect number of extra state pointers!".format(hex(test_item["header"])))
+            for i in range(len(test_item["extra_states"])):
+                self._test_room_state_pointer(test_room.extra_states[i], test_item["extra_states"][i], test_item["header"])
+
 
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),
@@ -85,23 +91,6 @@ class TestTektonRoomImporter(unittest.TestCase):
             test_room = tekton_room_importer.import_room_from_rom(rom_contents, 0x795d3)
         with self.assertRaises(TypeError):
             test_room = tekton_room_importer.import_room_from_rom(rom_contents, "795d4")
-
-    def test_get_pointer_addresses(self):
-        with open(original_rom_path, "rb") as f:
-            rom_contents = f.read()
-        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
-                                     'fixtures',
-                                     'unit',
-                                     'test_tekton_room_importer',
-                                     'test_get_pointer_addresses'
-                                     )
-        test_data = load_test_data_dir(test_data_dir)
-
-        for expected_result in test_data:
-            actual_result = tekton_room_importer._get_data_addresses(rom_contents, expected_result["header"])
-            self.assertEqual(expected_result,
-                             actual_result,
-                             "Room {} did not return the correct pointers!".format(hex(expected_result["header"])))
 
     def test_get_door_data_addresses(self):
         with open(original_rom_path, "rb") as f:
@@ -175,6 +164,12 @@ class TestTektonRoomImporter(unittest.TestCase):
                 test_door = tekton_room_importer.import_door(rom_contents, "0x18ac6")
             with self.assertRaises(ValueError):
                 test_door = tekton_room_importer.import_door(rom_contents, -5)
+
+    def _test_room_state_pointer(self, actual_result, expected_result, room_header_address):
+        print(actual_result)
+        if expected_result["type"] == "event_state":
+            self.assertTrue(isinstance(actual_result, tekton_room_state.TektonRoomEventStatePointer),
+                            msg="Room state is not correct type!")
 
     def _test_room_state(self, actual_result, expected_result, room_header_address):
         self.assertEqual(expected_result["level_data_address"],

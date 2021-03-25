@@ -1,4 +1,41 @@
 doors: []
+extra_states:
+  - event_value: 0x0e
+    state:
+      background_pointer: 0xb8b4
+      background_x_scroll: 0xc1
+      background_y_scroll: 0xc1
+      enemy_set_pointer: 0x8da0
+      enemy_gfx_pointer: 0x8295
+      fx_pointer: 0x8010
+      level_data_address: 0x215bc4
+      main_asm_pointer: 0xc124
+      plm_set_pointer: 0x8104
+      room_scrolls_pointer: 0x9370
+      setup_asm_pointer: 0x9194
+      songset: 0x00
+      song_play_index: 0x00
+      tileset: 0x00
+      unused_pointer: 0x0000
+    type: "event_state"
+  - event_value: 0x00
+    state:
+      background_pointer: 0xb8b4
+      background_x_scroll: 0xc1
+      background_y_scroll: 0xc1
+      enemy_set_pointer: 0x8261
+      enemy_gfx_pointer: 0x8067
+      fx_pointer: 0x8050
+      level_data_address: 0x215bc4
+      main_asm_pointer: 0x0000
+      plm_set_pointer: 0x805a
+      room_scrolls_pointer: 0x9370
+      setup_asm_pointer: 0x91bc
+      songset: 0x09
+      song_play_index: 0x05
+      tileset: 0x00
+      unused_pointer: 0x0000
+    type: "event_state"
 header: 0x792fd
 header_data:
   down_scroller: 0xa0
