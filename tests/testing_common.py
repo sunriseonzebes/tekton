@@ -34,8 +34,37 @@ def load_room_from_test_data(test_room_data):
         test_room.level_data_length = test_room_data["level_data_length"]
     if "standard_state" in test_room_data.keys():
         test_room.standard_state = load_room_state_from_test_data(test_room_data["standard_state"], test_room_data["room_width"], test_room_data["room_height"])
+    if "extra_states" in test_room_data.keys():
+        for extra_state in test_room_data["extra_states"]:
+            test_room.extra_states.append(load_room_state_pointer_from_test_data(extra_state, test_room_data["room_width"], test_room_data["room_height"]))
 
     return test_room
+
+def load_room_state_pointer_from_test_data(test_state_pointer_data, room_width, room_height):
+    new_state_pointer = None
+    if test_state_pointer_data["type"] == "event_state":
+        new_state_pointer = tekton.tekton_room_state.TektonRoomEventStatePointer()
+        if "event_value" in test_state_pointer_data.keys():
+            new_state_pointer.event_value = test_state_pointer_data["event_value"]
+        if "room_state" in test_state_pointer_data.keys():
+            new_state_pointer.room_state = load_room_state_from_test_data(test_state_pointer_data["room_state"],
+                                                                          room_width,
+                                                                          room_height)
+    if test_state_pointer_data["type"] == "flyway_state":
+        new_state_pointer = tekton.tekton_room_state.TektonRoomFlywayStatePointer()
+        if "event_value" in test_state_pointer_data.keys():
+            new_state_pointer.event_value = test_state_pointer_data["event_value"]
+        if "room_state" in test_state_pointer_data.keys():
+            new_state_pointer.room_state = load_room_state_from_test_data(test_state_pointer_data["room_state"],
+                                                                          room_width,
+                                                                          room_height)
+    if test_state_pointer_data["type"] == "landing_state":
+        new_state_pointer = tekton.tekton_room_state.TektonRoomEventStatePointer()
+        if "room_state" in test_state_pointer_data.keys():
+            new_state_pointer.room_state = load_room_state_from_test_data(test_state_pointer_data["room_state"],
+                                                                          room_width,
+                                                                          room_height)
+    return new_state_pointer
 
 def load_room_state_from_test_data(test_state_data, room_width, room_height):
     new_state = tekton.tekton_room_state.TektonRoomState()
@@ -43,12 +72,13 @@ def load_room_state_from_test_data(test_state_data, room_width, room_height):
     new_state.tiles.fill()
     tiles_width = new_state.tiles.width
     counter = 0
-    for tile_group in test_state_data["tiles"]:
-        for i in range(tile_group["count"]):
-            for key in tile_group["tile"].keys():
-                setattr(new_state.tiles[counter % tiles_width][counter // tiles_width],
-                        key,
-                        tile_group["tile"][key])
-            counter += 1
+    if "tiles" in test_state_data.keys():
+        for tile_group in test_state_data["tiles"]:
+            for i in range(tile_group["count"]):
+                for key in tile_group["tile"].keys():
+                    setattr(new_state.tiles[counter % tiles_width][counter // tiles_width],
+                            key,
+                            tile_group["tile"][key])
+                counter += 1
 
     return new_state

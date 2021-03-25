@@ -51,6 +51,12 @@ class TestTektonRoom(unittest.TestCase):
                 expected_result = int_list_to_bytes(test_item["standard_state"]["expected_result"])
                 actual_result = test_room.compressed_level_data(test_room.standard_state)
                 self.assertEqual(expected_result, actual_result, "TektonRoom did not produce correct compressed data!")
+            if "extra_states" in test_item.keys():
+                for i in range(len(test_item["extra_states"])):
+                    expected_result = int_list_to_bytes(test_item["extra_states"][i]["room_state"]["expected_result"])
+                    actual_result = test_room.compressed_level_data(test_room.extra_states[i].room_state)
+                    self.assertEqual(expected_result, actual_result,
+                                     "TektonRoom did not produce correct compressed data!")
 
         test_room = tekton_room.TektonRoom()
         test_room.level_data_length = 3

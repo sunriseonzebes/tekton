@@ -1,0 +1,72 @@
+extra_states:
+  - event_value: 0x01
+    type: "event_state"
+    room_state:
+      expected_result:
+        - 0x01
+        - 0x00
+        - 0x02
+        - 0xe9
+        - 0xff
+        - 0x50
+        - 0x80
+        - 0xe4
+        - 0xff
+        - 0x01
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+        - 0xff
+      tiles:
+        - count: 256
+          tile:
+            tileno: 0x050
+            bts_type: 0x08
+            bts_num: 0x01
+room_width: 1
+room_height: 1
+standard_state:
+  expected_result:
+    - 0x01
+    - 0x00
+    - 0x02
+    - 0xe6
+    - 0xff
+    - 0x00
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+    - 0xff
+  tiles:
+    - count: 256
+      tile:
+        tileno: 0x000
+        bts_type: 0x00
+        bts_num: 0x00
+level_data_length: 25
