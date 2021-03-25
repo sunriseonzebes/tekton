@@ -13,7 +13,7 @@ from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
 from .tekton_room_header_data import TektonRoomHeaderData, MapArea
-from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, TektonRoomSpecialStatePointer, TileSet, SongSet, SongPlayIndex
+from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, TektonRoomLandingStatePointer, TektonRoomFlywayStatePointer, TileSet, SongSet, SongPlayIndex
 
 
 def import_room_from_rom(rom_contents, room_header_address):
@@ -134,7 +134,9 @@ def _get_room_state_pointer_at_address(rom_contents, room_state_pointer_address)
     if pointer_value == b'\x12\xe6':
         new_state_pointer = _get_room_event_state_pointer_at_address(rom_contents, room_state_pointer_address)
     elif pointer_value == b'\x69\xe6':
-        new_state_pointer = _get_room_special_state_pointer_at_address(rom_contents, room_state_pointer_address)
+        new_state_pointer = _get_room_landing_state_pointer_at_address(rom_contents, room_state_pointer_address)
+    elif pointer_value == b'\x29\xe6':
+        new_state_pointer = _get_room_flyway_state_pointer_at_address(rom_contents, room_state_pointer_address)
 
     return new_state_pointer
 
@@ -150,14 +152,26 @@ def _get_room_event_state_pointer_at_address(rom_contents, room_state_pointer_ad
 
     return new_event_state_pointer
 
-def _get_room_special_state_pointer_at_address(rom_contents, room_state_pointer_address):
-    new_special_state_pointer = TektonRoomSpecialStatePointer()
+def _get_room_landing_state_pointer_at_address(rom_contents, room_state_pointer_address):
+    new_landing_state_pointer = TektonRoomLandingStatePointer()
     room_state_address = int.from_bytes(rom_contents[room_state_pointer_address + 2:room_state_pointer_address + 4],
                                         byteorder="little")
     room_state_address += 0x70000  # These are always in bank $8E
-    new_special_state_pointer.room_state = _get_room_state_at_address(rom_contents, room_state_address)
+    new_landing_state_pointer.room_state = _get_room_state_at_address(rom_contents, room_state_address)
 
-    return new_special_state_pointer
+    return new_landing_state_pointer
+
+def _get_room_flyway_state_pointer_at_address(rom_contents, room_state_pointer_address):
+    new_flyway_state_pointer = TektonRoomFlywayStatePointer()
+    new_flyway_state_pointer.event_value = int.from_bytes(
+        rom_contents[room_state_pointer_address + 2:room_state_pointer_address + 3],
+        byteorder="little")
+    room_state_address = int.from_bytes(rom_contents[room_state_pointer_address + 3:room_state_pointer_address + 5],
+                                        byteorder="little")
+    room_state_address += 0x70000  # These are always in bank $8E
+    new_flyway_state_pointer.room_state = _get_room_state_at_address(rom_contents, room_state_address)
+
+    return new_flyway_state_pointer
 
 def _get_room_state_at_address(rom_contents, room_state_address):
     new_state = TektonRoomState()
@@ -202,6 +216,8 @@ def _get_offset_of_next_state_pointer(current_state_pointer):
         return 5
     elif current_state_pointer == b'\x69\xe6':
         return 4
+    elif current_state_pointer == b'\x29\xe6':
+        return 5
 
 
 def _get_door_data_addresses(rom_contents, room_header_address):

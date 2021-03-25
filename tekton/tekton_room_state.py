@@ -117,7 +117,7 @@ class TektonRoomEventStatePointer(TektonRoomStatePointer):
         return b'\x12\xe6'
 
 
-class TektonRoomSpecialStatePointer(TektonRoomStatePointer):
+class TektonRoomLandingStatePointer(TektonRoomStatePointer):
     """Class that represents a special state pointer in room header data. So far I have only encountered a pointer like
         this in Landing Site's room header data. It has a pointer to a room state, but not an event value. I do not
         know what this is for.
@@ -132,6 +132,25 @@ class TektonRoomSpecialStatePointer(TektonRoomStatePointer):
     @property
     def pointer_code(self):
         return b'\x69\xe6'
+
+
+class TektonRoomFlywayStatePointer(TektonRoomStatePointer):
+    """Class that represents a special state pointer in room header data. So far I have only encountered a pointer like
+        this in Flyway's room header data. It has a pointer to a room state, but not an event value. I do not know what
+        this is for.
+
+    Attributes:
+        event_value (int): Event value that triggers this room state.
+        room_state (TektonRoomState): Room state data associated with this pointer.
+
+    """
+    def __init__(self):
+        self.event_value = 0
+        self.room_state = None
+
+    @property
+    def pointer_code(self):
+        return b'\x29\xe6'
 
 
 class TektonRoomState:

@@ -170,6 +170,17 @@ class TestTektonRoomImporter(unittest.TestCase):
         if expected_result["type"] == "event_state":
             self.assertTrue(isinstance(actual_result, tekton_room_state.TektonRoomEventStatePointer),
                             msg="Room state is not correct type!")
+        if expected_result["type"] == "landing_state":
+            self.assertTrue(isinstance(actual_result, tekton_room_state.TektonRoomLandingStatePointer),
+                            msg="Room state is not correct type!")
+        if expected_result["type"] == "flyway_state":
+            self.assertTrue(isinstance(actual_result, tekton_room_state.TektonRoomFlywayStatePointer),
+                            msg="Room state is not correct type!")
+        if "event_value" in expected_result:
+            self.assertEqual(expected_result["event_value"],
+                             actual_result.event_value,
+                             "Room {} Room State Pointer has incorrect event value!".format(hex(room_header_address)))
+        self._test_room_state(actual_result.room_state, expected_result["state"], room_header_address)
 
     def _test_room_state(self, actual_result, expected_result, room_header_address):
         self.assertEqual(expected_result["level_data_address"],

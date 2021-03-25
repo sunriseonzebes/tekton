@@ -1,0 +1,82 @@
+doors: []
+extra_states:
+  - event_value: 0x0e
+    state:
+      background_pointer: 0xb76a
+      background_x_scroll: 0x81
+      background_y_scroll: 0x01
+      enemy_set_pointer: 0x8c0d
+      enemy_gfx_pointer: 0x8283
+      fx_pointer: 0x8000
+      level_data_address: 0x2142bb
+      main_asm_pointer: 0xc120
+      plm_set_pointer: 0x8026
+      room_scrolls_pointer: 0x9283
+      setup_asm_pointer: 0x91bd
+      songset: 0x00
+      song_play_index: 0x00
+      tileset: 0x00
+      unused_pointer: 0x0000
+    type: "event_state"
+  - state:
+      background_pointer: 0xb76a
+      background_x_scroll: 0x81
+      background_y_scroll: 0x01
+      enemy_set_pointer: 0x883d
+      enemy_gfx_pointer: 0x8193
+      fx_pointer: 0x80d0
+      level_data_address: 0x2142bb
+      main_asm_pointer: 0xc116
+      plm_set_pointer: 0x8000
+      room_scrolls_pointer: 0x9283
+      setup_asm_pointer: 0x91c9
+      songset: 0x0c
+      song_play_index: 0x05
+      tileset: 0x00
+      unused_pointer: 0x0000
+    type: "landing_state"
+  - event_value: 0x00
+    state:
+      background_pointer: 0xb76a
+      background_x_scroll: 0x81
+      background_y_scroll: 0x01
+      enemy_set_pointer: 0x883d
+      enemy_gfx_pointer: 0x8193
+      fx_pointer: 0x80c0
+      level_data_address: 0x2142bb
+      main_asm_pointer: 0xc116
+      plm_set_pointer: 0x8000
+      room_scrolls_pointer: 0x9283
+      setup_asm_pointer: 0x91c9
+      songset: 0x06
+      song_play_index: 0x06
+      tileset: 0x00
+      unused_pointer: 0x0000
+    type: "event_state"
+header: 0x791f8
+header_data:
+  down_scroller: 0xa0
+  map_area: 0x00
+  minimap_x_coord: 0x17
+  minimap_y_coord: 0x00
+  room_index: 0x00
+  special_graphics_bitflag: 0x00
+  up_scroller: 0x70
+height: 5
+standard_state:
+  background_pointer: 0xb76a
+  background_x_scroll: 0x81
+  background_y_scroll: 0x01
+  enemy_set_pointer: 0x883d
+  enemy_gfx_pointer: 0x8193
+  fx_pointer: 0x80c0
+  level_data_address: 0x2142bb
+  main_asm_pointer: 0xc116
+  plm_set_pointer: 0x8000
+  room_scrolls_pointer: 0x9283
+  setup_asm_pointer: 0x91c9
+  songset: 0x06
+  song_play_index: 0x05
+  tileset: 0x00
+  unused_pointer: 0x0000
+width: 9
