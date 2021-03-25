@@ -61,6 +61,17 @@ class TestTektonRoomImporter(unittest.TestCase):
             for i in range(len(test_item["extra_states"])):
                 self._test_room_state_pointer(test_room.extra_states[i], test_item["extra_states"][i], test_item["header"], test_item["width"], test_item["height"])
 
+            level_data_addresses = {test_item["standard_state"]["level_data_address"]: test_room.standard_state.tiles}
+
+            for i in range(len(test_item["extra_states"])):
+                extra_level_data_address = test_item["extra_states"][i]["state"]["level_data_address"]
+                if extra_level_data_address in level_data_addresses.keys():
+                    self.assertEqual(id(level_data_addresses[extra_level_data_address]),
+                                     id(test_room.extra_states[i].room_state.tiles),
+                                     "Room {} has identical level data addresses that do not have the same TektonTileGrid!".format(hex(test_item["header"])))
+                else:
+                    level_data_addresses[extra_level_data_address] = test_room.extra_states[i].room_state.tiles
+
 
             # TODO: Make this assertEqual once I figure out how to tell where door data ends
             self.assertLessEqual(len(test_item["doors"]),

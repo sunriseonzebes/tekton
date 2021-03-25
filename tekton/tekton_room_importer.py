@@ -43,10 +43,16 @@ def import_room_from_rom(rom_contents, room_header_address):
     new_room.header_data = _get_level_header_data(rom_contents, room_header_address)
 
     current_offset = room_header_address + 11
+    level_data_addresses = {}
     allowed_events_pointers = [b"\x12\xe6", b"\x69\xe6", b"\x29\xe6"]
     while rom_contents[current_offset:current_offset + 2] in allowed_events_pointers:
         new_room_state_pointer = _get_room_state_pointer_at_address(rom_contents, current_offset)
-        new_room_state_pointer.room_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
+        if new_room_state_pointer.room_state.level_data_address in level_data_addresses.keys():
+            new_room_state_pointer.room_state.tiles = level_data_addresses[new_room_state_pointer.room_state.level_data_address]
+        else:
+            new_room_state_pointer.room_state.tiles = _get_empty_tile_data_for_room(room_width_screens,
+                                                                                    room_height_screens)
+            level_data_addresses[new_room_state_pointer.room_state.level_data_address] = new_room_state_pointer.room_state.tiles
         new_room.extra_states.append(new_room_state_pointer)
         current_offset += _get_offset_of_next_state_pointer(rom_contents[current_offset:current_offset + 2])
 
@@ -61,7 +67,11 @@ def import_room_from_rom(rom_contents, room_header_address):
 
     standard_state_address = current_offset + 2
     new_room.standard_state = _get_room_state_at_address(rom_contents, standard_state_address)
-    new_room.standard_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
+    if new_room.standard_state.level_data_address in level_data_addresses.keys():
+        new_room.standard_state.tiles = level_data_addresses[new_room.standard_state.level_data_address]
+    else:
+        new_room.standard_state.tiles = _get_empty_tile_data_for_room(room_width_screens, room_height_screens)
+        level_data_addresses[new_room.standard_state.level_data_address] = new_room.standard_state.tiles
 
     for door_data_address in _get_door_data_addresses(rom_contents, room_header_address):
         try:
