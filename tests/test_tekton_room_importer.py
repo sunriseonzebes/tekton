@@ -5,7 +5,7 @@ import os
 import unittest
 
 
-class TestTektonRoomImporter(unittest.TestCase):
+class TestTektonRoomImporterOld(unittest.TestCase):
     def test_import_room_from_rom(self):
         with open(original_rom_path, "rb") as f:
             rom_contents = f.read()
@@ -247,3 +247,47 @@ class TestTektonRoomImporter(unittest.TestCase):
         self.assertEqual(room_height * 16,
                          actual_result.tiles.height,
                          "Room {} imported incorrect tile grid height value!".format(hex(room_header_address)))
+
+
+class TestTektonRoomImporter(unittest.TestCase):
+    def test_init(self):
+        test_importer = tekton_room_importer.TektonRoomImporter()
+        self.assertTrue(isinstance(test_importer, tekton_room_importer.TektonRoomImporter),
+                        msg="TektonRoomImporter failed to initialize correctly!")
+        self.assertEqual(0,
+                         test_importer.room_header_address,
+                         "TektonRoomImporter.room_header_address did not initialize correctly!")
+        self.assertEqual(b'',
+                         test_importer.rom_contents,
+                         "TektonRoomImporter.rom_contents did not initialize correctly!")
+        self.assertEqual(1,
+                         test_importer.room_width_screens,
+                         "TektonRoomImporter.room_width_screens did not initialize correctly!")
+        self.assertEqual(1,
+                         test_importer.room_height_screens,
+                         "TektonRoomImporter.room_height_screens did not initialize correctly!")
+        self.assertEqual({},
+                         test_importer.level_data_addresses,
+                         "TektonRoomImporter.level_data_addresses did not initialize correctly!")
+
+    def test_get_door_data_addresses(self):
+        with open(original_rom_path, "rb") as f:
+            rom_contents = f.read()
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room_importer',
+                                     'test_get_door_data_addresses'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_item in test_data:
+            test_importer = tekton_room_importer.TektonRoomImporter()
+            test_importer.rom_contents = rom_contents
+            test_importer.room_header_address = test_item["room_header_address"]
+            actual_result = test_importer._get_door_data_addresses()
+
+            actual_result = actual_result[0:test_item["num_doors"]]
+            self.assertEqual(test_item["door_addresses"],
+                             actual_result,
+                             "Incorrect door list returned for room {}".format(test_item["room_header_address"]))

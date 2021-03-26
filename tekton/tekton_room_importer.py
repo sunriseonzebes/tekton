@@ -18,6 +18,40 @@ from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, Tek
 from .tekton_tile_grid import TektonTileGrid
 
 
+class TektonRoomImporter:
+    def __init__(self):
+        self.room_header_address = 0
+        self.rom_contents = b''
+        self.room_width_screens = 1
+        self.room_height_screens = 1
+        self.level_data_addresses = {}
+
+    def _get_door_data_addresses(self):
+        door_pointer_list_address = int.from_bytes(
+            self.rom_contents[self.room_header_address + 9:self.room_header_address + 11],
+            byteorder="little"
+        )
+        door_pointer_list_address += 0x70000  # Door pointer list is always in bank $8E
+        door_addresses = []
+
+        for offset in range(0, 16, 2):
+            start_pos = door_pointer_list_address + offset
+            end_pos = start_pos + 2
+            current_door_bytes = self.rom_contents[start_pos:end_pos]
+            if current_door_bytes == b'\x00\x00':
+                break
+            current_door_bytes += b'\x83'  # Super Metroid assumes all door data lives in bank $83.
+            try:
+                pc_door_data_address = lorom_to_pc(current_door_bytes, byteorder="little")
+            except ValueError:
+                break
+            except Exception as e:
+                raise e
+            door_addresses.append(pc_door_data_address)
+
+        return door_addresses
+
+
 def import_room_from_rom(rom_contents, room_header_address):
     """Reads a room's header from ROM contents and returns a TektonRoom object populated with that room's attributes.
 
