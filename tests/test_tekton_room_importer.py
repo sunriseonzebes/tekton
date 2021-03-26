@@ -1,5 +1,5 @@
 from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
-from tekton import tekton_room_importer, tekton_room, tekton_door, tekton_room_state, tekton_room_header_data, tekton_tile_grid
+from tekton import tekton_room_importer, tekton_room, tekton_door, tekton_room_state, tekton_tile_grid
 from pydoc import locate
 import os
 import unittest
@@ -29,28 +29,26 @@ class TestTektonRoomImporter(unittest.TestCase):
             self.assertEqual(test_item["height"],
                              test_room.height_screens,
                              "Room {} imported incorrect height value!".format(hex(test_item["header"])))
-            self.assertTrue(isinstance(test_room.header_data, tekton_room_header_data.TektonRoomHeaderData),
-                            msg="Imported room header_data is not of type TektonRoomHeaderData!")
-            self.assertEqual(test_item["header_data"]["room_index"],
-                             test_room.header_data.room_index,
+            self.assertEqual(test_item["room_index"],
+                             test_room.room_index,
                              "Room {} imported incorrect room index!".format(hex(test_item["header"])))
-            self.assertEqual(tekton_room_header_data.MapArea(test_item["header_data"]["map_area"]),
-                             test_room.header_data.map_area,
+            self.assertEqual(tekton_room.MapArea(test_item["map_area"]),
+                             test_room.map_area,
                              "Room {} imported incorrect map_area!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["header_data"]["minimap_x_coord"],
-                             test_room.header_data.minimap_x_coord,
+            self.assertEqual(test_item["minimap_x_coord"],
+                             test_room.minimap_x_coord,
                              "Room {} imported incorrect minimap_x_coord!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["header_data"]["minimap_y_coord"],
-                             test_room.header_data.minimap_y_coord,
+            self.assertEqual(test_item["minimap_y_coord"],
+                             test_room.minimap_y_coord,
                              "Room {} imported incorrect minimap_y_coord!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["header_data"]["up_scroller"],
-                             test_room.header_data.up_scroller,
+            self.assertEqual(test_item["up_scroller"],
+                             test_room.up_scroller,
                              "Room {} imported incorrect up_scroller!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["header_data"]["down_scroller"],
-                             test_room.header_data.down_scroller,
+            self.assertEqual(test_item["down_scroller"],
+                             test_room.down_scroller,
                              "Room {} imported incorrect down_scroller!".format(hex(test_item["header"])))
-            self.assertEqual(test_item["header_data"]["special_graphics_bitflag"],
-                             test_room.header_data.special_graphics_bitflag,
+            self.assertEqual(test_item["special_graphics_bitflag"],
+                             test_room.special_graphics_bitflag,
                              "Room {} imported incorrect special_graphics_bitflag!".format(hex(test_item["header"])))
             self.assertTrue(isinstance(test_room.standard_state, tekton_room_state.TektonRoomState),
                             msg="Room Standard State is not an instance of TektonRoomState!")

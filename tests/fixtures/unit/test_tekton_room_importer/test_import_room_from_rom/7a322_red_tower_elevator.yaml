@@ -6,17 +6,15 @@ doors:
   - 0x190c6
   - 0x188fc
   - 0x190d2
+down_scroller: 0xa0
 extra_states: []
 header: 0x7a322
-header_data:
-  down_scroller: 0xa0
-  map_area: 0x01
-  minimap_x_coord: 0x25
-  minimap_y_coord: 0x04
-  room_index: 0x24
-  special_graphics_bitflag: 0x00
-  up_scroller: 0x70
 height: 8
+map_area: 0x01
+minimap_x_coord: 0x25
+minimap_y_coord: 0x04
+room_index: 0x24
+special_graphics_bitflag: 0x00
 standard_state:
   background_pointer: 0x0000
   background_x_scroll: 0x00
@@ -33,5 +31,6 @@ standard_state:
   song_play_index: 0x05
   tileset: 0x07
   unused_pointer: 0x0000
+up_scroller: 0x70
 width: 3
 

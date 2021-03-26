@@ -12,8 +12,9 @@ Functions:
 from .tekton_room import TektonRoom
 from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
-from .tekton_room_header_data import TektonRoomHeaderData, MapArea
-from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, TektonRoomLandingStatePointer, TektonRoomFlywayStatePointer, TileSet, SongSet, SongPlayIndex
+from .tekton_room import MapArea
+from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, TektonRoomLandingStatePointer, \
+    TektonRoomFlywayStatePointer, TileSet, SongSet, SongPlayIndex
 from .tekton_tile_grid import TektonTileGrid
 
 
@@ -40,7 +41,21 @@ def import_room_from_rom(rom_contents, room_header_address):
 
     new_room = TektonRoom(room_width_screens, room_height_screens)
     new_room.header = room_header_address
-    new_room.header_data = _get_level_header_data(rom_contents, room_header_address)
+    new_room.room_index = int.from_bytes(rom_contents[room_header_address:room_header_address + 1],
+                                         byteorder="little")
+    new_room.map_area = MapArea(int.from_bytes(rom_contents[room_header_address + 1:room_header_address + 2],
+                                               byteorder="little"))
+    new_room.minimap_x_coord = int.from_bytes(rom_contents[room_header_address + 2:room_header_address + 3],
+                                              byteorder="little")
+    new_room.minimap_y_coord = int.from_bytes(rom_contents[room_header_address + 3:room_header_address + 4],
+                                              byteorder="little")
+    new_room.up_scroller = int.from_bytes(rom_contents[room_header_address + 6:room_header_address + 7],
+                                          byteorder="little")
+    new_room.down_scroller = int.from_bytes(rom_contents[room_header_address + 7:room_header_address + 8],
+                                            byteorder="little")
+    new_room.special_graphics_bitflag = int.from_bytes(
+        rom_contents[room_header_address + 8:room_header_address + 9],
+        byteorder="little")
 
     current_offset = room_header_address + 11
     level_data_addresses = {}
@@ -48,11 +63,13 @@ def import_room_from_rom(rom_contents, room_header_address):
     while rom_contents[current_offset:current_offset + 2] in allowed_events_pointers:
         new_room_state_pointer = _get_room_state_pointer_at_address(rom_contents, current_offset)
         if new_room_state_pointer.room_state.level_data_address in level_data_addresses.keys():
-            new_room_state_pointer.room_state.tiles = level_data_addresses[new_room_state_pointer.room_state.level_data_address]
+            new_room_state_pointer.room_state.tiles = level_data_addresses[
+                new_room_state_pointer.room_state.level_data_address]
         else:
             new_room_state_pointer.room_state.tiles = _get_empty_tile_data_for_room(room_width_screens,
                                                                                     room_height_screens)
-            level_data_addresses[new_room_state_pointer.room_state.level_data_address] = new_room_state_pointer.room_state.tiles
+            level_data_addresses[
+                new_room_state_pointer.room_state.level_data_address] = new_room_state_pointer.room_state.tiles
         new_room.extra_states.append(new_room_state_pointer)
         current_offset += _get_offset_of_next_state_pointer(rom_contents[current_offset:current_offset + 2])
 
@@ -112,38 +129,9 @@ def import_door(rom_contents, door_info_address):
     return _import_simple_door(rom_contents, door_info_address)
 
 
-def _get_level_header_data(rom_contents, room_header_address):
-    """Reads a room's header data from ROM contents and returns a TektonLevelDataHeader object that contains various
-        facts about the room.
-
-    Args:
-        rom_contents (bytes): Byte string of ROM to import room header data from
-        room_header_address (int): PC address of room header data to import
-
-    """
-    new_header_data = TektonRoomHeaderData()
-
-    new_header_data.room_index = int.from_bytes(rom_contents[room_header_address:room_header_address + 1],
-                                                byteorder="little")
-    new_header_data.map_area = MapArea(int.from_bytes(rom_contents[room_header_address + 1:room_header_address + 2],
-                                                      byteorder="little"))
-    new_header_data.minimap_x_coord = int.from_bytes(rom_contents[room_header_address + 2:room_header_address + 3],
-                                                     byteorder="little")
-    new_header_data.minimap_y_coord = int.from_bytes(rom_contents[room_header_address + 3:room_header_address + 4],
-                                                     byteorder="little")
-    new_header_data.up_scroller = int.from_bytes(rom_contents[room_header_address + 6:room_header_address + 7],
-                                                 byteorder="little")
-    new_header_data.down_scroller = int.from_bytes(rom_contents[room_header_address + 7:room_header_address + 8],
-                                                   byteorder="little")
-    new_header_data.special_graphics_bitflag = int.from_bytes(rom_contents[room_header_address + 8:room_header_address + 9],
-                                                              byteorder="little")
-
-    return new_header_data
-
-
 def _get_room_state_pointer_at_address(rom_contents, room_state_pointer_address):
     new_state_pointer = None
-    pointer_value = rom_contents[room_state_pointer_address: room_state_pointer_address+2]
+    pointer_value = rom_contents[room_state_pointer_address: room_state_pointer_address + 2]
     if pointer_value == b'\x12\xe6':
         new_state_pointer = _get_room_event_state_pointer_at_address(rom_contents, room_state_pointer_address)
     elif pointer_value == b'\x69\xe6':
@@ -152,6 +140,7 @@ def _get_room_state_pointer_at_address(rom_contents, room_state_pointer_address)
         new_state_pointer = _get_room_flyway_state_pointer_at_address(rom_contents, room_state_pointer_address)
 
     return new_state_pointer
+
 
 def _get_room_event_state_pointer_at_address(rom_contents, room_state_pointer_address):
     new_event_state_pointer = TektonRoomEventStatePointer()
@@ -165,6 +154,7 @@ def _get_room_event_state_pointer_at_address(rom_contents, room_state_pointer_ad
 
     return new_event_state_pointer
 
+
 def _get_room_landing_state_pointer_at_address(rom_contents, room_state_pointer_address):
     new_landing_state_pointer = TektonRoomLandingStatePointer()
     room_state_address = int.from_bytes(rom_contents[room_state_pointer_address + 2:room_state_pointer_address + 4],
@@ -173,6 +163,7 @@ def _get_room_landing_state_pointer_at_address(rom_contents, room_state_pointer_
     new_landing_state_pointer.room_state = _get_room_state_at_address(rom_contents, room_state_address)
 
     return new_landing_state_pointer
+
 
 def _get_room_flyway_state_pointer_at_address(rom_contents, room_state_pointer_address):
     new_flyway_state_pointer = TektonRoomFlywayStatePointer()
@@ -186,6 +177,7 @@ def _get_room_flyway_state_pointer_at_address(rom_contents, room_state_pointer_a
 
     return new_flyway_state_pointer
 
+
 def _get_room_state_at_address(rom_contents, room_state_address):
     new_state = TektonRoomState()
 
@@ -197,8 +189,9 @@ def _get_room_state_at_address(rom_contents, room_state_address):
                                                byteorder="little"))
     new_state.songset = SongSet(int.from_bytes(rom_contents[room_state_address + 4:room_state_address + 5],
                                                byteorder="little"))
-    new_state.song_play_index = SongPlayIndex(int.from_bytes(rom_contents[room_state_address + 5:room_state_address + 6],
-                                                             byteorder="little"))
+    new_state.song_play_index = SongPlayIndex(
+        int.from_bytes(rom_contents[room_state_address + 5:room_state_address + 6],
+                       byteorder="little"))
     new_state.fx_pointer = int.from_bytes(rom_contents[room_state_address + 6:room_state_address + 8],
                                           byteorder="little")
     new_state.enemy_set_pointer = int.from_bytes(rom_contents[room_state_address + 8:room_state_address + 10],
@@ -242,7 +235,7 @@ def _get_offset_of_next_state_pointer(current_state_pointer):
 
 def _get_door_data_addresses(rom_contents, room_header_address):
     door_pointer_list_address = int.from_bytes(rom_contents[room_header_address + 9:room_header_address + 11],
-                                       byteorder="little")
+                                               byteorder="little")
     door_pointer_list_address += 0x70000  # Door pointer list is always in bank $8E
     door_addresses = []
 

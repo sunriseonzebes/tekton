@@ -1,4 +1,5 @@
 doors: []
+down_scroller: 0xa0
 extra_states:
   - event_value: 0x0e
     state:
@@ -54,15 +55,12 @@ extra_states:
       unused_pointer: 0x0000
     type: "event_state"
 header: 0x791f8
-header_data:
-  down_scroller: 0xa0
-  map_area: 0x00
-  minimap_x_coord: 0x17
-  minimap_y_coord: 0x00
-  room_index: 0x00
-  special_graphics_bitflag: 0x00
-  up_scroller: 0x70
 height: 5
+map_area: 0x00
+minimap_x_coord: 0x17
+minimap_y_coord: 0x00
+room_index: 0x00
+special_graphics_bitflag: 0x00
 standard_state:
   background_pointer: 0xb76a
   background_x_scroll: 0x81
@@ -79,4 +77,5 @@ standard_state:
   song_play_index: 0x05
   tileset: 0x00
   unused_pointer: 0x0000
+up_scroller: 0x70
 width: 9

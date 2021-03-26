@@ -10,12 +10,24 @@ Classes:
 
 """
 
+from enum import Enum
 from .tekton_tile import TektonTile
 from .tekton_tile_grid import TektonTileGrid
 from .tekton_compressor import TektonCompressionMapper
 from .tekton_system import pad_bytes
-from .tekton_room_header_data import TektonRoomHeaderData
 from .tekton_room_state import TektonRoomState
+
+
+class MapArea(Enum):
+    """Enumeration that lists out the different regions of the planet."""
+    CRATERIA = 0x00
+    BRINSTAR = 0x01
+    NORFAIR = 0x02
+    WRECKED_SHIP = 0x03
+    MARIDIA = 0x04
+    TOURIAN = 0x05
+    CERES = 0x06
+    DEBUG = 0x07
 
 
 class TektonRoom:
@@ -34,12 +46,18 @@ class TektonRoom:
 
     def __init__(self, width=1, height=1):
         self.doors = []
+        self.down_scroller = 0
         self.extra_states = []
-        self.header_data = TektonRoomHeaderData()
         self.height_screens = height
         self.level_data_length = 0
+        self.map_area = MapArea.CRATERIA
+        self.minimap_x_coord = 0
+        self.minimap_y_coord = 0
         self.name = None
+        self.room_index = 0
+        self.special_graphics_bitflag = 0
         self.standard_state = TektonRoomState()
+        self.up_scroller = 0
         self.width_screens = width
         self.write_level_data = True
 

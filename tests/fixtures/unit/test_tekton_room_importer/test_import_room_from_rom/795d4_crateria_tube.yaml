@@ -1,15 +1,13 @@
 doors: []
+down_scroller: 0xa0
 extra_states: []
 header: 0x795d4
-header_data:
-  down_scroller: 0xa0
-  map_area: 0x00
-  minimap_x_coord: 0x20
-  minimap_y_coord: 0x04
-  room_index: 0x0d
-  special_graphics_bitflag: 0x00
-  up_scroller: 0x70
 height: 1
+map_area: 0x00
+minimap_x_coord: 0x20
+minimap_y_coord: 0x04
+room_index: 0x0d
+special_graphics_bitflag: 0x00
 standard_state:
   background_pointer: 0x0000
   background_x_scroll: 0x00
@@ -26,4 +24,5 @@ standard_state:
   song_play_index: 0x00
   tileset: 0x00
   unused_pointer: 0x0000
+up_scroller: 0x70
 width: 1

@@ -1,23 +1,30 @@
 from testing_common import tekton, load_test_data_dir, int_list_to_bytes, load_room_from_test_data
-from tekton import tekton_room, tekton_tile, tekton_tile_grid, tekton_room_header_data, tekton_room_state
+from tekton import tekton_room, tekton_tile_grid, tekton_room_state
 import os
 import unittest
+
 
 class TestTektonRoom(unittest.TestCase):
     def test_init(self):
         test_room = tekton_room.TektonRoom()
         self.assertTrue(isinstance(test_room, tekton_room.TektonRoom), msg="Tekton Room did not instantiate correctly!")
         self.assertIsNone(test_room.name)
+        self.assertEqual(0, test_room.down_scroller, "TektonRoom down_scroller did not initialize correctly!")
         self.assertEqual(0x00, test_room._header, "Tekton Room default header address is not 0x00!")
         self.assertEqual(test_room.width_screens, 1)
         self.assertEqual(test_room.height_screens, 1)
         self.assertTrue(isinstance(test_room.standard_state, tekton_room_state.TektonRoomState),
                         msg="TektonRoom.standard_state did not initialize correctly!")
         self.assertEqual([], test_room.extra_states, "TektonRoom.standard_state did not initialize correctly!")
-        self.assertTrue(isinstance(test_room.header_data, tekton_room_header_data.TektonRoomHeaderData))
         self.assertEqual(test_room.level_data_length, 0)
+        self.assertEqual(tekton_room.MapArea.CRATERIA, test_room.map_area, "TektonRoom map_area did not initialize correctly!")
+        self.assertEqual(0, test_room.minimap_x_coord, "TektonRoom minimap_x_coord did not initialize correctly!")
+        self.assertEqual(0, test_room.minimap_y_coord, "TektonRoom minimap_y_coord did not initialize correctly!")
         self.assertEqual(test_room.doors, [], "Tekton Room doors list did not initialize correctly!")
+        self.assertEqual(0, test_room.room_index, "TektonRoom room_index did not initialize correctly!")
+        self.assertEqual(0, test_room.special_graphics_bitflag, "TektonRoom special_graphics_bitflag did not initialize correctly!")
         self.assertTrue(test_room.write_level_data, msg="Tekton Room write_level_data did not initialize correctly!")
+        self.assertEqual(0, test_room.up_scroller, "TektonRoom up_scroller did not initialize correctly!")
 
         test_room = None
         test_room = tekton_room.TektonRoom(3, 4)
