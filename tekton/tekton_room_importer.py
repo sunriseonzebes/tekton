@@ -62,13 +62,6 @@ class TektonRoomImporter:
 
         while self.rom_contents[current_offset:current_offset + 2] in self.allowed_events_pointers:
             new_room_state_pointer = self._get_room_state_pointer_at_address(current_offset)
-            if new_room_state_pointer.room_state.level_data_address in self.level_data_addresses.keys():
-                new_room_state_pointer.room_state.tiles = self.level_data_addresses[
-                    new_room_state_pointer.room_state.level_data_address]
-            else:
-                new_room_state_pointer.room_state.tiles = self._get_empty_tile_data_for_room()
-                self.level_data_addresses[
-                    new_room_state_pointer.room_state.level_data_address] = new_room_state_pointer.room_state.tiles
             new_room.extra_states.append(new_room_state_pointer)
             current_offset += self.event_pointer_byte_lengths[type(new_room_state_pointer)]
 
@@ -83,11 +76,6 @@ class TektonRoomImporter:
 
         standard_state_address = current_offset + 2
         new_room.standard_state = self._get_room_state_at_address(standard_state_address)
-        if new_room.standard_state.level_data_address in self.level_data_addresses.keys():
-            new_room.standard_state.tiles = self.level_data_addresses[new_room.standard_state.level_data_address]
-        else:
-            new_room.standard_state.tiles = self._get_empty_tile_data_for_room()
-            self.level_data_addresses[new_room.standard_state.level_data_address] = new_room.standard_state.tiles
 
         for door_data_address in self._get_door_data_addresses():
             try:
@@ -124,9 +112,6 @@ class TektonRoomImporter:
             return self._import_elevator_launchpad(door_info_address)
 
         return self._import_simple_door(door_info_address)
-
-    def _get_int_from_rom(self, start_address, num_bytes, *, byteorder="little"):
-        return int.from_bytes(self.rom_contents[start_address:start_address+num_bytes], byteorder=byteorder)
 
     def _get_door_data_addresses(self):
         door_pointer_list_address = int.from_bytes(
@@ -213,6 +198,12 @@ class TektonRoomImporter:
         new_state.background_pointer = self._get_int_from_rom(room_state_address+22, 2)
         new_state.setup_asm_pointer = self._get_int_from_rom(room_state_address+24, 2)
 
+        if new_state.level_data_address in self.level_data_addresses.keys():
+            new_state.tiles = self.level_data_addresses[new_state.level_data_address]
+        else:
+            new_state.tiles = self._get_empty_tile_data_for_room()
+            self.level_data_addresses[new_state.level_data_address] = new_state.tiles
+
         return new_state
 
     def _get_empty_tile_data_for_room(self):
@@ -282,6 +273,9 @@ class TektonRoomImporter:
         new_launchpad.data_address = door_info_address
         new_launchpad.door_data = self.rom_contents[door_info_address:door_info_address + 12]
         return new_launchpad
+
+    def _get_int_from_rom(self, start_address, num_bytes, *, byteorder="little"):
+        return int.from_bytes(self.rom_contents[start_address:start_address+num_bytes], byteorder=byteorder)
 
 
 
