@@ -12,7 +12,7 @@ Classes:
 import os
 import yaml
 
-from .tekton_room_importer import import_room_from_rom
+from .tekton_room_importer import TektonRoomImporter
 from .tekton_room_dict import TektonRoomDict
 from .tekton_system import overwrite_bytes_at_index
 
@@ -91,8 +91,10 @@ class TektonProject:
         rom_contents = self.get_source_rom_contents()
 
         for room_data in room_headers:
-
-            new_room = import_room_from_rom(rom_contents, room_data["header"])
+            room_importer = TektonRoomImporter()
+            room_importer.rom_contents = rom_contents
+            room_importer.room_header_address = room_data["header"]
+            new_room = room_importer.import_room_from_rom()
             new_room.name = room_data["name"]
             self.rooms.add_room(new_room)
 
