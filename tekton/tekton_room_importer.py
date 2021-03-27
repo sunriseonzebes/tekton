@@ -24,11 +24,24 @@ class TektonRoomImporter:
                                   TektonRoomFlywayStatePointer: 5}
 
     def __init__(self):
-        self.room_header_address = 0
         self.rom_contents = b''
         self.room_width_screens = 1
         self.room_height_screens = 1
         self.level_data_addresses = {}
+
+        self._room_header_address = 0
+
+    @property
+    def room_header_address(self):
+        return self._room_header_address
+
+    @room_header_address.setter
+    def room_header_address(self, new_address):
+        if not isinstance(new_address, int):
+            raise TypeError("room_header_address must be of type int! You can use hex notation, e.g. 0x791f8")
+        if new_address < 0x78000 or new_address > 0x7ffff:
+            raise ValueError("room_header_address must be in LoROM bank $8F! E.g. it must have a pc address between 0x78000 and 0x7ffff")
+        self._room_header_address = new_address
 
     def import_room_from_rom(self):
         """Reads a room's header from ROM contents and returns a TektonRoom object populated with that room's attributes.

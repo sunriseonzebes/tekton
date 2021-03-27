@@ -10,9 +10,6 @@ class TestTektonRoomImporter(unittest.TestCase):
         test_importer = tekton_room_importer.TektonRoomImporter()
         self.assertTrue(isinstance(test_importer, tekton_room_importer.TektonRoomImporter),
                         msg="TektonRoomImporter failed to initialize correctly!")
-        self.assertEqual(0,
-                         test_importer.room_header_address,
-                         "TektonRoomImporter.room_header_address did not initialize correctly!")
         self.assertEqual(b'',
                          test_importer.rom_contents,
                          "TektonRoomImporter.rom_contents did not initialize correctly!")
@@ -25,6 +22,30 @@ class TestTektonRoomImporter(unittest.TestCase):
         self.assertEqual({},
                          test_importer.level_data_addresses,
                          "TektonRoomImporter.level_data_addresses did not initialize correctly!")
+        self.assertEqual(0,
+                         test_importer._room_header_address,
+                         "TektonRoomImporter._room_header_address did not initialize correctly!")
+
+    def test_room_header_address(self):
+        test_importer = tekton_room_importer.TektonRoomImporter()
+        test_importer._room_header_address = 0x791f8
+        self.assertEqual(0x791f8,
+                         test_importer.room_header_address,
+                         "TektonRoomImporter.room_header_address did not return correctly!")
+
+        test_importer.room_header_address = 0x795d4
+        self.assertEqual(0x795d4,
+                         test_importer._room_header_address,
+                         "TektonRoomImporter.room_header_address did not set private attribute correctly!")
+
+        with self.assertRaises(TypeError):
+            test_importer.room_header_address = "795d4"
+        with self.assertRaises(TypeError):
+            test_importer.room_header_address = b'\xd4\x95\x8f'
+        with self.assertRaises(ValueError):
+            test_importer.room_header_address = 0x48000
+        with self.assertRaises(ValueError):
+            test_importer.room_header_address = 0x80005
 
     def test_import_room_from_rom(self):
         with open(original_rom_path, "rb") as f:
@@ -109,15 +130,6 @@ class TestTektonRoomImporter(unittest.TestCase):
                 self.assertEqual(expected_door_address,
                                  actual_door.data_address,
                                  "Door {} imported incorrect data address!".format(i))
-
-        test_importer = tekton_room_importer.TektonRoomImporter()
-        test_importer.rom_contents = rom_contents
-        test_importer.room_header_address = 0x795d3
-        with self.assertRaises(ValueError):
-            test_room = test_importer.import_room_from_rom()
-        test_importer.room_header_address = "795d4"
-        with self.assertRaises(TypeError):
-            test_room = test_importer.import_room_from_rom()
 
     def test_get_door_data_addresses(self):
         with open(original_rom_path, "rb") as f:
