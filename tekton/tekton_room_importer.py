@@ -20,6 +20,9 @@ from .tekton_tile_grid import TektonTileGrid
 
 class TektonRoomImporter:
     allowed_events_pointers = [b"\x12\xe6", b"\x69\xe6", b"\x29\xe6"]
+    event_pointer_byte_lengths = {TektonRoomEventStatePointer: 5,
+                                  TektonRoomLandingStatePointer: 4,
+                                  TektonRoomFlywayStatePointer: 5}
 
     def __init__(self):
         self.room_header_address = 0
@@ -67,7 +70,7 @@ class TektonRoomImporter:
                 self.level_data_addresses[
                     new_room_state_pointer.room_state.level_data_address] = new_room_state_pointer.room_state.tiles
             new_room.extra_states.append(new_room_state_pointer)
-            current_offset += self._get_offset_of_next_state_pointer(self.rom_contents[current_offset:current_offset + 2])
+            current_offset += self.event_pointer_byte_lengths[type(new_room_state_pointer)]
 
         if self.rom_contents[current_offset:current_offset + 2] != b'\xe6\xe5':
             raise ValueError(
@@ -211,14 +214,6 @@ class TektonRoomImporter:
         new_state.setup_asm_pointer = self._get_int_from_rom(room_state_address+24, 2)
 
         return new_state
-
-    def _get_offset_of_next_state_pointer(self, current_state_pointer):
-        if current_state_pointer == b'\x12\xe6':
-            return 5
-        elif current_state_pointer == b'\x69\xe6':
-            return 4
-        elif current_state_pointer == b'\x29\xe6':
-            return 5
 
     def _get_empty_tile_data_for_room(self):
         new_grid = TektonTileGrid(self.room_width_screens * 16, self.room_height_screens * 16)
