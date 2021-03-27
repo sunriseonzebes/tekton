@@ -14,13 +14,13 @@ class TestTektonRoomImporter(unittest.TestCase):
                          test_importer.rom_contents,
                          "TektonRoomImporter.rom_contents did not initialize correctly!")
         self.assertEqual(1,
-                         test_importer.room_width_screens,
+                         test_importer._room_width_screens,
                          "TektonRoomImporter.room_width_screens did not initialize correctly!")
         self.assertEqual(1,
-                         test_importer.room_height_screens,
+                         test_importer._room_height_screens,
                          "TektonRoomImporter.room_height_screens did not initialize correctly!")
         self.assertEqual({},
-                         test_importer.level_data_addresses,
+                         test_importer._level_data_addresses,
                          "TektonRoomImporter.level_data_addresses did not initialize correctly!")
         self.assertEqual(0,
                          test_importer._room_header_address,

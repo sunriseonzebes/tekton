@@ -25,11 +25,11 @@ class TektonRoomImporter:
 
     def __init__(self):
         self.rom_contents = b''
-        self.room_width_screens = 1
-        self.room_height_screens = 1
-        self.level_data_addresses = {}
-
+        
+        self._level_data_addresses = {}
         self._room_header_address = 0
+        self._room_height_screens = 1
+        self._room_width_screens = 1
 
     @property
     def room_header_address(self):
@@ -55,10 +55,10 @@ class TektonRoomImporter:
             raise TypeError("Room header address must be of type int. "
                             "You can specify it in hex notation, e.g. 0x795d4")
 
-        self.room_width_screens = self._get_int_from_rom(self.room_header_address+4, 1)
-        self.room_height_screens = self._get_int_from_rom(self.room_header_address+5, 1)
+        self._room_width_screens = self._get_int_from_rom(self.room_header_address + 4, 1)
+        self._room_height_screens = self._get_int_from_rom(self.room_header_address + 5, 1)
 
-        new_room = TektonRoom(self.room_width_screens, self.room_height_screens)
+        new_room = TektonRoom(self._room_width_screens, self._room_height_screens)
 
         new_room.header = self.room_header_address
         new_room.room_index = self._get_int_from_rom(self.room_header_address, 1)
@@ -70,7 +70,7 @@ class TektonRoomImporter:
         new_room.special_graphics_bitflag = self._get_int_from_rom(self.room_header_address+8, 1)
 
         current_offset = self.room_header_address + 11
-        self.level_data_addresses = {}
+        self._level_data_addresses = {}
 
         while self.rom_contents[current_offset:current_offset + 2] in self.allowed_events_pointers:
             new_room_state_pointer = self._get_room_state_pointer_at_address(current_offset)
@@ -210,16 +210,16 @@ class TektonRoomImporter:
         new_state.background_pointer = self._get_int_from_rom(room_state_address+22, 2)
         new_state.setup_asm_pointer = self._get_int_from_rom(room_state_address+24, 2)
 
-        if new_state.level_data_address in self.level_data_addresses.keys():
-            new_state.tiles = self.level_data_addresses[new_state.level_data_address]
+        if new_state.level_data_address in self._level_data_addresses.keys():
+            new_state.tiles = self._level_data_addresses[new_state.level_data_address]
         else:
             new_state.tiles = self._get_empty_tile_data_for_room()
-            self.level_data_addresses[new_state.level_data_address] = new_state.tiles
+            self._level_data_addresses[new_state.level_data_address] = new_state.tiles
 
         return new_state
 
     def _get_empty_tile_data_for_room(self):
-        new_grid = TektonTileGrid(self.room_width_screens * 16, self.room_height_screens * 16)
+        new_grid = TektonTileGrid(self._room_width_screens * 16, self._room_height_screens * 16)
         new_grid.fill()
         return new_grid
 
