@@ -9,10 +9,9 @@ Functions:
 
 """
 
-from .tekton_room import TektonRoom
+from .tekton_room import TektonRoom, MapArea
 from .tekton_system import lorom_to_pc
 from .tekton_door import TektonDoor, TektonElevatorLaunchpad, DoorBitFlag, DoorEjectDirection
-from .tekton_room import MapArea
 from .tekton_room_state import TektonRoomState, TektonRoomEventStatePointer, TektonRoomLandingStatePointer, \
     TektonRoomFlywayStatePointer, TileSet, SongSet, SongPlayIndex
 from .tekton_tile_grid import TektonTileGrid
@@ -241,36 +240,15 @@ class TektonRoomImporter:
         door_target_room_id = self._get_door_target_room_id(door_info_address)
         new_door.target_room_id = door_target_room_id
 
-        new_door.bit_flag = DoorBitFlag(
-            int.from_bytes(self.rom_contents[door_info_address + 2:door_info_address + 3], byteorder="little")
-        )
-        new_door.eject_direction = DoorEjectDirection(
-            int.from_bytes(self.rom_contents[door_info_address + 3:door_info_address + 4], byteorder="little")
-        )
-        new_door.target_door_cap_col = int.from_bytes(
-            self.rom_contents[door_info_address + 4:door_info_address + 5],
-            byteorder="little"
-        )
-        new_door.target_door_cap_row = int.from_bytes(
-            self.rom_contents[door_info_address + 5:door_info_address + 6],
-            byteorder="little"
-        )
-        new_door.target_room_screen_h = int.from_bytes(
-            self.rom_contents[door_info_address + 6:door_info_address + 7],
-            byteorder="little"
-        )
-        new_door.target_room_screen_v = int.from_bytes(
-            self.rom_contents[door_info_address + 7:door_info_address + 8],
-            byteorder="little"
-        )
-        new_door.distance_to_spawn = int.from_bytes(
-            self.rom_contents[door_info_address + 8:door_info_address + 10],
-            byteorder="little"
-        )
-        new_door.asm_pointer = int.from_bytes(
-            self.rom_contents[door_info_address + 10:door_info_address + 12],
-            byteorder="little"
-        )
+        new_door.bit_flag = DoorBitFlag(self._get_int_from_rom(door_info_address+2, 1))
+        new_door.eject_direction = DoorEjectDirection(self._get_int_from_rom(door_info_address+3, 1))
+        new_door.target_door_cap_col = self._get_int_from_rom(door_info_address+4, 1)
+        new_door.target_door_cap_row = self._get_int_from_rom(door_info_address+5, 1)
+        new_door.target_room_screen_h = self._get_int_from_rom(door_info_address+6, 1)
+        new_door.target_room_screen_v = self._get_int_from_rom(door_info_address+7, 1)
+        new_door.distance_to_spawn = self._get_int_from_rom(door_info_address+8, 2)
+        new_door.asm_pointer = self._get_int_from_rom(door_info_address+10, 2)
+
         return new_door
 
     def _import_elevator_launchpad(self, door_info_address):
