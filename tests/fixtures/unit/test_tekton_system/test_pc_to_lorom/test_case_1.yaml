@@ -1,0 +1,6 @@
+expected_result:
+  - 0xc3
+  - 0xbc
+  - 0xd2
+pc_address: 0x21bcd2
+byteorder: "big"

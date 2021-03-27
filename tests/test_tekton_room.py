@@ -43,6 +43,24 @@ class TestTektonRoom(unittest.TestCase):
         with self.assertRaises(ValueError):
             test_room.header = -5
 
+    def test_header_data(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_room',
+                                     'test_header_data'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            test_room = load_room_from_test_data(test_case)
+            expected_results = int_list_to_bytes(test_case["expected_results"])
+            actual_results = test_room.header_data
+            self.assertEqual(expected_results,
+                             actual_results,
+                             "TektonRoom.header_data returned incorrect header data!")
+
+
     def test_compressed_level_data(self):
         test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
                                      'fixtures',

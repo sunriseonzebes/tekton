@@ -26,6 +26,20 @@ class TestTektonSystem(unittest.TestCase):
         with self.assertRaises(ValueError):
             tekton_system.lorom_to_pc(b'\xff\xff\xff\xff', byteorder="big")
 
+    def test_pc_to_lorom(self):
+        test_data_dir = os.path.join(os.path.dirname((os.path.abspath(__file__))),
+                                     'fixtures',
+                                     'unit',
+                                     'test_tekton_system',
+                                     'test_pc_to_lorom'
+                                     )
+        test_data = load_test_data_dir(test_data_dir)
+
+        for test_case in test_data:
+            expected_result = int_list_to_bytes(test_case["expected_result"])
+            actual_result = tekton_system.pc_to_lorom(test_case["pc_address"], byteorder=test_case["byteorder"])
+            self.assertEqual(expected_result, actual_result, "pc_to_lorom returned incorrect result!")
+
     def test_overwrite_bytes_at_index(self):
         original_string = b'\x00\x00\x00\x00\x00\x00\x00\x00'
         replace_string = b'\x11\x22\x33\x44'

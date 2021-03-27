@@ -14,8 +14,8 @@ from enum import Enum
 from .tekton_tile import TektonTile
 from .tekton_tile_grid import TektonTileGrid
 from .tekton_compressor import TektonCompressionMapper
-from .tekton_system import pad_bytes
-from .tekton_room_state import TektonRoomState
+from .tekton_system import pad_bytes, pc_to_lorom
+from .tekton_room_state import TektonRoomState, TektonRoomLandingStatePointer
 
 
 class MapArea(Enum):
@@ -82,6 +82,39 @@ class TektonRoom:
     def tiles(self):
         raise ValueError("This attribute has been removed.")
 
+    @property
+    def header_data(self):
+        header_bytes = self.room_index.to_bytes(1, byteorder="little")
+        header_bytes += self.map_area.value.to_bytes(1, byteorder="little")
+        header_bytes += self.minimap_x_coord.to_bytes(1, byteorder="little")
+        header_bytes += self.minimap_y_coord.to_bytes(1, byteorder="little")
+        header_bytes += self.width_screens.to_bytes(1, byteorder="little")
+        header_bytes += self.height_screens.to_bytes(1, byteorder="little")
+        header_bytes += self.up_scroller.to_bytes(1, byteorder="little")
+        header_bytes += self.down_scroller.to_bytes(1, byteorder="little")
+        header_bytes += self.special_graphics_bitflag.to_bytes(1, byteorder="little")
+        header_bytes += (self._get_door_pointer_list_address() % 0x10000).to_bytes(2, byteorder="little")
+
+
+        for room_state_pointer in self.extra_states:
+            header_bytes += room_state_pointer.pointer_code
+            if not isinstance(room_state_pointer, TektonRoomLandingStatePointer):
+                header_bytes += room_state_pointer.event_value.to_bytes(1, byteorder="little")
+            header_bytes += (self._get_room_state_address(room_state_pointer) % 0x10000).to_bytes(2, byteorder="little")
+
+        header_bytes += b'\xe6\xe5'
+        header_bytes += self._get_room_state_header_data(self.standard_state)
+
+        for room_state_pointer in self.extra_states:
+            header_bytes += self._get_room_state_header_data(room_state_pointer.room_state)
+
+
+
+        for door in self.doors:
+            header_bytes += (door.data_address % 0x10000).to_bytes(2, byteorder="little")
+
+        return header_bytes
+
     def compressed_level_data(self, room_state):
         """Returns compressed level data which the Super Metroid ROM can understand.
 
@@ -99,6 +132,48 @@ class TektonRoom:
                 "Compressed data is {0} bytes, but max size is {1} bytes!".format(len(compressed_data),
                                                                                   self.level_data_length))
         return pad_bytes(compressed_data, self.level_data_length, b'\xff')
+
+    def _get_room_state_pointers_list_length(self):
+        room_state_pointers_length = 0
+        for room_state_pointer in self.extra_states:
+            if isinstance(room_state_pointer, TektonRoomLandingStatePointer):
+                room_state_pointers_length += 4
+            else:
+                room_state_pointers_length += 5
+
+        return room_state_pointers_length
+
+    def _get_room_state_address(self, room_state_pointer):
+        state_pointer_number = 0
+        for i in range(len(self.extra_states)):
+            if self.extra_states[i] == room_state_pointer:
+                state_pointer_number = i
+                break;
+
+        return self.header + 11 + self._get_room_state_pointers_list_length() + 28 + ((state_pointer_number) * 26)
+
+    def _get_door_pointer_list_address(self):
+        print(hex(self.header + 11 + self._get_room_state_pointers_list_length() + 28 + (len(self.extra_states) * 26)))
+        return self.header + 11 + self._get_room_state_pointers_list_length() + 28 + (len(self.extra_states) * 26)
+
+    def _get_room_state_header_data(self, room_state):
+        room_state_header_data = pc_to_lorom(room_state.level_data_address, byteorder="little")
+        room_state_header_data += room_state.tileset.value.to_bytes(1, byteorder="little")
+        room_state_header_data += room_state.songset.value.to_bytes(1, byteorder="little")
+        room_state_header_data += room_state.song_play_index.value.to_bytes(1, byteorder="little")
+        room_state_header_data += room_state.fx_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.enemy_set_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.enemy_gfx_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.background_x_scroll.to_bytes(1, byteorder="little")
+        room_state_header_data += room_state.background_y_scroll.to_bytes(1, byteorder="little")
+        room_state_header_data += room_state.room_scrolls_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.unused_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.main_asm_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.plm_set_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.background_pointer.to_bytes(2, byteorder="little")
+        room_state_header_data += room_state.setup_asm_pointer.to_bytes(2, byteorder="little")
+
+        return room_state_header_data
 
 
 class CompressedDataTooLargeError(Exception):

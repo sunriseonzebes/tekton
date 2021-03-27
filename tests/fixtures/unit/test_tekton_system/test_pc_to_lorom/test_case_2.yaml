@@ -1,0 +1,6 @@
+expected_result:
+  - 0x0e
+  - 0x95
+  - 0xcd
+pc_address: 0x26950e
+byteorder: "little"

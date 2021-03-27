@@ -18,7 +18,7 @@ def lorom_to_pc(lorom_string, *, byteorder):
     string containing the ROM data.
 
     The most significant byte of a LoROM address is called the "bank." Certain LoROM addresses are invalid, for example
-    the address $80:9999 would be outside the range of allowable addresses for bank $80, which stops at $80:7fff .
+    the address $80:9999 would be outside the range of allowable addresses for bank $80, which stops at $80:7fff.
     In the event of an invalid address, Super Metroid apparently ignores any bits larger than the maximum size of the
     bank. In this case, the most significant bit in 9999 would be ignored, causing the address to resolve to $80:1999, a
     valid address. There are a number of invalid addresses in room headers which seem to expect this capability. This
@@ -50,6 +50,13 @@ def lorom_to_pc(lorom_string, *, byteorder):
 
     pc_value = (((lorom_bank - 0x80) // 2) * 0x010000) + lorom_address
     return pc_value
+
+def pc_to_lorom(pc_address, *, byteorder):
+    lorom_address = pc_address % 0x010000
+    lorom_bank = ((pc_address // 0x008000) + 0x80) * 0x10000
+
+    return (lorom_bank + lorom_address).to_bytes(3, byteorder=byteorder)
+
 
 
 def overwrite_bytes_at_index(original_string, replace_string, replace_start_index):
