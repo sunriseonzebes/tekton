@@ -153,7 +153,7 @@ def load_door_from_test_data(test_door_data):
     if "asm_pointer" in test_door_data.keys():
         new_door.asm_pointer = test_door_data["asm_pointer"]
     if "bit_flag" in test_door_data.keys():
-        new_door.bit_flag = tekton.tekton_door.BitFlag(test_door_data["distance_to_spawn"])
+        new_door.bit_flag = tekton.tekton_door.DoorBitFlag(test_door_data["bit_flag"])
     if "eject_direction" in test_door_data.keys():
         new_door.eject_direction = tekton.tekton_door.DoorEjectDirection(test_door_data["eject_direction"])
 

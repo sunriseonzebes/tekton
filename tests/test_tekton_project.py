@@ -1,4 +1,4 @@
-from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes
+from testing_common import tekton, original_rom_path, load_test_data_dir, int_list_to_bytes, load_room_from_test_data
 from tekton import tekton_project, tekton_room_dict, tekton_room, tekton_door, tekton_room_state, tekton_tile_grid
 import hashlib
 import modified_test_roms
@@ -52,28 +52,7 @@ class TestTektonProjectIntegration(unittest.TestCase):
             test_proj.source_rom_path = original_rom_path
 
             for test_room_data in test_item["rooms"]:
-                new_room = tekton_room.TektonRoom(test_room_data["width"], test_room_data["height"])
-                new_room.header = test_room_data["header"]
-                new_room.standard_state = tekton_room_state.TektonRoomState()
-                new_room.standard_state.level_data_address = test_room_data["level_data_address"]
-                new_room.standard_state.tiles = tekton_tile_grid.TektonTileGrid(test_room_data["width"] * 16, test_room_data["height"] * 16)
-                new_room.standard_state.tiles.fill()
-                if "level_data_length" in test_room_data.keys():
-                    new_room.level_data_length = test_room_data["level_data_length"]
-                if "doors" in test_room_data.keys():
-                    for test_door_data in test_room_data["doors"]:
-                        new_door = tekton_door.TektonDoor()
-                        new_door.data_address = test_door_data["data_address"]
-                        new_door.target_room_id = test_door_data["target_room_id"]
-                        new_door.bit_flag = test_door_data["bit_flag"]
-                        new_door.eject_direction = test_door_data["eject_direction"]
-                        new_door.target_door_cap_col = test_door_data["target_door_cap_col"]
-                        new_door.target_door_cap_row = test_door_data["target_door_cap_row"]
-                        new_door.target_room_screen_h = test_door_data["target_room_screen_h"]
-                        new_door.target_room_screen_v = test_door_data["target_room_screen_v"]
-                        new_door.distance_to_spawn = test_door_data["distance_to_spawn"]
-                        new_door.asm_pointer = test_door_data["asm_pointer"]
-                        new_room.doors.append(new_door)
+                new_room = load_room_from_test_data(test_room_data)
                 test_proj.rooms.add_room(new_room)
 
             deltas = []
