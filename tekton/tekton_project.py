@@ -52,6 +52,10 @@ class TektonProject:
         modified_rom_contents = self.get_source_rom_contents()
 
         for header_address, room in self.rooms.items():
+            modified_rom_contents = overwrite_bytes_at_index(modified_rom_contents,
+                                                             room.header_data,
+                                                             header_address)
+
             if room.write_level_data:
                 modified_rom_contents = overwrite_bytes_at_index(modified_rom_contents,
                                                                  room.compressed_level_data(room.standard_state),
