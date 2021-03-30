@@ -153,7 +153,6 @@ class TektonRoom:
         return self.header + 11 + self._get_room_state_pointers_list_length() + 28 + ((state_pointer_number) * 26)
 
     def _get_door_pointer_list_address(self):
-        print(hex(self.header + 11 + self._get_room_state_pointers_list_length() + 28 + (len(self.extra_states) * 26)))
         return self.header + 11 + self._get_room_state_pointers_list_length() + 28 + (len(self.extra_states) * 26)
 
     def _get_room_state_header_data(self, room_state):

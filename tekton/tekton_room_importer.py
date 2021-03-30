@@ -79,9 +79,10 @@ class TektonRoomImporter:
 
         if self.rom_contents[current_offset:current_offset + 2] != b'\xe6\xe5':
             raise ValueError(
-                "Bytes {} and {} of room header data were not recognized. "
+                "Bytes {} and {} of room {} header data were not recognized. "
                 "Expected one of {}, got {}".format(hex(current_offset - self.room_header_address),
                                                     hex((current_offset - self.room_header_address) + 1),
+                                                    hex(self.room_header_address),
                                                     [b'\xe6\xe5'] + self.allowed_events_pointers,
                                                     self.rom_contents[current_offset:current_offset + 2])
             )
