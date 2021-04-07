@@ -12,3 +12,7 @@ No. Tekton will have different use cases than SMILE.
 ## Tests
 
     python -m unittest discover -s tests
+
+The test suite requires the end user to put a copy of the original Super Metroid ROM at **tests/fixtures/original_rom.sfc**
+
+The ROM's md5 checksum should be **21f3e98df4780ee1c667b84e57d88675**
