@@ -3,7 +3,9 @@
 This module implements a two-dimensional matrix for storing and organizing TektonTile objects.
 
 Classes:
-    TektonTileGrid: A two-dimensional list that organizes TektonTile objects."""
+    TektonTileGrid: A two-dimensional list that organizes TektonTile objects.
+    GenerateUncompressedDataFromNoneError: Exception raised when the TileGrid contains one or more None values and
+        the uncompressed_data property is called."""
 
 from .tekton_tile import TektonTile
 
@@ -70,6 +72,8 @@ class TektonTileGrid:
         return_string = b''
         for y in range(self.height):
             for x in range(self.width):
+                if self._tiles[x][y] is None:
+                    raise GenerateUncompressedDataFromNoneError("Position {},{} in TileGrid is None, cannot call uncompressed_data on TektonTileGrids which contain None.".format(x, y))
                 return_string += self._tiles[x][y].l1_attributes_bytes
         for y in range(self.height):
             for x in range(self.width):
@@ -107,3 +111,8 @@ class TektonTileGrid:
                 if (col + left_coord < self.width) and (row + top_coord < self.height):
                     if new_tile_grid[col][row] is not None:
                         self._tiles[col + left_coord][row + top_coord] = new_tile_grid[col][row].copy()
+
+
+class GenerateUncompressedDataFromNoneError(Exception):
+    """Exception raised when the TileGrid contains one or more None values and the uncompressed_data property is called."""
+    pass
