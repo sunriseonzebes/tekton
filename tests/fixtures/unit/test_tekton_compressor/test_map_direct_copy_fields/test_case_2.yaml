@@ -1,0 +1,39 @@
+expected_results:
+  - start_index: 8
+    end_index: 11
+    field:
+      type: "TektonDirectCopyField"
+      bytes_data:
+        - 0xcb
+        - 0x4d
+        - 0x9b
+        - 0x05
+  - start_index: 16
+    end_index: 16
+    field:
+      type: "TektonDirectCopyField"
+      bytes_data:
+        - 0x51
+test_fills:
+  - start_index: 0
+    end_index: 7
+  - start_index: 12
+    end_index: 15
+uncompressed_data:
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0x00
+  - 0xcb
+  - 0x4d
+  - 0x9b
+  - 0x05
+  - 0x33
+  - 0x33
+  - 0x33
+  - 0x33
+  - 0x51

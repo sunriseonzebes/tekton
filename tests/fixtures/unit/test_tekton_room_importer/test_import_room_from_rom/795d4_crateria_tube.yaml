@@ -1,0 +1,28 @@
+doors: []
+down_scroller: 0xa0
+extra_states: []
+header: 0x795d4
+height: 1
+map_area: 0x00
+minimap_x_coord: 0x20
+minimap_y_coord: 0x04
+room_index: 0x0d
+special_graphics_bitflag: 0x00
+standard_state:
+  background_pointer: 0x0000
+  background_x_scroll: 0x00
+  background_y_scroll: 0x00
+  enemy_set_pointer: 0x8b3b
+  enemy_gfx_pointer: 0x8233
+  fx_pointer: 0x8168
+  level_data_address: 0x21bcd2
+  main_asm_pointer: 0x0000
+  plm_set_pointer: 0x8246
+  room_scrolls_pointer: 0x0000
+  setup_asm_pointer: 0x91d3
+  songset: 0x00
+  song_play_index: 0x00
+  tileset: 0x00
+  unused_pointer: 0x0000
+up_scroller: 0x70
+width: 1

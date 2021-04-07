@@ -1,0 +1,4 @@
+num_bytes: 12
+command_code: 0b000
+expected_result:
+  - 0x0b

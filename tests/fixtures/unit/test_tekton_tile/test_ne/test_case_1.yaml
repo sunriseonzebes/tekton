@@ -1,0 +1,12 @@
+left:
+  tileno: 6
+  bts_type: 4
+  bts_num: 0x08
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'true'
+right:
+  tileno: 6
+  bts_type: 5
+  bts_num: 0x08
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'true'

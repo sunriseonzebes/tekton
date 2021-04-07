@@ -1,0 +1,13 @@
+expected_results:
+  - start_index: 0
+    end_index: 2
+    field:
+      type: "TektonDirectCopyField"
+      bytes_data:
+        - 0x00
+        - 0xaf
+        - 0xdf
+uncompressed_data:
+  - 0x00
+  - 0xaf
+  - 0xdf

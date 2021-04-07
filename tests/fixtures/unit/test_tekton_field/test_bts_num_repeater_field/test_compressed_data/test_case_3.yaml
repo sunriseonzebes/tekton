@@ -1,0 +1,6 @@
+num_reps: 256
+bts_num: 0x00
+expected_result:
+  - 0xe4
+  - 0xff
+  - 0x00

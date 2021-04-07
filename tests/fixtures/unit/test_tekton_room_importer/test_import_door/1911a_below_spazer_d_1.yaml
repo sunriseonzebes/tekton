@@ -1,0 +1,12 @@
+door_address: 0x1911a
+expected_results:
+  type: "tekton.tekton_door.TektonDoor"
+  room_id: 0x7cf54
+  bit_flag: "DOOR_AREA_CHANGE"
+  direction: "RIGHT"
+  door_cap_x: 0x01
+  door_cap_y: 0x06
+  screen_x: 0x00
+  screen_y: 0x00
+  distance_to_spawn: 0x8000
+  asm_pointer: 0x0000

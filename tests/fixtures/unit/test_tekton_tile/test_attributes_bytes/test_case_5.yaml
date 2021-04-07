@@ -1,0 +1,7 @@
+tileno: 0x3f2
+bts_type: 0xc
+h: !!bool 'true'
+v: !!bool 'true'
+expected_result:
+  - 0xf2
+  - 0xcf

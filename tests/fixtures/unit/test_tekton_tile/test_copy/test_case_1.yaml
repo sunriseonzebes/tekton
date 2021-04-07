@@ -1,0 +1,5 @@
+tileno: 0
+bts_type: 0
+bts_num: 0
+h_mirror: !!bool 'false'
+v_mirror: !!bool 'false'

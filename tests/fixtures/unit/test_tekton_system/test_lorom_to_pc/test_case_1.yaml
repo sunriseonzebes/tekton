@@ -1,0 +1,6 @@
+expected_result: 0x21bcd2
+lorom_value:
+  - 0xc3
+  - 0xbc
+  - 0xd2
+byteorder: "big"

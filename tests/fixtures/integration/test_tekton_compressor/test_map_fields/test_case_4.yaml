@@ -1,0 +1,70 @@
+expected_results:
+  - type: "TektonByteFillField"
+    num_bytes: 30
+    byte: 0x00
+    start_index: 0
+    end_index: 29
+  - type: "TektonDirectCopyField"
+    bytes_data:
+      - 0xfa
+      - 0x9a
+    start_index: 30
+    end_index: 31
+  - type: "TektonByteFillField"
+    num_bytes: 48
+    byte: 0x80
+    start_index: 32
+    end_index: 80
+  - type: "TektonDirectCopyField"
+    bytes_data:
+      - 0x0b
+      - 0x97
+    start_index: 81
+    end_index: 82
+  - type: "TektonByteFillField"
+    num_bytes: 469
+    byte: 0x00
+    start_index: 83
+    end_index: 551
+  - type: "TektonWordFillField"
+    num_bytes: 3
+    word:
+      - 0x00
+      - 0x01
+    start_index: 552
+    end_index: 554
+  - type: "TektonByteFillField"
+    num_bytes: 214
+    byte: 0x00
+    start_index: 555
+    end_index: 768
+room_width: 1
+room_height: 1
+tiles:
+  - count: 15
+    tile:
+      tileno: 0x000
+      bts_type: 0x00
+      bts_num: 0x00
+  - count: 1
+    tile:
+      tileno: 0x2fa
+      bts_type: 0x09
+      bts_num: 0x00
+      v_mirror: !!bool 'true'
+  - count: 24
+    tile:
+      tileno: 0x080
+      bts_type: 0x08
+      bts_num: 0x00
+  - count: 1
+    tile:
+      tileno: 0x30b
+      bts_type: 0x09
+      bts_num: 0x01
+      h_mirror: !!bool 'true'
+  - count: 215
+    tile:
+      tileno: 0x000
+      bts_type: 0x00
+      bts_num: 0x00

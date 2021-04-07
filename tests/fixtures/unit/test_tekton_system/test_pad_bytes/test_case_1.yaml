@@ -1,0 +1,4 @@
+input_string: []
+min_length: 0
+pad_byte: 0xff
+expected_result: []

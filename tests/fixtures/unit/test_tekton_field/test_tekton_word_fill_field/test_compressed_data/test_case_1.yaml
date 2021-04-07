@@ -1,0 +1,8 @@
+num_bytes: 2
+word:
+  - 0x81
+  - 0x08
+expected_result:
+  - 0x41
+  - 0x81
+  - 0x08

@@ -1,0 +1,4 @@
+num_reps: 77
+expected_result:
+  - 0xe4
+  - 0x4c

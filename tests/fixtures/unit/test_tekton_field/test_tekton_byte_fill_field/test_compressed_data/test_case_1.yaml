@@ -1,0 +1,5 @@
+num_bytes: 1
+byte: 0x00
+expected_result:
+  - 0x20
+  - 0x00

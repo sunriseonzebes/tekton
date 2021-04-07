@@ -1,0 +1,9 @@
+doors: 0x79362
+events_pointers:
+  - 0x79308
+  - 0x7930d
+events_room_states:
+  - 0x7932e
+  - 0x79348
+header: 0x792fd
+standard: 0x79312

@@ -1,0 +1,21 @@
+expected_results:
+  - start_index: 4
+    end_index: 10
+    field:
+      type: "TektonWordFillField"
+      num_bytes: 7
+      word:
+      - 0x55
+      - 0x44
+uncompressed_data:
+  - 0x00
+  - 0xff
+  - 0x88
+  - 0x66
+  - 0x55
+  - 0x44
+  - 0x55
+  - 0x44
+  - 0x55
+  - 0x44
+  - 0x55

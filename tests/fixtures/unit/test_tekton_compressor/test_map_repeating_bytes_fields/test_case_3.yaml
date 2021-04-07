@@ -1,0 +1,37 @@
+expected_results:
+  - start_index: 0
+    end_index: 12
+    field:
+      type: "NoneType"
+  - start_index: 13
+    end_index: 15
+    field:
+      type: "TektonByteFillField"
+      num_bytes: 3
+      byte: 0xfa
+  - start_index: 16
+    end_index: 20
+    field:
+      type: "NoneType"
+uncompressed_data:
+  - 0x00
+  - 0x01
+  - 0x02
+  - 0x03
+  - 0x04
+  - 0x05
+  - 0x06
+  - 0x07
+  - 0x08
+  - 0x09
+  - 0x0a
+  - 0x0b
+  - 0x0c
+  - 0xfa
+  - 0xfa
+  - 0xfa
+  - 0x11
+  - 0x12
+  - 0x13
+  - 0x14
+  - 0x15

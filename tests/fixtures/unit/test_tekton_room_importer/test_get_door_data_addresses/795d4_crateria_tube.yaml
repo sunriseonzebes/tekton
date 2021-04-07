@@ -1,0 +1,5 @@
+room_header_address: 0x795d4
+door_addresses:
+  - 0x18ac6
+  - 0x18ad2
+num_doors: 2

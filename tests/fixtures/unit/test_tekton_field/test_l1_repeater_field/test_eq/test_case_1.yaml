@@ -1,0 +1,12 @@
+left:
+  tileno: 0
+  bts: 0
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'false'
+  num_reps: 15
+right:
+  tileno: 0
+  bts: 0
+  h_mirror: !!bool 'false'
+  v_mirror: !!bool 'false'
+  num_reps: 15

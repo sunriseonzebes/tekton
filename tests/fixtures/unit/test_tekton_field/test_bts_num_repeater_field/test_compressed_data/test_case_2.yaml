@@ -1,0 +1,6 @@
+num_reps: 172
+bts_num: 0x7e
+expected_result:
+  - 0xe4
+  - 0xab
+  - 0x7e

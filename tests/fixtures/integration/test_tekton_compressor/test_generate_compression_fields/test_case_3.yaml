@@ -1,0 +1,19 @@
+expected_results:
+  - type: "TektonWordFillField"
+    num_bytes: 512
+    word:
+      - 0x08
+      - 0x4d
+  - type: "TektonByteFillField"
+    num_bytes: 256
+    byte: 0x01
+room_width: 1
+room_height: 1
+tiles:
+  - count: 256
+    tile:
+      tileno: 0x108
+      bts_type: 0x04
+      bts_num: 0x01
+      h_mirror: !!bool 'true'
+      v_mirror: !!bool 'true'
